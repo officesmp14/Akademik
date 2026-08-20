@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "siswa-app-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "siswa-ujian-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "../siswa-ujian", "run", "dev"],
+      "port": 3001,
+      "autoPort": true
+    }
+  ]
+}

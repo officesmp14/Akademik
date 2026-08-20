@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Saat mencetak (Ctrl+P / tombol Cetak): sembunyikan sidebar navigasi dan
+   header atas (TopBar -- nama user, toggle sidebar), supaya hanya konten
+   laporan yang tercetak, tanpa header/footer aplikasi. */
+@media print {
+  aside,
+  header {
+    display: none !important;
+  }
+}
+
+/* Input tanggal dengan ikon kalender custom: sembunyikan ikon kalender
+   bawaan browser supaya tidak dobel dengan tombol ikon kustom. */
+.jadwal-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  width: 2.5rem;
+  height: 100%;
+  cursor: pointer;
+}
+
