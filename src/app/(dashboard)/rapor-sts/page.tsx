@@ -204,9 +204,13 @@ export default function RaporStsPage() {
     const finalSummaries = summaries.map((s) => ({ ...s, peringkat: rankMap[s.siswa.id] ?? null }));
 
     setRingkasanList(finalSummaries);
-    if (finalSummaries.length > 0 && !selectedSiswaId) {
-      setSelectedSiswaId(finalSummaries[0].siswa.id);
-    }
+    // Pertahankan siswa yang sedang dipilih kalau masih ada di daftar (mis.
+    // cuma ganti tahun ajaran/semester untuk rombel yang sama); kalau tidak
+    // ada lagi (mis. baru ganti rombel), default ke siswa pertama.
+    setSelectedSiswaId((prev) => {
+      if (finalSummaries.some((r) => r.siswa.id === prev)) return prev;
+      return finalSummaries[0]?.siswa.id ?? "";
+    });
 
     setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
