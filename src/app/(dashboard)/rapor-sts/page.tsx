@@ -239,7 +239,7 @@ export default function RaporStsPage() {
 
   function RaporCard({ data }: { data: RingkasanSiswa }) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-8 mb-8 print:border-0 print:rounded-none print:mb-0 print:break-after-page">
+      <div className="bg-white text-slate-900 border border-slate-200 rounded-xl p-8 mb-8 print:border-0 print:rounded-none print:mb-0 print:break-after-page">
         {/* Kop surat */}
         <div className="flex items-center gap-4 pb-3 border-b-2 border-slate-800 mb-4">
           <div className="h-20 w-20 relative shrink-0">
