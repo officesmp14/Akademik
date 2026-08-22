@@ -117,25 +117,25 @@ export default function BulkAccessForm({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl p-6 max-w-4xl w-full shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-4xl w-full shadow-xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="font-semibold text-slate-900">Tambah Hak Akses</h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">Tambah Hak Akses</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Centang user di kiri, atur modul & aksi di kanan, lalu simpan sekaligus.
             </p>
           </div>
           <button onClick={onClose}>
-            <X className="h-4 w-4 text-slate-400" />
+            <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
           </button>
         </div>
 
         <div className="grid md:grid-cols-2 gap-5">
           {/* Tabel kiri: pilih user */}
-          <div className="border border-slate-200 rounded-lg overflow-hidden">
+          <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 text-left text-slate-500 border-b border-slate-200">
+                <tr className="bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                   <th className="px-3 py-2 font-medium w-10 text-center">✓</th>
                   <th className="px-3 py-2 font-medium w-10">No</th>
                   <th className="px-3 py-2 font-medium">Nama User</th>
@@ -147,7 +147,7 @@ export default function BulkAccessForm({
                   <tr
                     key={u.id}
                     onClick={() => toggleUser(u.id)}
-                    className="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer"
+                    className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
                   >
                     <td className="px-3 py-2 text-center">
                       <input
@@ -158,14 +158,14 @@ export default function BulkAccessForm({
                         className="accent-indigo-600"
                       />
                     </td>
-                    <td className="px-3 py-2 text-slate-500">{idx + 1}</td>
-                    <td className="px-3 py-2 text-slate-700">{u.email}</td>
-                    <td className="px-3 py-2 text-slate-700">{u.gtk_nama || "-"}</td>
+                    <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{u.email}</td>
+                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{u.gtk_nama || "-"}</td>
                   </tr>
                 ))}
                 {users.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-3 py-6 text-center text-slate-400">
+                    <td colSpan={4} className="px-3 py-6 text-center text-slate-400 dark:text-slate-500">
                       Belum ada user.
                     </td>
                   </tr>
@@ -175,10 +175,10 @@ export default function BulkAccessForm({
           </div>
 
           {/* Tabel kanan: pilih modul & aksi */}
-          <div className="border border-slate-200 rounded-lg overflow-hidden">
+          <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 text-left text-slate-500 border-b border-slate-200">
+                <tr className="bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                   <th className="px-3 py-2 font-medium w-10 text-center">✓</th>
                   <th className="px-3 py-2 font-medium w-10">No</th>
                   <th className="px-3 py-2 font-medium">Modul</th>
@@ -189,7 +189,7 @@ export default function BulkAccessForm({
                 {MODULES.map((m, idx) => {
                   const s = moduleState[m.key];
                   return (
-                    <tr key={m.key} className="border-b border-slate-100 last:border-0">
+                    <tr key={m.key} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0">
                       <td className="px-3 py-2 text-center">
                         <input
                           type="checkbox"
@@ -198,13 +198,13 @@ export default function BulkAccessForm({
                           className="accent-indigo-600"
                         />
                       </td>
-                      <td className="px-3 py-2 text-slate-500">{idx + 1}</td>
-                      <td className="px-3 py-2 text-slate-700">{m.label}</td>
+                      <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                      <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{m.label}</td>
                       <td className="px-3 py-2">
                         <div className="flex flex-wrap gap-x-3 gap-y-1">
                           <label
                             className={`flex items-center gap-1 text-xs ${
-                              s.enabled ? "text-slate-700" : "text-slate-300"
+                              s.enabled ? "text-slate-700 dark:text-slate-200" : "text-slate-300"
                             }`}
                           >
                             <input
@@ -218,7 +218,7 @@ export default function BulkAccessForm({
                           </label>
                           <label
                             className={`flex items-center gap-1 text-xs ${
-                              s.enabled ? "text-slate-700" : "text-slate-300"
+                              s.enabled ? "text-slate-700 dark:text-slate-200" : "text-slate-300"
                             }`}
                           >
                             <input
@@ -232,7 +232,7 @@ export default function BulkAccessForm({
                           </label>
                           <label
                             className={`flex items-center gap-1 text-xs ${
-                              s.enabled ? "text-slate-700" : "text-slate-300"
+                              s.enabled ? "text-slate-700 dark:text-slate-200" : "text-slate-300"
                             }`}
                           >
                             <input
@@ -255,7 +255,7 @@ export default function BulkAccessForm({
         </div>
 
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-4">
+          <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mt-4">
             {error}
           </p>
         )}
@@ -263,7 +263,7 @@ export default function BulkAccessForm({
         <div className="flex justify-end gap-2 mt-5">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             Batal
           </button>

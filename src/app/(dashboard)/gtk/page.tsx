@@ -125,11 +125,11 @@ export default function GtkListPage() {
   }
 
   return (
-    <div className="p-6 md:p-8">
+    <div className="p-6 md:p-8 dark:bg-slate-900">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Data GTK</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Data GTK</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             {total} guru & tenaga kependidikan terdaftar
           </p>
         </div>
@@ -137,14 +137,14 @@ export default function GtkListPage() {
         <div className="flex gap-3 self-start">
           <Link
             href="/gtk/import"
-            className="inline-flex items-center gap-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             <FileSpreadsheet className="h-4 w-4" />
             Import dari Sekolah
           </Link>
           <Link
             href="/gtk/import-dinas"
-            className="inline-flex items-center gap-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             <FileSpreadsheet className="h-4 w-4" />
             Import dari Dinas
@@ -167,7 +167,7 @@ export default function GtkListPage() {
             setPageSize(Number(e.target.value));
             setPage(0);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
           {PAGE_SIZE_OPTIONS.map((n) => (
             <option key={n} value={n}>
@@ -177,7 +177,7 @@ export default function GtkListPage() {
         </select>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
           <input
             value={search}
             onChange={(e) => {
@@ -185,7 +185,7 @@ export default function GtkListPage() {
               setPage(0);
             }}
             placeholder="Cari nama, NIP, atau NUPTK..."
-            className="w-full sm:w-72 rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full sm:w-72 rounded-lg border border-slate-300 dark:border-slate-600 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
@@ -195,7 +195,7 @@ export default function GtkListPage() {
             setFilterJenisPtk(e.target.value);
             setPage(0);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
           <option value="">Semua Jenis PTK</option>
           {JENIS_PTK_OPTIONS.map((j) => (
@@ -211,7 +211,7 @@ export default function GtkListPage() {
             setFilterStatusKepegawaian(e.target.value);
             setPage(0);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
           <option value="">Semua Status Kepegawaian</option>
           {STATUS_KEPEGAWAIAN_OPTIONS.map((s) => (
@@ -227,7 +227,7 @@ export default function GtkListPage() {
             setFilterStatusAktif(e.target.value);
             setPage(0);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
           {STATUS_AKTIF_OPTIONS.map((s) => (
             <option key={s.value} value={s.value}>
@@ -240,7 +240,7 @@ export default function GtkListPage() {
         {hasActiveFilter && (
           <button
             onClick={resetFilters}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 px-2 py-2"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 px-2 py-2"
           >
             <X className="h-3.5 w-3.5" />
             Reset Filter
@@ -248,11 +248,11 @@ export default function GtkListPage() {
         )}
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                 <th className="px-4 py-3 font-medium w-12">No</th>
                 <th className="px-4 py-3 font-medium">Nama</th>
                 <th className="px-4 py-3 font-medium">JK</th>
@@ -269,50 +269,50 @@ export default function GtkListPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400">
+                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : data.length === 0 ? (
                 <tr>
-                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400">
+                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     Belum ada data GTK yang cocok.
                   </td>
                 </tr>
               ) : (
                 data.map((g, idx) => (
-                  <tr key={g.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                    <td className="px-4 py-3 text-slate-500">{page * pageSize + idx + 1}</td>
-                    <td className="px-4 py-3 font-medium text-slate-800">{g.nama || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{g.jk || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{g.nip || g.nuptk || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{g.jenis_ptk || "-"}</td>
+                  <tr key={g.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/60">
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{page * pageSize + idx + 1}</td>
+                    <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{g.nama || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{g.jk || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{g.nip || g.nuptk || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{g.jenis_ptk || "-"}</td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
+                      <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300">
                         {g.status_kepegawaian || "-"}
                       </span>
                     </td>
                     <td className="px-4 py-3">
                       {g.status_aktif === "Y" ? (
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-600">
+                        <span className="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                           Aktif
                         </span>
                       ) : g.status_aktif === "N" ? (
-                        <span className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-600">
+                        <span className="inline-flex items-center rounded-full bg-red-50 dark:bg-red-500/10 px-2.5 py-0.5 text-xs font-medium text-red-600 dark:text-red-400">
                           Tidak Aktif
                         </span>
                       ) : (
-                        <span className="text-slate-400">-</span>
+                        <span className="text-slate-400 dark:text-slate-500">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{g.hp || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{g.hp || "-"}</td>
                     {(canEdit || canDelete) && (
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
                         {canEdit && (
                         <Link
                           href={`/gtk/${g.id}`}
-                          className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                           title="Edit"
                         >
                           <Pencil className="h-4 w-4" />
@@ -321,7 +321,7 @@ export default function GtkListPage() {
                         {isAdmin && (
                         <button
                           onClick={() => setResetTarget(g)}
-                          className="p-2 rounded-lg text-slate-500 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                           title="Reset Password"
                         >
                           <KeyRound className="h-4 w-4" />
@@ -330,7 +330,7 @@ export default function GtkListPage() {
                         {canDelete && (
                         <button
                           onClick={() => setDeleteTarget(g)}
-                          className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                           title="Hapus"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -346,19 +346,19 @@ export default function GtkListPage() {
           </table>
         </div>
 
-        <div className="flex items-center justify-end px-4 py-3 border-t border-slate-200">
+        <div className="flex items-center justify-end px-4 py-3 border-t border-slate-200 dark:border-slate-700">
           <nav className="flex items-center gap-1 text-sm">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
-              className="px-2 py-1 font-medium tracking-wide text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:text-slate-500"
+              className="px-2 py-1 font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 disabled:opacity-40 disabled:hover:text-slate-500 dark:disabled:hover:text-slate-400"
             >
               PREVIOUS
             </button>
 
             {getPageNumbers(page + 1, totalPages).map((p, i) =>
               p === "..." ? (
-                <span key={`ellipsis-${i}`} className="px-1.5 text-slate-400 select-none">
+                <span key={`ellipsis-${i}`} className="px-1.5 text-slate-400 dark:text-slate-500 select-none">
                   ...
                 </span>
               ) : (
@@ -368,7 +368,7 @@ export default function GtkListPage() {
                   className={`h-7 w-7 rounded-full text-sm font-medium transition-colors ${
                     p === page + 1
                       ? "bg-indigo-600 text-white"
-                      : "text-slate-600 hover:bg-slate-100"
+                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   {p}
@@ -379,7 +379,7 @@ export default function GtkListPage() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
-              className="px-2 py-1 font-medium tracking-wide text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:text-slate-500"
+              className="px-2 py-1 font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 disabled:opacity-40 disabled:hover:text-slate-500 dark:disabled:hover:text-slate-400"
             >
               NEXT
             </button>
@@ -389,18 +389,18 @@ export default function GtkListPage() {
 
       {resetTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
             {resetResult ? (
               <>
-                <h3 className="font-semibold text-slate-900 mb-1.5">Password Berhasil Direset</h3>
-                <p className="text-sm text-slate-500 mb-4">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Password Berhasil Direset</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
                   Password baru untuk{" "}
-                  <span className="font-medium text-slate-700">{resetTarget.nama}</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-200">{resetTarget.nama}</span>
                   {resetResult.email ? ` (${resetResult.email})` : ""}. Salin dan sampaikan ke
                   yang bersangkutan, password ini tidak akan ditampilkan lagi.
                 </p>
                 <div className="flex items-center gap-2 mb-5">
-                  <code className="flex-1 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-mono text-slate-800 select-all">
+                  <code className="flex-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/40 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 select-all">
                     {resetResult.password}
                   </code>
                   <button
@@ -409,10 +409,10 @@ export default function GtkListPage() {
                       setCopied(true);
                     }}
                     title="Salin"
-                    className="p-2 rounded-lg border border-slate-300 text-slate-500 hover:bg-slate-50"
+                    className="p-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"
                   >
                     {copied ? (
-                      <Check className="h-4 w-4 text-emerald-600" />
+                      <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                     ) : (
                       <Copy className="h-4 w-4" />
                     )}
@@ -429,21 +429,21 @@ export default function GtkListPage() {
               </>
             ) : (
               <>
-                <h3 className="font-semibold text-slate-900 mb-1.5">Reset password GTK ini?</h3>
-                <p className="text-sm text-slate-500 mb-5">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Reset password GTK ini?</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
                   Password akun login untuk{" "}
-                  <span className="font-medium text-slate-700">{resetTarget.nama}</span> akan
+                  <span className="font-medium text-slate-700 dark:text-slate-200">{resetTarget.nama}</span> akan
                   diganti dengan password baru secara acak. Password lama tidak akan berlaku lagi.
                 </p>
                 {resetError && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                     {resetError}
                   </p>
                 )}
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={closeResetModal}
-                    className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                    className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                   >
                     Batal
                   </button>
@@ -464,18 +464,18 @@ export default function GtkListPage() {
 
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">
               Hapus data GTK?
             </h3>
-            <p className="text-sm text-slate-500 mb-5">
-              Data <span className="font-medium text-slate-700">{deleteTarget.nama}</span> akan
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
+              Data <span className="font-medium text-slate-700 dark:text-slate-200">{deleteTarget.nama}</span> akan
               dihapus permanen dan tidak dapat dikembalikan.
             </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>

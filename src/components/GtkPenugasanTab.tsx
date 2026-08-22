@@ -92,11 +92,11 @@ export default function GtkPenugasanTab({
   }, 0);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-6">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-sm font-semibold text-slate-800">Penugasan Mengajar</p>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Penugasan Mengajar</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Satu guru bisa punya lebih dari satu penugasan (mapel/sekolah berbeda)
           </p>
         </div>
@@ -112,17 +112,17 @@ export default function GtkPenugasanTab({
 
       {loading ? (
         <div className="flex justify-center py-10">
-          <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+          <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
         </div>
       ) : list.length === 0 ? (
-        <div className="text-center py-10 text-sm text-slate-400">
+        <div className="text-center py-10 text-sm text-slate-400 dark:text-slate-500">
           Belum ada penugasan mengajar. Klik &quot;Tambah Penugasan&quot; untuk menambahkan.
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                 <th className="px-3 py-2.5 font-medium">Sekolah</th>
                 <th className="px-3 py-2.5 font-medium">Jenjang</th>
                 <th className="px-3 py-2.5 font-medium">Status</th>
@@ -135,27 +135,27 @@ export default function GtkPenugasanTab({
             </thead>
             <tbody>
               {list.map((item) => (
-                <tr key={item.id} className="border-b border-slate-100 last:border-0">
-                  <td className="px-3 py-2.5 text-slate-700">{item.nama_sekolah || "-"}</td>
-                  <td className="px-3 py-2.5 text-slate-600">{item.jenjang_sekolah || "-"}</td>
-                  <td className="px-3 py-2.5 text-slate-600">{item.status_sekolah || "-"}</td>
-                  <td className="px-3 py-2.5 text-slate-700 font-medium">{item.mengajar || "-"}</td>
-                  <td className="px-3 py-2.5 text-slate-600">{item.kompetensi || "-"}</td>
-                  <td className="px-3 py-2.5 text-center text-slate-700">{item.jjm || "-"}</td>
-                  <td className="px-3 py-2.5 text-center text-slate-600">{item.jumlah_siswa_diajar || "-"}</td>
+                <tr key={item.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0">
+                  <td className="px-3 py-2.5 text-slate-700 dark:text-slate-200">{item.nama_sekolah || "-"}</td>
+                  <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{item.jenjang_sekolah || "-"}</td>
+                  <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{item.status_sekolah || "-"}</td>
+                  <td className="px-3 py-2.5 text-slate-700 dark:text-slate-200 font-medium">{item.mengajar || "-"}</td>
+                  <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{item.kompetensi || "-"}</td>
+                  <td className="px-3 py-2.5 text-center text-slate-700 dark:text-slate-200">{item.jjm || "-"}</td>
+                  <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-300">{item.jumlah_siswa_diajar || "-"}</td>
                   <td className="px-3 py-2.5">
                     <div className={`flex items-center justify-end gap-1 ${readOnly ? "hidden" : ""}`}>
                       <button
                         type="button"
                         onClick={() => openEdit(item)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                        className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                       >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
                       <button
                         type="button"
                         onClick={() => setDeleteTarget(item)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600"
+                        className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -165,7 +165,7 @@ export default function GtkPenugasanTab({
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-slate-50 border-t border-slate-200 font-semibold text-slate-800">
+              <tr className="bg-slate-50 dark:bg-slate-700/40 border-t border-slate-200 dark:border-slate-700 font-semibold text-slate-800 dark:text-slate-200">
                 <td className="px-3 py-2.5" colSpan={5}>
                   Total JJM
                 </td>
@@ -180,13 +180,13 @@ export default function GtkPenugasanTab({
       {/* Modal tambah/edit */}
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-lg w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                 {editing ? "Edit Penugasan" : "Tambah Penugasan"}
               </h3>
               <button type="button" onClick={() => setShowForm(false)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
@@ -217,7 +217,7 @@ export default function GtkPenugasanTab({
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -238,19 +238,19 @@ export default function GtkPenugasanTab({
       {/* Konfirmasi hapus */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Hapus penugasan ini?</h3>
-            <p className="text-sm text-slate-500 mb-5">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus penugasan ini?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
               Penugasan mengajar{" "}
-              <span className="font-medium text-slate-700">{deleteTarget.mengajar}</span> di{" "}
-              <span className="font-medium text-slate-700">{deleteTarget.nama_sekolah}</span> akan
+              <span className="font-medium text-slate-700 dark:text-slate-200">{deleteTarget.mengajar}</span> di{" "}
+              <span className="font-medium text-slate-700 dark:text-slate-200">{deleteTarget.nama_sekolah}</span> akan
               dihapus permanen.
             </p>
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>

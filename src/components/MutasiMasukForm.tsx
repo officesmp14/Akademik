@@ -25,7 +25,7 @@ type FormState = {
 type DokKey = (typeof DOKUMEN_MUTASI_MASUK_FIELDS)[number]["key"];
 
 function fieldLabel(label: string) {
-  return <label className="block text-sm font-medium text-slate-700 mb-1.5">{label}</label>;
+  return <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">{label}</label>;
 }
 
 export default function MutasiMasukForm({
@@ -149,19 +149,19 @@ export default function MutasiMasukForm({
     <div className="p-6 md:p-8 max-w-4xl mx-auto">
       <Link
         href="/siswa/mutasi-masuk"
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-4"
       >
         <ChevronLeft className="h-4 w-4" />
         Kembali ke Siswa Mutasi Masuk
       </Link>
 
-      <h1 className="text-2xl font-semibold text-slate-900 mb-6">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
         {isEdit ? "Ubah Pengajuan Mutasi Masuk" : "Tambah Pengajuan Mutasi Masuk"}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
             Data Siswa & Asal Sekolah
           </h3>
           <div className="grid sm:grid-cols-2 gap-5">
@@ -172,7 +172,7 @@ export default function MutasiMasukForm({
                 required
                 value={form.nama_siswa}
                 onChange={(e) => updateForm("nama_siswa", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -181,7 +181,7 @@ export default function MutasiMasukForm({
                 type="text"
                 value={form.nisn}
                 onChange={(e) => updateForm("nisn", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -191,7 +191,7 @@ export default function MutasiMasukForm({
                 placeholder="mis. VII.1"
                 value={form.kelas_tujuan}
                 onChange={(e) => updateForm("kelas_tujuan", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -200,7 +200,7 @@ export default function MutasiMasukForm({
                 type="text"
                 value={form.asal_npsn_sekolah}
                 onChange={(e) => updateForm("asal_npsn_sekolah", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -209,7 +209,7 @@ export default function MutasiMasukForm({
                 type="text"
                 value={form.asal_nama_sekolah}
                 onChange={(e) => updateForm("asal_nama_sekolah", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -218,7 +218,7 @@ export default function MutasiMasukForm({
                 type="text"
                 value={form.asal_provinsi}
                 onChange={(e) => updateForm("asal_provinsi", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -227,7 +227,7 @@ export default function MutasiMasukForm({
                 type="text"
                 value={form.asal_kab_kota}
                 onChange={(e) => updateForm("asal_kab_kota", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -236,14 +236,14 @@ export default function MutasiMasukForm({
                 type="text"
                 value={form.asal_kecamatan}
                 onChange={(e) => updateForm("asal_kecamatan", e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
             Upload Dokumen
           </h3>
           <div className="grid sm:grid-cols-2 gap-5">
@@ -256,8 +256,8 @@ export default function MutasiMasukForm({
                   <label
                     className={`flex items-center gap-2.5 rounded-lg border px-3 py-2 text-sm cursor-pointer transition-colors ${
                       file
-                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        : "border-slate-300 text-slate-500 hover:bg-slate-50"
+                        ? "border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                        : "border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"
                     }`}
                   >
                     {file ? (
@@ -279,7 +279,7 @@ export default function MutasiMasukForm({
                     <button
                       type="button"
                       onClick={() => openExistingDocument(existingPath)}
-                      className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium mt-1.5"
+                      className="inline-flex items-center gap-1 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium mt-1.5"
                     >
                       Lihat dokumen yang sudah diupload <ExternalLink className="h-3 w-3" />
                     </button>
@@ -291,7 +291,7 @@ export default function MutasiMasukForm({
         </div>
 
         {errorMsg && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+          <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
             {errorMsg}
           </p>
         )}
@@ -299,7 +299,7 @@ export default function MutasiMasukForm({
         <div className="flex items-center justify-end gap-3">
           <Link
             href="/siswa/mutasi-masuk"
-            className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+            className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             Batal
           </Link>

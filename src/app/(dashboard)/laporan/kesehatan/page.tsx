@@ -171,8 +171,8 @@ export default function LaporanKesehatanPage() {
     <div className="p-6 md:p-8 print:p-0">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5 print:hidden">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Data Pemeriksaan Kesehatan</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Data Pemeriksaan Kesehatan</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Status <strong>Aktif</strong> — total <strong>{data.length}</strong> siswa
           </p>
         </div>
@@ -180,7 +180,7 @@ export default function LaporanKesehatanPage() {
           <button
             onClick={handleExport}
             disabled={data.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2 hover:bg-slate-50 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
           >
             <Download className="h-4 w-4" />
             Export ke Excel
@@ -199,7 +199,7 @@ export default function LaporanKesehatanPage() {
         <select
           value={filterRombel}
           onChange={(e) => setFilterRombel(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">Semua Kelas</option>
           {rombelOptions.map((r) => (
@@ -215,18 +215,18 @@ export default function LaporanKesehatanPage() {
       </p>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-10 flex justify-center print:hidden">
-          <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 flex justify-center print:hidden">
+          <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
         </div>
       ) : data.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-10 text-center text-slate-400 print:hidden">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 text-center text-slate-400 dark:text-slate-500 print:hidden">
           Tidak ada data siswa.
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto print:border-0 print:overflow-visible">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto print:border-0 print:overflow-visible">
           <table className="w-full text-sm print:text-xs">
             <thead className="print:table-header-group">
-              <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500 print:bg-transparent print:border-slate-800">
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400 print:bg-transparent print:border-slate-800">
                 <th className="px-3 py-2.5 font-medium w-10">No</th>
                 <th className="px-3 py-2.5 font-medium">Nama Siswa</th>
                 <th className="px-3 py-2.5 font-medium">JK</th>
@@ -238,18 +238,18 @@ export default function LaporanKesehatanPage() {
             </thead>
             <tbody>
               {data.map((s, idx) => (
-                <tr key={s.id} className="border-b border-slate-100 last:border-0 print:border-slate-300">
-                  <td className="px-3 py-2 text-slate-500">{idx + 1}</td>
-                  <td className="px-3 py-2 font-medium text-slate-800">{s.nama || "-"}</td>
-                  <td className="px-3 py-2 text-slate-600">{s.jk || "-"}</td>
-                  <td className="px-3 py-2 text-slate-600">{s.tanggal_lahir || "-"}</td>
-                  <td className="px-3 py-2 text-slate-600">{s.nik || "-"}</td>
-                  <td className="px-3 py-2 text-slate-600">
+                <tr key={s.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 print:border-slate-300">
+                  <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                  <td className="px-3 py-2 font-medium text-slate-800 dark:text-slate-200">{s.nama || "-"}</td>
+                  <td className="px-3 py-2 text-slate-600 dark:text-slate-300">{s.jk || "-"}</td>
+                  <td className="px-3 py-2 text-slate-600 dark:text-slate-300">{s.tanggal_lahir || "-"}</td>
+                  <td className="px-3 py-2 text-slate-600 dark:text-slate-300">{s.nik || "-"}</td>
+                  <td className="px-3 py-2 text-slate-600 dark:text-slate-300">
                     {[s.alamat, s.rt ? `RT ${s.rt}` : null, s.kelurahan]
                       .filter(Boolean)
                       .join(", ") || "-"}
                   </td>
-                  <td className="px-3 py-2 text-slate-600">{s.hp || "-"}</td>
+                  <td className="px-3 py-2 text-slate-600 dark:text-slate-300">{s.hp || "-"}</td>
                 </tr>
               ))}
             </tbody>

@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
+/* Tailwind v4 default-nya dark mode ikut preferensi OS (prefers-color-scheme).
+   Ini mengaktifkan varian `dark:` berdasarkan class ".dark" di elemen <html>,
+   supaya bisa di-toggle manual lewat tombol, bukan cuma ikut OS. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
 }
 
 @theme inline {

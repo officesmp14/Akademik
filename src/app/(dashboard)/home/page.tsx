@@ -41,10 +41,10 @@ function hitungUmur(tanggalLahir: string | null | undefined, now: Date): number 
 
 function SiswaTableLP({ rows, total }: { rows: RekapRow[]; total: RekapRow }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+          <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
             <th className="px-4 py-2.5 font-medium">KELAS</th>
             <th className="px-4 py-2.5 font-medium text-center">L</th>
             <th className="px-4 py-2.5 font-medium text-center">P</th>
@@ -53,14 +53,14 @@ function SiswaTableLP({ rows, total }: { rows: RekapRow[]; total: RekapRow }) {
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={r.kelas} className="border-b border-slate-100">
-              <td className="px-4 py-2 font-medium text-slate-800">{r.kelas}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.l}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.p}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.jumlah}</td>
+            <tr key={r.kelas} className="border-b border-slate-100 dark:border-slate-700/60">
+              <td className="px-4 py-2 font-medium text-slate-800 dark:text-slate-200">{r.kelas}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.l}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.p}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.jumlah}</td>
             </tr>
           ))}
-          <tr className="bg-slate-50 font-semibold text-slate-800">
+          <tr className="bg-slate-50 dark:bg-slate-700/40 font-semibold text-slate-800 dark:text-slate-200">
             <td className="px-4 py-2.5">TOTAL</td>
             <td className="px-4 py-2.5 text-center">{total.l}</td>
             <td className="px-4 py-2.5 text-center">{total.p}</td>
@@ -74,10 +74,10 @@ function SiswaTableLP({ rows, total }: { rows: RekapRow[]; total: RekapRow }) {
 
 function SiswaTableAgama({ rows, total }: { rows: RekapRow[]; total: RekapRow }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto">
       <table className="w-full text-sm whitespace-nowrap">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+          <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
             <th className="px-4 py-2.5 font-medium">KELAS</th>
             <th className="px-4 py-2.5 font-medium text-center">ISLAM</th>
             <th className="px-4 py-2.5 font-medium text-center">KRISTEN</th>
@@ -90,18 +90,18 @@ function SiswaTableAgama({ rows, total }: { rows: RekapRow[]; total: RekapRow })
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={r.kelas} className="border-b border-slate-100">
-              <td className="px-4 py-2 font-medium text-slate-800">{r.kelas}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.islam}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.kristen}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.katolik}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.hindu}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.budha}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.konghucu}</td>
-              <td className="px-4 py-2 text-center text-slate-600">{r.jumlah}</td>
+            <tr key={r.kelas} className="border-b border-slate-100 dark:border-slate-700/60">
+              <td className="px-4 py-2 font-medium text-slate-800 dark:text-slate-200">{r.kelas}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.islam}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.kristen}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.katolik}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.hindu}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.budha}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.konghucu}</td>
+              <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{r.jumlah}</td>
             </tr>
           ))}
-          <tr className="bg-slate-50 font-semibold text-slate-800">
+          <tr className="bg-slate-50 dark:bg-slate-700/40 font-semibold text-slate-800 dark:text-slate-200">
             <td className="px-4 py-2.5">TOTAL</td>
             <td className="px-4 py-2.5 text-center">{total.islam}</td>
             <td className="px-4 py-2.5 text-center">{total.kristen}</td>
@@ -182,25 +182,33 @@ export default function HomePage() {
   const maxUmurJumlah = Math.max(1, ...gtkByUmur.map((k) => k.jumlah));
 
   return (
-    <div className="p-6 md:p-8">
-      <h1 className="text-2xl font-semibold text-slate-900 mb-1">Home</h1>
-      <p className="text-sm text-slate-500 mb-6">Ringkasan jumlah data siswa dan GTK</p>
+    <div className="p-6 md:p-8 dark:bg-slate-900 min-h-full">
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">Home</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Ringkasan jumlah data siswa dan GTK
+        </p>
+      </div>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-10 flex justify-center">
-          <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 flex justify-center">
+          <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
         </div>
       ) : (
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Kolom kiri: Jumlah Data Siswa */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="h-9 w-9 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                <Users className="h-4.5 w-4.5 text-indigo-600" />
+              <div className="h-9 w-9 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
+                <Users className="h-4.5 w-4.5 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900">Jumlah Data Siswa</p>
-                <p className="text-xs text-slate-400">{rekapTotalSiswa.jumlah} siswa aktif</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  Jumlah Data Siswa
+                </p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">
+                  {rekapTotalSiswa.jumlah} siswa aktif
+                </p>
               </div>
             </div>
 
@@ -213,34 +221,40 @@ export default function HomePage() {
           {/* Kolom kanan: Jumlah Data GTK */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="h-9 w-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-                <Users2 className="h-4.5 w-4.5 text-emerald-600" />
+              <div className="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <Users2 className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900">Jumlah Data GTK</p>
-                <p className="text-xs text-slate-400">{totalGtk} GTK terdaftar</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  Jumlah Data GTK
+                </p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">{totalGtk} GTK terdaftar</p>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <p className="text-xs text-slate-400 mb-1">Total</p>
-                <p className="text-2xl font-semibold text-slate-900">{totalGtk}</p>
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">Total</p>
+                <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{totalGtk}</p>
               </div>
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <p className="text-xs text-slate-400 mb-1">Aktif</p>
-                <p className="text-2xl font-semibold text-emerald-600">{totalGtkAktif}</p>
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">Aktif</p>
+                <p className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">
+                  {totalGtkAktif}
+                </p>
               </div>
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <p className="text-xs text-slate-400 mb-1">Tidak Aktif</p>
-                <p className="text-2xl font-semibold text-red-500">{totalGtkTidakAktif}</p>
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">Tidak Aktif</p>
+                <p className="text-2xl font-semibold text-red-500 dark:text-red-400">
+                  {totalGtkTidakAktif}
+                </p>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden mb-4">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden mb-4">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+                  <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                     <th className="px-4 py-2.5 font-medium">JENIS PTK</th>
                     <th className="px-4 py-2.5 font-medium text-center">L</th>
                     <th className="px-4 py-2.5 font-medium text-center">P</th>
@@ -249,22 +263,28 @@ export default function HomePage() {
                 </thead>
                 <tbody>
                   {gtkByJenis.map((g) => (
-                    <tr key={g.jenis} className="border-b border-slate-100">
-                      <td className="px-4 py-2 font-medium text-slate-800">{g.jenis}</td>
-                      <td className="px-4 py-2 text-center text-slate-600">{g.l}</td>
-                      <td className="px-4 py-2 text-center text-slate-600">{g.p}</td>
-                      <td className="px-4 py-2 text-center text-slate-600">{g.jumlah}</td>
+                    <tr key={g.jenis} className="border-b border-slate-100 dark:border-slate-700/60">
+                      <td className="px-4 py-2 font-medium text-slate-800 dark:text-slate-200">
+                        {g.jenis}
+                      </td>
+                      <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{g.l}</td>
+                      <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">{g.p}</td>
+                      <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">
+                        {g.jumlah}
+                      </td>
                     </tr>
                   ))}
                   {gtkTanpaJenis > 0 && (
-                    <tr className="border-b border-slate-100">
-                      <td className="px-4 py-2 text-slate-500" colSpan={3}>
+                    <tr className="border-b border-slate-100 dark:border-slate-700/60">
+                      <td className="px-4 py-2 text-slate-500 dark:text-slate-400" colSpan={3}>
                         Belum diisi jenis PTK-nya
                       </td>
-                      <td className="px-4 py-2 text-center text-slate-600">{gtkTanpaJenis}</td>
+                      <td className="px-4 py-2 text-center text-slate-600 dark:text-slate-300">
+                        {gtkTanpaJenis}
+                      </td>
                     </tr>
                   )}
-                  <tr className="bg-slate-50 font-semibold text-slate-800">
+                  <tr className="bg-slate-50 dark:bg-slate-700/40 font-semibold text-slate-800 dark:text-slate-200">
                     <td className="px-4 py-2.5">TOTAL AKTIF</td>
                     <td className="px-4 py-2.5 text-center">
                       {gtkAktif.filter((g) => g.jk === "L").length}
@@ -278,18 +298,18 @@ export default function HomePage() {
               </table>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 mb-4">
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                 Distribusi Jenis PTK (Aktif)
               </p>
               <div className="space-y-2.5">
                 {gtkByJenis.map((g) => (
                   <div key={g.jenis}>
-                    <div className="flex items-center justify-between text-xs text-slate-600 mb-1">
+                    <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
                       <span>{g.jenis}</span>
                       <span>{g.jumlah}</span>
                     </div>
-                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                    <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-emerald-500"
                         style={{ width: `${(g.jumlah / maxJenisJumlah) * 100}%` }}
@@ -300,21 +320,21 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 mb-4">
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                 Tingkat Pendidikan (Aktif)
               </p>
               {gtkByJenjangPendidikan.length === 0 && gtkTanpaJenjangPendidikan === 0 ? (
-                <p className="text-sm text-slate-400">Belum ada data.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Belum ada data.</p>
               ) : (
                 <div className="space-y-2.5">
                   {gtkByJenjangPendidikan.map((j) => (
                     <div key={j.jenjang}>
-                      <div className="flex items-center justify-between text-xs text-slate-600 mb-1">
+                      <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
                         <span>{j.jenjang}</span>
                         <span>{j.jumlah}</span>
                       </div>
-                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
                         <div
                           className="h-full rounded-full bg-indigo-500"
                           style={{ width: `${(j.jumlah / maxJenjangPendidikanJumlah) * 100}%` }}
@@ -324,13 +344,13 @@ export default function HomePage() {
                   ))}
                   {gtkTanpaJenjangPendidikan > 0 && (
                     <div>
-                      <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+                      <div className="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 mb-1">
                         <span>Belum diisi</span>
                         <span>{gtkTanpaJenjangPendidikan}</span>
                       </div>
-                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-slate-300"
+                          className="h-full rounded-full bg-slate-300 dark:bg-slate-600"
                           style={{
                             width: `${(gtkTanpaJenjangPendidikan / maxJenjangPendidikanJumlah) * 100}%`,
                           }}
@@ -342,21 +362,21 @@ export default function HomePage() {
               )}
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                 Kelompok Umur (Aktif)
               </p>
               {gtkByUmur.length === 0 && gtkTanpaTanggalLahir === 0 ? (
-                <p className="text-sm text-slate-400">Belum ada data.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Belum ada data.</p>
               ) : (
                 <div className="space-y-2.5">
                   {gtkByUmur.map((k) => (
                     <div key={k.label}>
-                      <div className="flex items-center justify-between text-xs text-slate-600 mb-1">
+                      <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
                         <span>{k.label}</span>
                         <span>{k.jumlah}</span>
                       </div>
-                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
                         <div
                           className="h-full rounded-full bg-amber-500"
                           style={{ width: `${(k.jumlah / maxUmurJumlah) * 100}%` }}
@@ -366,13 +386,13 @@ export default function HomePage() {
                   ))}
                   {gtkTanpaTanggalLahir > 0 && (
                     <div>
-                      <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+                      <div className="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 mb-1">
                         <span>Belum diisi tanggal lahir</span>
                         <span>{gtkTanpaTanggalLahir}</span>
                       </div>
-                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-slate-300"
+                          className="h-full rounded-full bg-slate-300 dark:bg-slate-600"
                           style={{ width: `${(gtkTanpaTanggalLahir / maxUmurJumlah) * 100}%` }}
                         />
                       </div>

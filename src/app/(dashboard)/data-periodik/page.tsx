@@ -298,11 +298,11 @@ export default function DataPeriodikPage() {
   }
 
   return (
-    <div className="p-6 md:p-8">
+    <div className="p-6 md:p-8 dark:bg-slate-900">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Data Periodik</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Data Periodik</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             {lockedToOwnClass && (
               <>
                 Wali Kelas <strong>{waliKelasRombel}</strong> &middot;{" "}
@@ -315,7 +315,7 @@ export default function DataPeriodikPage() {
           <button
             onClick={handleExport}
             disabled={exporting}
-            className="inline-flex items-center gap-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2 hover:bg-slate-50 transition-colors disabled:opacity-50 shrink-0"
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 shrink-0"
           >
             {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
             Export Excel
@@ -330,7 +330,7 @@ export default function DataPeriodikPage() {
             setPageSize(Number(e.target.value));
             setPage(0);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
           {PAGE_SIZE_OPTIONS.map((n) => (
             <option key={n} value={n}>
@@ -340,7 +340,7 @@ export default function DataPeriodikPage() {
         </select>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
           <input
             value={search}
             onChange={(e) => {
@@ -348,7 +348,7 @@ export default function DataPeriodikPage() {
               setPage(0);
             }}
             placeholder="Cari nama, NISN, atau NIPD..."
-            className="w-full sm:w-72 rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full sm:w-72 rounded-lg border border-slate-300 dark:border-slate-600 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
@@ -359,7 +359,7 @@ export default function DataPeriodikPage() {
               setFilterRombel(e.target.value);
               setPage(0);
             }}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="">Semua Kelas</option>
             {rombelOptions.map((r) => (
@@ -372,16 +372,16 @@ export default function DataPeriodikPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                 <th className="px-4 py-3 font-medium w-12">No</th>
                 <th className="px-4 py-3 font-medium">NISN</th>
                 <th className="px-4 py-3 font-medium">Nama Siswa</th>
@@ -397,36 +397,36 @@ export default function DataPeriodikPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={canEdit ? 10 : 9} className="px-4 py-10 text-center text-slate-400">
+                  <td colSpan={canEdit ? 10 : 9} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : data.length === 0 ? (
                 <tr>
-                  <td colSpan={canEdit ? 10 : 9} className="px-4 py-10 text-center text-slate-400">
+                  <td colSpan={canEdit ? 10 : 9} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     <Ruler className="h-6 w-6 mx-auto mb-2 text-slate-300" />
                     Belum ada data siswa.
                   </td>
                 </tr>
               ) : (
                 data.map((row, idx) => (
-                  <tr key={row.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                    <td className="px-4 py-3 text-slate-500">{page * pageSize + idx + 1}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.nisn || "-"}</td>
-                    <td className="px-4 py-3 font-medium text-slate-800">{row.nama || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.tinggi_badan || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.berat_badan || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.lingkar_kepala || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.jml_saudara || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.jarak_tempuh_jam || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.jarak_tempuh || "-"}</td>
+                  <tr key={row.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/60">
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{page * pageSize + idx + 1}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.nisn || "-"}</td>
+                    <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{row.nama || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.tinggi_badan || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.berat_badan || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.lingkar_kepala || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.jml_saudara || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.jarak_tempuh_jam || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.jarak_tempuh || "-"}</td>
                     {canEdit && (
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => openEdit(row)}
                             title="Edit"
-                            className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                            className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
@@ -440,19 +440,19 @@ export default function DataPeriodikPage() {
           </table>
         </div>
 
-        <div className="flex items-center justify-end px-4 py-3 border-t border-slate-200">
+        <div className="flex items-center justify-end px-4 py-3 border-t border-slate-200 dark:border-slate-700">
           <nav className="flex items-center gap-1 text-sm">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
-              className="px-2 py-1 font-medium tracking-wide text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:text-slate-500"
+              className="px-2 py-1 font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 disabled:opacity-40 disabled:hover:text-slate-500 dark:disabled:hover:text-slate-400"
             >
               PREVIOUS
             </button>
 
             {getPageNumbers(page + 1, totalPages).map((p, i) =>
               p === "..." ? (
-                <span key={`ellipsis-${i}`} className="px-1.5 text-slate-400 select-none">
+                <span key={`ellipsis-${i}`} className="px-1.5 text-slate-400 dark:text-slate-500 select-none">
                   ...
                 </span>
               ) : (
@@ -460,7 +460,7 @@ export default function DataPeriodikPage() {
                   key={p}
                   onClick={() => setPage(p - 1)}
                   className={`h-7 w-7 rounded-full text-sm font-medium transition-colors ${
-                    p === page + 1 ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"
+                    p === page + 1 ? "bg-indigo-600 text-white" : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   {p}
@@ -471,7 +471,7 @@ export default function DataPeriodikPage() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
-              className="px-2 py-1 font-medium tracking-wide text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:text-slate-500"
+              className="px-2 py-1 font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 disabled:opacity-40 disabled:hover:text-slate-500 dark:disabled:hover:text-slate-400"
             >
               NEXT
             </button>
@@ -481,18 +481,18 @@ export default function DataPeriodikPage() {
 
       {editTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-2xl w-full shadow-xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-2xl w-full shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-semibold text-slate-900">{editTarget.nama || "-"}</h3>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{editTarget.nama || "-"}</h3>
               <button onClick={() => setEditTarget(null)}>
-                <X className="h-5 w-5 text-slate-400" />
+                <X className="h-5 w-5 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
             <form onSubmit={handleUpdate} className="space-y-5">
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Tinggi Badan:
                   </label>
                   <input
@@ -502,11 +502,11 @@ export default function DataPeriodikPage() {
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, tinggi_badan: digitsOnly(e.target.value) }))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Berat Badan:
                   </label>
                   <input
@@ -516,12 +516,12 @@ export default function DataPeriodikPage() {
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, berat_badan: digitsOnly(e.target.value) }))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Lingkar Kepala:
                   </label>
                   <input
@@ -531,11 +531,11 @@ export default function DataPeriodikPage() {
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, lingkar_kepala: digitsOnly(e.target.value) }))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Saudara Kandung:
                   </label>
                   <input
@@ -545,17 +545,17 @@ export default function DataPeriodikPage() {
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, jml_saudara: digitsOnly(e.target.value) }))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Jarak Rumah ke sekolah:
                   </label>
                   <div className="flex items-center gap-4 h-[38px]">
                     {["Kurang 1 km", "Lebih 1 km"].map((opt) => (
-                      <label key={opt} className="flex items-center gap-1.5 text-sm text-slate-700 cursor-pointer">
+                      <label key={opt} className="flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
                         <input
                           type="radio"
                           name="jarak_rumah"
@@ -569,7 +569,7 @@ export default function DataPeriodikPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Sebutkan dalam (km):
                   </label>
                   <input
@@ -581,12 +581,12 @@ export default function DataPeriodikPage() {
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, jarak_rumah_km: digitsOnly(e.target.value, 2) }))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-100 disabled:text-slate-400"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Waktu/ Jam:
                   </label>
                   <input
@@ -596,11 +596,11 @@ export default function DataPeriodikPage() {
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, jarak_tempuh_jam: digitsOnly(e.target.value) }))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Waktu/ Menit:
                   </label>
                   <input
@@ -610,22 +610,22 @@ export default function DataPeriodikPage() {
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, jarak_tempuh: digitsOnly(e.target.value) }))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>
 
               {errorMsg && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
                   {errorMsg}
                 </p>
               )}
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
                 <button
                   type="button"
                   onClick={() => setEditTarget(null)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>

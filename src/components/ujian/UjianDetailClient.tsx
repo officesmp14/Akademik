@@ -184,10 +184,10 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
     <div className="p-6 md:p-8 max-w-4xl">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <Link href="/kelola-ujian" className="text-xs text-slate-400 hover:text-indigo-600">
+          <Link href="/kelola-ujian" className="text-xs text-slate-400 dark:text-slate-500 hover:text-indigo-600">
             &larr; Kembali ke Kelola Ujian
           </Link>
-          <h1 className="text-2xl font-semibold text-slate-900 mt-1">{ujian.judul}</h1>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-1">{ujian.judul}</h1>
         </div>
         <Link
           href={`/kelola-ujian/${ujian.id}/sesi`}
@@ -198,43 +198,43 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
         </Link>
       </div>
 
-      <form onSubmit={handleSaveInfo} className="bg-white border border-slate-200 rounded-xl p-5 mb-6 space-y-4">
-        <h2 className="font-semibold text-slate-900 text-sm">Info Ujian</h2>
+      <form onSubmit={handleSaveInfo} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6 space-y-4">
+        <h2 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">Info Ujian</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Judul</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Judul</label>
             <input
               value={info.judul}
               onChange={(e) => setInfo((f) => ({ ...f, judul: e.target.value }))}
               required
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Mata Pelajaran</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Mata Pelajaran</label>
             <input
               value={info.mapel}
               onChange={(e) => setInfo((f) => ({ ...f, mapel: e.target.value }))}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Durasi (menit)</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Durasi (menit)</label>
             <input
               type="number"
               min={1}
               value={info.durasi_menit}
               onChange={(e) => setInfo((f) => ({ ...f, durasi_menit: Number(e.target.value) }))}
               required
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Status</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Status</label>
             <select
               value={info.status}
               onChange={(e) => setInfo((f) => ({ ...f, status: e.target.value as Ujian["status"] }))}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {STATUS_OPTIONS.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -244,18 +244,18 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
             </select>
           </div>
         </div>
-        <label className="flex items-center gap-2 text-sm text-slate-700">
+        <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
           <input
             type="checkbox"
             checked={info.acak_soal}
             onChange={(e) => setInfo((f) => ({ ...f, acak_soal: e.target.checked }))}
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500"
           />
           Acak urutan soal untuk tiap siswa
         </label>
 
         {infoError && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{infoError}</p>
+          <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">{infoError}</p>
         )}
 
         <div className="flex items-center gap-3">
@@ -267,12 +267,12 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
             {savingInfo && <Loader2 className="h-4 w-4 animate-spin" />}
             Simpan
           </button>
-          {infoSaved && <span className="text-sm text-emerald-600">Tersimpan.</span>}
+          {infoSaved && <span className="text-sm text-emerald-600 dark:text-emerald-400">Tersimpan.</span>}
         </div>
       </form>
 
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-semibold text-slate-900 text-sm">Bank Soal ({soalList.length})</h2>
+        <h2 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">Bank Soal ({soalList.length})</h2>
         <button
           onClick={openAddSoal}
           className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 text-white text-sm font-medium px-3 py-1.5 hover:bg-indigo-700"
@@ -284,42 +284,42 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
 
       <div className="space-y-2">
         {soalList.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-xl px-4 py-10 text-center text-slate-400">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-10 text-center text-slate-400 dark:text-slate-500">
             <ListChecks className="h-6 w-6 mx-auto mb-2 text-slate-300" />
             Belum ada soal. Tambahkan soal pilihan ganda atau esai.
           </div>
         ) : (
           soalList.map((soal, idx) => (
-            <div key={soal.id} className="bg-white border border-slate-200 rounded-xl p-4 flex items-start gap-3">
-              <span className="text-xs font-medium text-slate-400 mt-0.5">{idx + 1}.</span>
+            <div key={soal.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex items-start gap-3">
+              <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">{idx + 1}.</span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                      soal.tipe === "pilihan_ganda" ? "bg-indigo-50 text-indigo-700" : "bg-purple-50 text-purple-700"
+                      soal.tipe === "pilihan_ganda" ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400" : "bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400"
                     }`}
                   >
                     {soal.tipe === "pilihan_ganda" ? "Pilihan Ganda" : "Esai"}
                   </span>
-                  <span className="text-xs text-slate-400">Bobot {soal.bobot}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">Bobot {soal.bobot}</span>
                 </div>
-                <p className="text-sm text-slate-800 line-clamp-2">{soal.pertanyaan}</p>
+                <p className="text-sm text-slate-800 dark:text-slate-200 line-clamp-2">{soal.pertanyaan}</p>
                 {soal.tipe === "pilihan_ganda" && (
-                  <p className="text-xs text-slate-400 mt-1">Kunci jawaban: {soal.kunci_jawaban}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Kunci jawaban: {soal.kunci_jawaban}</p>
                 )}
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button
                   onClick={() => openEditSoal(soal)}
                   title="Ubah"
-                  className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                  className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setDeleteTarget(soal)}
                   title="Hapus"
-                  className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600"
+                  className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -331,21 +331,21 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
 
       {showSoalForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-lg w-full shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">{editingSoalId ? "Ubah Soal" : "Tambah Soal"}</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">{editingSoalId ? "Ubah Soal" : "Tambah Soal"}</h3>
               <button onClick={() => setShowSoalForm(false)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
             <form onSubmit={handleSoalSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Tipe Soal</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Tipe Soal</label>
                 <select
                   value={soalForm.tipe}
                   onChange={(e) => setSoalForm((f) => ({ ...f, tipe: e.target.value as SoalTipe }))}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="pilihan_ganda">Pilihan Ganda</option>
                   <option value="esai">Esai</option>
@@ -353,19 +353,19 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Pertanyaan</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Pertanyaan</label>
                 <textarea
                   value={soalForm.pertanyaan}
                   onChange={(e) => setSoalForm((f) => ({ ...f, pertanyaan: e.target.value }))}
                   required
                   rows={3}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
               {soalForm.tipe === "pilihan_ganda" && (
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-slate-700">Pilihan Jawaban</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Pilihan Jawaban</label>
                   {(["A", "B", "C", "D"] as const).map((huruf) => {
                     const key = `opsi${huruf}` as "opsiA" | "opsiB" | "opsiC" | "opsiD";
                     return (
@@ -383,29 +383,29 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
                           value={soalForm[key]}
                           onChange={(e) => setSoalForm((f) => ({ ...f, [key]: e.target.value }))}
                           required
-                          className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="flex-1 rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                       </div>
                     );
                   })}
-                  <p className="text-xs text-slate-400">Pilih radio di kiri untuk menandai kunci jawaban.</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Pilih radio di kiri untuk menandai kunci jawaban.</p>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Bobot Nilai</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Bobot Nilai</label>
                 <input
                   type="number"
                   min={1}
                   value={soalForm.bobot}
                   onChange={(e) => setSoalForm((f) => ({ ...f, bobot: Number(e.target.value) }))}
                   required
-                  className="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-32 rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
               {actionError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
                   {actionError}
                 </p>
               )}
@@ -414,7 +414,7 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
                 <button
                   type="button"
                   onClick={() => setShowSoalForm(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -434,18 +434,18 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
 
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Hapus soal ini?</h3>
-            <p className="text-sm text-slate-500 mb-5 line-clamp-2">{deleteTarget.pertanyaan}</p>
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus soal ini?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5 line-clamp-2">{deleteTarget.pertanyaan}</p>
             {actionError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                 {actionError}
               </p>
             )}
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>

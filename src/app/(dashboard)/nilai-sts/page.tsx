@@ -241,9 +241,9 @@ export default function InputNilaiStsPage() {
   if (!gtkId) {
     return (
       <div className="p-6 md:p-8 max-w-3xl mx-auto">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-          <h1 className="text-lg font-semibold text-amber-800 mb-2">Profil Belum Terhubung</h1>
-          <p className="text-sm text-amber-700">
+        <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-6">
+          <h1 className="text-lg font-semibold text-amber-800 dark:text-amber-400 mb-2">Profil Belum Terhubung</h1>
+          <p className="text-sm text-amber-700 dark:text-amber-400">
             Akun Anda belum terhubung ke data GTK. Hubungi admin untuk menghubungkannya.
           </p>
         </div>
@@ -253,16 +253,16 @@ export default function InputNilaiStsPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-2xl font-semibold text-slate-900 mb-1">Input Nilai STS</h1>
-      <p className="text-sm text-slate-500 mb-6">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">Input Nilai STS</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
         Peringkat dihitung otomatis dari nilai tertinggi antara STS, Susulan, dan Remedial. Sudah
         punya nilai di Excel dengan urutan siswa yang sama? Blok kolom nilainya di Excel, salin
         (Ctrl+C), klik sel pertama di tabel bawah, lalu tempel (Ctrl+V) — otomatis terisi ke bawah.
       </p>
 
       {assignments.length === 0 ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-          <p className="text-sm text-amber-700">
+        <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-6">
+          <p className="text-sm text-amber-700 dark:text-amber-400">
             Anda belum ditugaskan mengajar mapel/kelas manapun. Hubungi admin untuk mengaturnya
             lewat halaman Penugasan Mengajar Kelas.
           </p>
@@ -273,7 +273,7 @@ export default function InputNilaiStsPage() {
             <select
               value={selectedKey}
               onChange={(e) => setSelectedKey(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {assignments.map((a) => (
                 <option key={`${a.mapel_id}|||${a.rombel}`} value={`${a.mapel_id}|||${a.rombel}`}>
@@ -285,7 +285,7 @@ export default function InputNilaiStsPage() {
             <select
               value={semester}
               onChange={(e) => setSemester(e.target.value as "Ganjil" | "Genap")}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="Ganjil">Semester Ganjil</option>
               <option value="Genap">Semester Genap</option>
@@ -294,26 +294,26 @@ export default function InputNilaiStsPage() {
             <input
               value={tahunAjaran}
               onChange={(e) => setTahunAjaran(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm w-32 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="2026/2027"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+            <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
               {error}
             </p>
           )}
 
           {loading ? (
-            <div className="bg-white border border-slate-200 rounded-xl p-10 flex justify-center">
-              <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 flex justify-center">
+              <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
             </div>
           ) : (
-            <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto">
               <table className="w-full text-sm whitespace-nowrap">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+                  <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                     <th className="px-3 py-2.5 font-medium">No</th>
                     <th className="px-3 py-2.5 font-medium">Siswa</th>
                     {KOLOM.map((k) => (
@@ -327,15 +327,15 @@ export default function InputNilaiStsPage() {
                 <tbody>
                   {siswaList.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-3 py-8 text-center text-slate-400">
+                      <td colSpan={5} className="px-3 py-8 text-center text-slate-400 dark:text-slate-500">
                         Tidak ada siswa aktif di kelas ini.
                       </td>
                     </tr>
                   ) : (
                     siswaList.map((s, idx) => (
-                      <tr key={s.id} className="border-b border-slate-100 last:border-0">
-                        <td className="px-3 py-2 text-slate-500">{idx + 1}</td>
-                        <td className="px-3 py-2 font-medium text-slate-800">{s.nama}</td>
+                      <tr key={s.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0">
+                        <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                        <td className="px-3 py-2 font-medium text-slate-800 dark:text-slate-200">{s.nama}</td>
                         {KOLOM.map((k, colIdx) => {
                           const cellId = `${s.id}:${k.key}`;
                           return (
@@ -348,7 +348,7 @@ export default function InputNilaiStsPage() {
                                 onChange={(e) => setValue(s.id, k.key, e.target.value)}
                                 onBlur={(e) => saveCell(s.id, k.key, e.target.value)}
                                 onPaste={(e) => handlePaste(e, idx, colIdx)}
-                                className="w-16 rounded-md border border-slate-200 px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-16 rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                               />
                               {savingCell === cellId && (
                                 <Loader2 className="h-3 w-3 animate-spin inline ml-1 text-indigo-400" />
@@ -356,7 +356,7 @@ export default function InputNilaiStsPage() {
                             </td>
                           );
                         })}
-                        <td className="px-3 py-2 text-center font-semibold text-slate-800">
+                        <td className="px-3 py-2 text-center font-semibold text-slate-800 dark:text-slate-200">
                           {peringkatMap[s.id] ?? "-"}
                         </td>
                       </tr>

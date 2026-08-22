@@ -22,9 +22,9 @@ import {
 } from "lucide-react";
 
 const STATUS_STYLE: Record<string, string> = {
-  Diajukan: "bg-amber-50 text-amber-700",
-  Diterima: "bg-emerald-50 text-emerald-700",
-  Ditolak: "bg-red-50 text-red-700",
+  Diajukan: "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  Diterima: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+  Ditolak: "bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400",
 };
 
 export default function MutasiMasukPage() {
@@ -168,8 +168,8 @@ export default function MutasiMasukPage() {
     <div className="p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Siswa Mutasi Masuk</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Siswa Mutasi Masuk</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Pengajuan siswa pindahan dari sekolah lain beserta dokumen pendukungnya
           </p>
         </div>
@@ -185,20 +185,20 @@ export default function MutasiMasukPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
       {actionError && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {actionError}
         </p>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
               <th className="px-4 py-3 font-medium w-12">No</th>
               <th className="px-4 py-3 font-medium">Nama Siswa</th>
               <th className="px-4 py-3 font-medium">NISN</th>
@@ -213,41 +213,41 @@ export default function MutasiMasukPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={canEdit ? 9 : 8} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={canEdit ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={canEdit ? 9 : 8} className="px-4 py-10 text-center text-slate-400">
-                  <UserPlus className="h-6 w-6 mx-auto mb-2 text-slate-300" />
+                <td colSpan={canEdit ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <UserPlus className="h-6 w-6 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
                   Belum ada pengajuan siswa mutasi masuk.
                 </td>
               </tr>
             ) : (
               rows.map((row, idx) => (
-                <tr key={row.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                  <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
-                  <td className="px-4 py-3 font-medium text-slate-800">{row.nama_siswa}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.nisn || "-"}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.asal_nama_sekolah || "-"}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.kelas_tujuan || "-"}</td>
+                <tr key={row.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/60">
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{row.nama_siswa}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.nisn || "-"}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.asal_nama_sekolah || "-"}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.kelas_tujuan || "-"}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_STYLE[row.status] ?? "bg-slate-100 text-slate-600"
+                        STATUS_STYLE[row.status] ?? "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
                       }`}
                     >
                       {row.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-600 max-w-xs truncate" title={row.keterangan || ""}>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-xs truncate" title={row.keterangan || ""}>
                     {row.keterangan || "-"}
                   </td>
                   <td className="px-4 py-3">
                     <button
                       onClick={() => setDocTarget(row)}
-                      className="inline-flex items-center gap-1.5 text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                      className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm font-medium"
                     >
                       <FileText className="h-4 w-4" />
                       Lihat
@@ -259,7 +259,7 @@ export default function MutasiMasukPage() {
                         <Link
                           href={`/siswa/mutasi-masuk/${row.id}`}
                           title="Ubah"
-                          className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                         >
                           <Pencil className="h-4 w-4" />
                         </Link>
@@ -272,7 +272,7 @@ export default function MutasiMasukPage() {
                                 setAcceptTarget(row);
                               }}
                               title="Terima"
-                              className="p-2 rounded-lg text-slate-500 hover:bg-emerald-50 hover:text-emerald-600"
+                              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
                             >
                               <Check className="h-4 w-4" />
                             </button>
@@ -283,7 +283,7 @@ export default function MutasiMasukPage() {
                                 setRejectTarget(row);
                               }}
                               title="Tolak"
-                              className="p-2 rounded-lg text-slate-500 hover:bg-amber-50 hover:text-amber-600"
+                              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400"
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -292,7 +292,7 @@ export default function MutasiMasukPage() {
                         <button
                           onClick={() => setDeleteTarget(row)}
                           title="Hapus"
-                          className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -309,11 +309,11 @@ export default function MutasiMasukPage() {
       {/* Modal: lihat dokumen */}
       {docTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Dokumen {docTarget.nama_siswa}</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">Dokumen {docTarget.nama_siswa}</h3>
               <button onClick={() => setDocTarget(null)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
             <div className="space-y-2">
@@ -322,18 +322,18 @@ export default function MutasiMasukPage() {
                 return (
                   <div
                     key={key}
-                    className="flex items-center justify-between gap-3 text-sm border border-slate-100 rounded-lg px-3 py-2"
+                    className="flex items-center justify-between gap-3 text-sm border border-slate-100 dark:border-slate-700/60 rounded-lg px-3 py-2"
                   >
-                    <span className="text-slate-700">{label}</span>
+                    <span className="text-slate-700 dark:text-slate-200">{label}</span>
                     {path ? (
                       <button
                         onClick={() => openDocument(path)}
-                        className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium shrink-0"
+                        className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium shrink-0"
                       >
                         Buka <ExternalLink className="h-3.5 w-3.5" />
                       </button>
                     ) : (
-                      <span className="text-slate-400 shrink-0">Belum diupload</span>
+                      <span className="text-slate-400 dark:text-slate-500 shrink-0">Belum diupload</span>
                     )}
                   </div>
                 );
@@ -346,16 +346,16 @@ export default function MutasiMasukPage() {
       {/* Modal: terima */}
       {acceptTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Terima siswa ini?</h3>
-            <p className="text-sm text-slate-500 mb-5">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Terima siswa ini?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
               Data siswa baru akan otomatis dibuat di Data Siswa: nama{" "}
-              <span className="font-medium text-slate-700">{acceptTarget.nama_siswa}</span>, rombel{" "}
-              <span className="font-medium text-slate-700">{acceptTarget.kelas_tujuan || "-"}</span>,
+              <span className="font-medium text-slate-700 dark:text-slate-200">{acceptTarget.nama_siswa}</span>, rombel{" "}
+              <span className="font-medium text-slate-700 dark:text-slate-200">{acceptTarget.kelas_tujuan || "-"}</span>,
               status Aktif.
             </p>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                 Alasan Diterima (opsional)
               </label>
               <textarea
@@ -363,11 +363,11 @@ export default function MutasiMasukPage() {
                 value={keterangan}
                 onChange={(e) => setKeterangan(e.target.value)}
                 placeholder="mis. Sesuai domisili, kuota kelas tersedia..."
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             {actionError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                 {actionError}
               </p>
             )}
@@ -377,7 +377,7 @@ export default function MutasiMasukPage() {
                   setAcceptTarget(null);
                   setKeterangan("");
                 }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>
@@ -397,14 +397,14 @@ export default function MutasiMasukPage() {
       {/* Modal: tolak */}
       {rejectTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Tolak pengajuan ini?</h3>
-            <p className="text-sm text-slate-500 mb-5">
-              Pengajuan <span className="font-medium text-slate-700">{rejectTarget.nama_siswa}</span>{" "}
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Tolak pengajuan ini?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
+              Pengajuan <span className="font-medium text-slate-700 dark:text-slate-200">{rejectTarget.nama_siswa}</span>{" "}
               akan ditandai Ditolak. Data siswa tidak akan dibuat.
             </p>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                 Alasan Ditolak
               </label>
               <textarea
@@ -412,11 +412,11 @@ export default function MutasiMasukPage() {
                 value={keterangan}
                 onChange={(e) => setKeterangan(e.target.value)}
                 placeholder="mis. Dokumen tidak lengkap, kuota kelas penuh..."
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             {actionError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                 {actionError}
               </p>
             )}
@@ -426,7 +426,7 @@ export default function MutasiMasukPage() {
                   setRejectTarget(null);
                   setKeterangan("");
                 }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>
@@ -446,21 +446,21 @@ export default function MutasiMasukPage() {
       {/* Modal: hapus */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Hapus pengajuan ini?</h3>
-            <p className="text-sm text-slate-500 mb-5">
-              Pengajuan <span className="font-medium text-slate-700">{deleteTarget.nama_siswa}</span>{" "}
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus pengajuan ini?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
+              Pengajuan <span className="font-medium text-slate-700 dark:text-slate-200">{deleteTarget.nama_siswa}</span>{" "}
               beserta dokumennya akan dihapus permanen.
             </p>
             {actionError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                 {actionError}
               </p>
             )}
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>

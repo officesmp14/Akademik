@@ -195,8 +195,8 @@ export default function JadwalKombelPage() {
     <div className="p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Jadwal Kombel</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Jadwal Kombel</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Jadwal kegiatan Komunitas Belajar (Kombel) guru
           </p>
         </div>
@@ -212,15 +212,15 @@ export default function JadwalKombelPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
               <th className="px-4 py-3 font-medium w-12">No</th>
               <th className="px-4 py-3 font-medium">Bulan</th>
               <th className="px-4 py-3 font-medium">Pekan ke</th>
@@ -233,14 +233,14 @@ export default function JadwalKombelPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={canEdit ? 7 : 6} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={canEdit ? 7 : 6} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                 </td>
               </tr>
             ) : jadwalList.length === 0 ? (
               <tr>
-                <td colSpan={canEdit ? 7 : 6} className="px-4 py-10 text-center text-slate-400">
-                  <CalendarClock className="h-6 w-6 mx-auto mb-2 text-slate-300" />
+                <td colSpan={canEdit ? 7 : 6} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <CalendarClock className="h-6 w-6 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
                   Belum ada jadwal Kombel.
                 </td>
               </tr>
@@ -248,29 +248,29 @@ export default function JadwalKombelPage() {
               jadwalList.map((row, idx) => {
                 const gtk = row.gtk_id ? gtkMap.get(row.gtk_id) : null;
                 return (
-                  <tr key={row.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                    <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
-                    <td className="px-4 py-3 text-slate-700 capitalize">{formatBulan(row.tanggal)}</td>
-                    <td className="px-4 py-3 text-slate-700">{computePekanKe(row.tanggal)}</td>
-                    <td className="px-4 py-3 text-slate-700">{formatTanggal(row.tanggal)}</td>
-                    <td className="px-4 py-3 font-medium text-slate-800">
-                      {gtk ? gtk.nama : <span className="text-slate-400 font-normal">- Tidak diketahui -</span>}
+                  <tr key={row.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/40">
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-200 capitalize">{formatBulan(row.tanggal)}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{computePekanKe(row.tanggal)}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{formatTanggal(row.tanggal)}</td>
+                    <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
+                      {gtk ? gtk.nama : <span className="text-slate-400 dark:text-slate-500 font-normal">- Tidak diketahui -</span>}
                     </td>
-                    <td className="px-4 py-3 text-slate-700">{row.topik_materi || "-"}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{row.topik_materi || "-"}</td>
                     {canEdit && (
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => openEdit(row)}
                             title="Ubah"
-                            className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                            className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => setDeleteTarget(row)}
                             title="Hapus"
-                            className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600"
+                            className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -289,24 +289,24 @@ export default function JadwalKombelPage() {
           diisi per baris. Bulan & Pekan ke otomatis dihitung dari tanggal. */}
       {showAddForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-xl max-h-[90vh] flex flex-col">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-3xl w-full shadow-xl max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between mb-4 shrink-0">
               <div>
-                <h3 className="font-semibold text-slate-900">Tambah Jadwal Kombel</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">Tambah Jadwal Kombel</h3>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                   Centang guru, lalu isi tanggal & topik materi untuk tiap guru
                 </p>
               </div>
               <button onClick={() => setShowAddForm(false)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
             <form onSubmit={handleAddSubmit} className="flex flex-col min-h-0 flex-1">
-              <div className="border border-slate-200 rounded-lg overflow-auto flex-1">
+              <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-auto flex-1">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50">
-                    <tr className="border-b border-slate-200 text-left text-slate-500">
+                  <thead className="sticky top-0 bg-slate-50 dark:bg-slate-700/40">
+                    <tr className="border-b border-slate-200 dark:border-slate-700 text-left text-slate-500 dark:text-slate-400">
                       <th className="px-3 py-2.5 font-medium w-16">Cheklist</th>
                       <th className="px-3 py-2.5 font-medium w-12">No</th>
                       <th className="px-3 py-2.5 font-medium">Guru</th>
@@ -317,23 +317,23 @@ export default function JadwalKombelPage() {
                   <tbody>
                     {addRows.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-3 py-8 text-center text-slate-400">
+                        <td colSpan={5} className="px-3 py-8 text-center text-slate-400 dark:text-slate-500">
                           Belum ada data guru.
                         </td>
                       </tr>
                     ) : (
                       addRows.map((row, idx) => (
-                        <tr key={row.gtk_id} className="border-b border-slate-100 last:border-0">
+                        <tr key={row.gtk_id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0">
                           <td className="px-3 py-2 align-top">
                             <input
                               type="checkbox"
                               checked={row.checked}
                               onChange={(e) => updateAddRow(row.gtk_id, { checked: e.target.checked })}
-                              className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                              className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500"
                             />
                           </td>
-                          <td className="px-3 py-2 align-top text-slate-500">{idx + 1}</td>
-                          <td className="px-3 py-2 align-top text-slate-700">{row.nama}</td>
+                          <td className="px-3 py-2 align-top text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                          <td className="px-3 py-2 align-top text-slate-700 dark:text-slate-200">{row.nama}</td>
                           <td className="px-3 py-2 align-top">
                             <div className="relative">
                               <input
@@ -342,7 +342,7 @@ export default function JadwalKombelPage() {
                                 value={row.tanggal}
                                 disabled={!row.checked}
                                 onChange={(e) => updateAddRow(row.gtk_id, { tanggal: e.target.value })}
-                                className="jadwal-date-input w-full rounded-lg border border-slate-300 pl-2 pr-8 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-400"
+                                className="jadwal-date-input w-full rounded-lg border border-slate-300 dark:border-slate-600 pl-2 pr-8 py-1.5 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500"
                               />
                               <button
                                 type="button"
@@ -351,7 +351,7 @@ export default function JadwalKombelPage() {
                                 onClick={() =>
                                   (document.getElementById(dateInputId(row.gtk_id)) as HTMLInputElement | null)?.showPicker?.()
                                 }
-                                className="absolute inset-y-0 right-0 flex items-center px-2 text-slate-400 hover:text-indigo-600 disabled:hover:text-slate-400"
+                                className="absolute inset-y-0 right-0 flex items-center px-2 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:hover:text-slate-400 dark:disabled:hover:text-slate-500"
                               >
                                 <Calendar className="h-3.5 w-3.5" />
                               </button>
@@ -363,7 +363,7 @@ export default function JadwalKombelPage() {
                               value={row.topik_materi}
                               disabled={!row.checked}
                               onChange={(e) => updateAddRow(row.gtk_id, { topik_materi: e.target.value })}
-                              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 disabled:text-slate-400"
+                              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-2 py-1.5 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500"
                             />
                           </td>
                         </tr>
@@ -374,7 +374,7 @@ export default function JadwalKombelPage() {
               </div>
 
               {actionError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-4 shrink-0">
+                <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mt-4 shrink-0">
                   {actionError}
                 </p>
               )}
@@ -383,7 +383,7 @@ export default function JadwalKombelPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -403,17 +403,17 @@ export default function JadwalKombelPage() {
 
       {editTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Ubah Jadwal Kombel</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">Ubah Jadwal Kombel</h3>
               <button onClick={() => setEditTarget(null)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Tanggal</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Tanggal</label>
                 <div className="relative">
                   <input
                     id="jadwal-kombel-edit-tanggal"
@@ -421,7 +421,7 @@ export default function JadwalKombelPage() {
                     value={editForm.tanggal}
                     onChange={(e) => setEditForm((f) => ({ ...f, tanggal: e.target.value }))}
                     required
-                    className="jadwal-date-input w-full rounded-lg border border-slate-300 pl-3 pr-10 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="jadwal-date-input w-full rounded-lg border border-slate-300 dark:border-slate-600 pl-3 pr-10 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <button
                     type="button"
@@ -429,7 +429,7 @@ export default function JadwalKombelPage() {
                     onClick={() =>
                       (document.getElementById("jadwal-kombel-edit-tanggal") as HTMLInputElement | null)?.showPicker?.()
                     }
-                    className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-indigo-600"
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400"
                   >
                     <Calendar className="h-4 w-4" />
                   </button>
@@ -437,12 +437,12 @@ export default function JadwalKombelPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Nama Guru</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Nama Guru</label>
                 <select
                   value={editForm.gtk_id}
                   onChange={(e) => setEditForm((f) => ({ ...f, gtk_id: e.target.value }))}
                   required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">-- Pilih guru --</option>
                   {gtkOptions.map((g) => (
@@ -454,17 +454,17 @@ export default function JadwalKombelPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Topik Materi</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Topik Materi</label>
                 <textarea
                   value={editForm.topik_materi}
                   onChange={(e) => setEditForm((f) => ({ ...f, topik_materi: e.target.value }))}
                   rows={3}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
               {actionError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
                   {actionError}
                 </p>
               )}
@@ -473,7 +473,7 @@ export default function JadwalKombelPage() {
                 <button
                   type="button"
                   onClick={() => setEditTarget(null)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -493,22 +493,22 @@ export default function JadwalKombelPage() {
 
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Hapus jadwal Kombel ini?</h3>
-            <p className="text-sm text-slate-500 mb-5">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus jadwal Kombel ini?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
               Jadwal tanggal{" "}
-              <span className="font-medium text-slate-700">{formatTanggal(deleteTarget.tanggal)}</span> akan
+              <span className="font-medium text-slate-700 dark:text-slate-200">{formatTanggal(deleteTarget.tanggal)}</span> akan
               dihapus permanen.
             </p>
             {actionError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                 {actionError}
               </p>
             )}
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>

@@ -99,7 +99,7 @@ export default function LaporanDinasGtkPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 print:hidden">
         <a
           href="/laporan"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
         >
           <ChevronLeft className="h-4 w-4" />
           Kembali ke Laporan
@@ -107,7 +107,7 @@ export default function LaporanDinasGtkPage() {
         <div className="flex gap-2">
           <button
             onClick={handleDownload}
-            className="inline-flex items-center gap-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2 hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             <Download className="h-4 w-4" />
             Download Excel
@@ -122,10 +122,10 @@ export default function LaporanDinasGtkPage() {
         </div>
       </div>
 
-      <h1 className="text-2xl font-semibold text-slate-900 mb-1">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">
         Laporan Dinas Pendidikan (Data GTK)
       </h1>
-      <p className="text-sm text-slate-500 mb-4 print:hidden">
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 print:hidden">
         Format kolom mengikuti file &quot;Master Update&quot; Dinas Pendidikan — data digabung
         otomatis dari data personal GTK dan penugasan mengajar. Total{" "}
         <strong>{rows.length}</strong> baris, <strong>{selectedRows.length}</strong> dipilih untuk
@@ -136,7 +136,7 @@ export default function LaporanDinasGtkPage() {
         <select
           value={filterStatusAktif}
           onChange={(e) => setFilterStatusAktif(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
           {STATUS_AKTIF_OPTIONS.map((s) => (
             <option key={s.value} value={s.value}>
@@ -148,19 +148,19 @@ export default function LaporanDinasGtkPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-10 flex justify-center">
-          <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 flex justify-center">
+          <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
         </div>
       ) : rows.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-10 text-center text-slate-400">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 text-center text-slate-400 dark:text-slate-500">
           Tidak ada data.
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto">
           <table className="text-xs whitespace-nowrap">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
-                <th className="px-3 py-2 font-medium sticky left-0 w-10 bg-slate-50 print:hidden">
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
+                <th className="px-3 py-2 font-medium sticky left-0 w-10 bg-slate-50 dark:bg-slate-700/40 print:hidden">
                   <input
                     type="checkbox"
                     checked={allSelected}
@@ -169,7 +169,7 @@ export default function LaporanDinasGtkPage() {
                     title="Pilih semua"
                   />
                 </th>
-                <th className="px-3 py-2 font-medium sticky left-10 bg-slate-50">NO</th>
+                <th className="px-3 py-2 font-medium sticky left-10 bg-slate-50 dark:bg-slate-700/40">NO</th>
                 {LAPORAN_DINAS_COLUMNS.map((col, idx) => (
                   <th key={idx} className="px-3 py-2 font-medium">
                     {col.header}
@@ -184,11 +184,11 @@ export default function LaporanDinasGtkPage() {
                 return (
                 <tr
                   key={key}
-                  className={`border-b border-slate-100 last:border-0 hover:bg-slate-50/60 ${
+                  className={`border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/60 ${
                     isSelected ? "" : "print:hidden"
                   }`}
                 >
-                  <td className="px-3 py-2 sticky left-0 w-10 bg-white print:hidden">
+                  <td className="px-3 py-2 sticky left-0 w-10 bg-white dark:bg-slate-800 print:hidden">
                     <input
                       type="checkbox"
                       checked={isSelected}
@@ -196,9 +196,9 @@ export default function LaporanDinasGtkPage() {
                       className="accent-indigo-600"
                     />
                   </td>
-                  <td className="px-3 py-2 text-slate-500 sticky left-10 bg-white">{idx + 1}</td>
+                  <td className="px-3 py-2 text-slate-500 dark:text-slate-400 sticky left-10 bg-white dark:bg-slate-800">{idx + 1}</td>
                   {LAPORAN_DINAS_COLUMNS.map((col, colIdx) => (
-                    <td key={colIdx} className="px-3 py-2 text-slate-700">
+                    <td key={colIdx} className="px-3 py-2 text-slate-700 dark:text-slate-200">
                       {col.get(row) || "-"}
                     </td>
                   ))}

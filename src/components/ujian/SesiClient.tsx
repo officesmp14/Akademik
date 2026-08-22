@@ -8,9 +8,9 @@ import { Ujian, UjianSesi, UjianPeserta, UjianJawaban, UjianSoal, UjianPelanggar
 import { Plus, Loader2, X, Users, Play, Square, ChevronDown, ChevronUp, ShieldAlert } from "lucide-react";
 
 const SESI_STATUS_BADGE: Record<UjianSesi["status"], string> = {
-  tertutup: "bg-slate-100 text-slate-600",
-  dibuka: "bg-emerald-50 text-emerald-700",
-  ditutup: "bg-amber-50 text-amber-700",
+  tertutup: "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300",
+  dibuka: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+  ditutup: "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400",
 };
 
 const PESERTA_STATUS_LABEL: Record<UjianPeserta["status"], string> = {
@@ -21,10 +21,10 @@ const PESERTA_STATUS_LABEL: Record<UjianPeserta["status"], string> = {
 };
 
 const PESERTA_STATUS_BADGE: Record<UjianPeserta["status"], string> = {
-  belum_mulai: "bg-slate-100 text-slate-600",
-  mengerjakan: "bg-blue-50 text-blue-700",
-  selesai: "bg-emerald-50 text-emerald-700",
-  digugurkan: "bg-red-50 text-red-700",
+  belum_mulai: "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300",
+  mengerjakan: "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400",
+  selesai: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+  digugurkan: "bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400",
 };
 
 type JawabanDetail = UjianJawaban & { ujian_soal: UjianSoal };
@@ -192,10 +192,10 @@ export default function SesiClient({
     <div className="p-6 md:p-8 max-w-4xl">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <Link href={`/kelola-ujian/${ujian.id}`} className="text-xs text-slate-400 hover:text-indigo-600">
+          <Link href={`/kelola-ujian/${ujian.id}`} className="text-xs text-slate-400 dark:text-slate-500 hover:text-indigo-600">
             &larr; Kembali ke {ujian.judul}
           </Link>
-          <h1 className="text-2xl font-semibold text-slate-900 mt-1">Sesi Ujian</h1>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-1">Sesi Ujian</h1>
         </div>
         <button
           onClick={() => setShowAddForm(true)}
@@ -208,7 +208,7 @@ export default function SesiClient({
 
       <div className="space-y-3">
         {sesiList.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-xl px-4 py-10 text-center text-slate-400">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-10 text-center text-slate-400 dark:text-slate-500">
             Belum ada sesi. Buat sesi untuk mendapatkan kode ujian.
           </div>
         ) : (
@@ -216,14 +216,14 @@ export default function SesiClient({
             const expanded = expandedSesiId === sesi.id;
             const peserta = pesertaBySesi[sesi.id] ?? [];
             return (
-              <div key={sesi.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+              <div key={sesi.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                 <div className="p-4 flex items-center justify-between gap-4 flex-wrap">
                   <div className="flex items-center gap-4">
-                    <div className="font-mono text-2xl font-bold tracking-widest text-indigo-700">
+                    <div className="font-mono text-2xl font-bold tracking-widest text-indigo-700 dark:text-indigo-400">
                       {sesi.kode_sesi}
                     </div>
                     <div>
-                      <p className="text-sm text-slate-700">{sesi.rombel ? `Rombel ${sesi.rombel}` : "Semua rombel"}</p>
+                      <p className="text-sm text-slate-700 dark:text-slate-200">{sesi.rombel ? `Rombel ${sesi.rombel}` : "Semua rombel"}</p>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${SESI_STATUS_BADGE[sesi.status]}`}>
                         {sesi.status === "tertutup" ? "Belum dibuka" : sesi.status === "dibuka" ? "Sedang dibuka" : "Sudah ditutup"}
                       </span>
@@ -235,8 +235,8 @@ export default function SesiClient({
                         onClick={() => toggleSesiStatus(sesi)}
                         className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium ${
                           sesi.status === "dibuka"
-                            ? "bg-red-50 text-red-700 hover:bg-red-100"
-                            : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                            ? "bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20"
+                            : "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20"
                         }`}
                       >
                         {sesi.status === "dibuka" ? <Square className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
@@ -245,7 +245,7 @@ export default function SesiClient({
                     )}
                     <button
                       onClick={() => setExpandedSesiId(expanded ? null : sesi.id)}
-                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                     >
                       <Users className="h-3.5 w-3.5" />
                       Peserta
@@ -255,10 +255,10 @@ export default function SesiClient({
                 </div>
 
                 {expanded && (
-                  <div className="border-t border-slate-100 overflow-x-auto">
+                  <div className="border-t border-slate-100 dark:border-slate-700/60 overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-slate-50 text-left text-slate-500">
+                        <tr className="bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                           <th className="px-4 py-2 font-medium">Nama</th>
                           <th className="px-4 py-2 font-medium">NISN</th>
                           <th className="px-4 py-2 font-medium">Status</th>
@@ -271,36 +271,36 @@ export default function SesiClient({
                       <tbody>
                         {peserta.length === 0 ? (
                           <tr>
-                            <td colSpan={7} className="px-4 py-6 text-center text-slate-400">
+                            <td colSpan={7} className="px-4 py-6 text-center text-slate-400 dark:text-slate-500">
                               Belum ada siswa yang bergabung.
                             </td>
                           </tr>
                         ) : (
                           peserta.map((p) => (
-                            <tr key={p.id} className="border-t border-slate-100">
-                              <td className="px-4 py-2 font-medium text-slate-800">{p.nama_siswa}</td>
-                              <td className="px-4 py-2 text-slate-600">{p.nisn}</td>
+                            <tr key={p.id} className="border-t border-slate-100 dark:border-slate-700/60">
+                              <td className="px-4 py-2 font-medium text-slate-800 dark:text-slate-200">{p.nama_siswa}</td>
+                              <td className="px-4 py-2 text-slate-600 dark:text-slate-300">{p.nisn}</td>
                               <td className="px-4 py-2">
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${PESERTA_STATUS_BADGE[p.status]}`}>
                                   {PESERTA_STATUS_LABEL[p.status]}
                                 </span>
                               </td>
-                              <td className="px-4 py-2 text-slate-700">{p.nilai_pg ?? "-"}</td>
-                              <td className="px-4 py-2 text-slate-700">{p.nilai_esai ?? "-"}</td>
+                              <td className="px-4 py-2 text-slate-700 dark:text-slate-200">{p.nilai_pg ?? "-"}</td>
+                              <td className="px-4 py-2 text-slate-700 dark:text-slate-200">{p.nilai_esai ?? "-"}</td>
                               <td className="px-4 py-2">
                                 {p.jumlah_pelanggaran > 0 ? (
-                                  <span className="inline-flex items-center gap-1 text-red-600 text-xs font-medium">
+                                  <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 text-xs font-medium">
                                     <ShieldAlert className="h-3.5 w-3.5" />
                                     {p.jumlah_pelanggaran}
                                   </span>
                                 ) : (
-                                  <span className="text-slate-400 text-xs">0</span>
+                                  <span className="text-slate-400 dark:text-slate-500 text-xs">0</span>
                                 )}
                               </td>
                               <td className="px-4 py-2 text-right">
                                 <button
                                   onClick={() => openDetail(p)}
-                                  className="text-xs font-medium text-indigo-600 hover:underline"
+                                  className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
                                 >
                                   Detail
                                 </button>
@@ -320,20 +320,20 @@ export default function SesiClient({
 
       {showAddForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Buat Sesi Baru</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">Buat Sesi Baru</h3>
               <button onClick={() => setShowAddForm(false)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
             <form onSubmit={handleAddSesi} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Rombel</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Rombel</label>
                 <select
                   value={rombelBaru}
                   onChange={(e) => setRombelBaru(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">Semua rombel</option>
                   {rombelOptions.map((r) => (
@@ -344,7 +344,7 @@ export default function SesiClient({
                 </select>
               </div>
               {actionError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
                   {actionError}
                 </p>
               )}
@@ -352,7 +352,7 @@ export default function SesiClient({
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -372,27 +372,27 @@ export default function SesiClient({
 
       {detailPeserta && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-lg w-full shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-semibold text-slate-900">{detailPeserta.nama_siswa}</h3>
-                <p className="text-xs text-slate-400">NISN {detailPeserta.nisn}</p>
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">{detailPeserta.nama_siswa}</h3>
+                <p className="text-xs text-slate-400 dark:text-slate-500">NISN {detailPeserta.nisn}</p>
               </div>
               <button onClick={() => setDetailPeserta(null)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
             {detailLoading ? (
               <div className="py-10 text-center">
-                <Loader2 className="h-5 w-5 animate-spin mx-auto text-slate-400" />
+                <Loader2 className="h-5 w-5 animate-spin mx-auto text-slate-400 dark:text-slate-500" />
               </div>
             ) : (
               <div className="space-y-5">
                 {detailPelanggaran.length > 0 && (
                   <div>
-                    <p className="text-xs font-semibold text-slate-500 mb-1.5">Log Pelanggaran</p>
-                    <ul className="space-y-1 text-xs text-slate-600 bg-red-50/50 border border-red-100 rounded-lg p-3">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Log Pelanggaran</p>
+                    <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300 bg-red-50/50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg p-3">
                       {detailPelanggaran.map((pl) => (
                         <li key={pl.id}>
                           {new Date(pl.created_at ?? "").toLocaleTimeString("id-ID")} - {PELANGGARAN_LABEL[pl.tipe]}
@@ -403,30 +403,30 @@ export default function SesiClient({
                 )}
 
                 <div className="space-y-3">
-                  <p className="text-xs font-semibold text-slate-500">Jawaban</p>
+                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Jawaban</p>
                   {detailJawaban.map((j, idx) => (
-                    <div key={j.id} className="border border-slate-200 rounded-lg p-3">
-                      <p className="text-sm text-slate-800 mb-1.5">
+                    <div key={j.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-3">
+                      <p className="text-sm text-slate-800 dark:text-slate-200 mb-1.5">
                         {idx + 1}. {j.ujian_soal?.pertanyaan}
                       </p>
                       {j.ujian_soal?.tipe === "pilihan_ganda" ? (
                         <p className="text-sm">
                           Jawaban: <span className="font-medium">{j.jawaban_pg ?? "-"}</span>{" "}
                           {j.jawaban_pg && (
-                            <span className={j.is_benar ? "text-emerald-600" : "text-red-600"}>
+                            <span className={j.is_benar ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}>
                               ({j.is_benar ? "Benar" : "Salah"})
                             </span>
                           )}
                         </p>
                       ) : (
                         <div>
-                          <p className="text-sm text-slate-700 whitespace-pre-wrap mb-2">{j.jawaban_esai || "(kosong)"}</p>
-                          <label className="text-xs text-slate-500">Nilai esai</label>
+                          <p className="text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap mb-2">{j.jawaban_esai || "(kosong)"}</p>
+                          <label className="text-xs text-slate-500 dark:text-slate-400">Nilai esai</label>
                           <input
                             type="number"
                             value={nilaiEsaiForm[j.id] ?? ""}
                             onChange={(e) => setNilaiEsaiForm((f) => ({ ...f, [j.id]: e.target.value }))}
-                            className="w-24 ml-2 rounded-lg border border-slate-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-24 ml-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                           />
                         </div>
                       )}
@@ -434,9 +434,9 @@ export default function SesiClient({
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700/60">
                   {detailPeserta.status === "mengerjakan" ? (
-                    <button onClick={gugurkanPeserta} className="text-sm font-medium text-red-600 hover:underline">
+                    <button onClick={gugurkanPeserta} className="text-sm font-medium text-red-600 dark:text-red-400 hover:underline">
                       Gugurkan Peserta
                     </button>
                   ) : (

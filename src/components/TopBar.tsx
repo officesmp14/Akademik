@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useRole } from "@/lib/role-context";
 import { ChevronDown, KeyRound, LogOut, Loader2, X, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -99,11 +100,11 @@ export default function TopBar({
 
   return (
     <>
-      <header className="h-16 shrink-0 border-b border-slate-200 bg-white flex items-center justify-between px-4 sm:px-6 relative">
+      <header className="h-16 shrink-0 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between px-4 sm:px-6 relative">
         <button
           onClick={onToggleSidebar}
           title={collapsed ? "Tampilkan menu" : "Sembunyikan menu"}
-          className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
         >
           {collapsed ? (
             <PanelLeftOpen className="h-5 w-5" />
@@ -112,62 +113,68 @@ export default function TopBar({
           )}
         </button>
 
-        <div className="relative">
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="flex items-center gap-2.5 hover:bg-slate-50 rounded-lg pl-2 pr-3 py-1.5 transition-colors"
-          >
-            <div className="h-9 w-9 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm font-semibold shrink-0">
-              {initials}
-            </div>
-            <div className="text-left hidden sm:block">
-              <p className="text-sm font-medium text-slate-800 leading-tight">{displayName}</p>
-              {role && (
-                <p className="text-xs text-slate-400 leading-tight capitalize">
-                  {role.replace("_", " ")}
-                </p>
-              )}
-            </div>
-            <ChevronDown className="h-4 w-4 text-slate-400" />
-          </button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
 
-          {menuOpen && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg py-1.5 z-50">
-                <button
-                  onClick={openPasswordModal}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                >
-                  <KeyRound className="h-4 w-4 text-slate-500" />
-                  Ganti Password
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Keluar
-                </button>
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="flex items-center gap-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg pl-2 pr-3 py-1.5 transition-colors"
+            >
+              <div className="h-9 w-9 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm font-semibold shrink-0">
+                {initials}
               </div>
-            </>
-          )}
+              <div className="text-left hidden sm:block">
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-tight">
+                  {displayName}
+                </p>
+                {role && (
+                  <p className="text-xs text-slate-400 dark:text-slate-500 leading-tight capitalize">
+                    {role.replace("_", " ")}
+                  </p>
+                )}
+              </div>
+              <ChevronDown className="h-4 w-4 text-slate-400 dark:text-slate-500" />
+            </button>
+
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-1.5 z-50">
+                  <button
+                    onClick={openPasswordModal}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+                  >
+                    <KeyRound className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                    Ganti Password
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Keluar
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
       {showPasswordModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Ganti Password</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">Ganti Password</h3>
               <button onClick={() => setShowPasswordModal(false)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
             {pwSuccess ? (
               <div>
-                <p className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 mb-4">
+                <p className="text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-lg px-3 py-2 mb-4">
                   Password berhasil diubah.
                 </p>
                 <button
@@ -180,7 +187,7 @@ export default function TopBar({
             ) : (
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Password Lama
                   </label>
                   <input
@@ -188,11 +195,11 @@ export default function TopBar({
                     required
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Password Baru
                   </label>
                   <input
@@ -201,11 +208,11 @@ export default function TopBar({
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Minimal 6 karakter"
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                     Konfirmasi Password Baru
                   </label>
                   <input
@@ -213,12 +220,12 @@ export default function TopBar({
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
 
                 {pwError && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                  <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
                     {pwError}
                   </p>
                 )}
@@ -227,7 +234,7 @@ export default function TopBar({
                   <button
                     type="button"
                     onClick={() => setShowPasswordModal(false)}
-                    className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                    className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                   >
                     Batal
                   </button>

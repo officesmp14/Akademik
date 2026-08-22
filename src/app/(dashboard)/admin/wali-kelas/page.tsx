@@ -112,11 +112,11 @@ export default function WaliKelasPage() {
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-4xl mx-auto">
+    <div className="p-6 md:p-8 max-w-4xl mx-auto dark:bg-slate-900 min-h-full">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Wali Kelas</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Wali Kelas</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Tentukan guru yang menjadi wali kelas untuk tiap rombel
           </p>
         </div>
@@ -130,15 +130,15 @@ export default function WaliKelasPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
               <th className="px-4 py-3 font-medium w-12">No</th>
               <th className="px-4 py-3 font-medium">Rombel</th>
               <th className="px-4 py-3 font-medium">Wali Kelas</th>
@@ -149,13 +149,13 @@ export default function WaliKelasPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                 </td>
               </tr>
             ) : rombelList.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   Belum ada data rombel (isi data siswa dulu).
                 </td>
               </tr>
@@ -164,26 +164,26 @@ export default function WaliKelasPage() {
                 const wali = waliByRombel.get(rombel);
                 const gtk = wali ? gtkMap.get(wali.gtk_id) : null;
                 return (
-                  <tr key={rombel} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                    <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
-                    <td className="px-4 py-3 font-medium text-slate-800">{rombel}</td>
-                    <td className="px-4 py-3 text-slate-700">
+                  <tr key={rombel} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/60">
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                    <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{rombel}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-200">
                       {gtk ? (
                         <span className="inline-flex items-center gap-1.5">
-                          <UserRound className="h-3.5 w-3.5 text-slate-400" />
+                          <UserRound className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
                           {gtk.nama}
                         </span>
                       ) : (
-                        <span className="text-slate-400">- Belum ditentukan -</span>
+                        <span className="text-slate-400 dark:text-slate-500">- Belum ditentukan -</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{gtk?.nip || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{gtk?.nip || "-"}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openAssign(rombel)}
                           title={wali ? "Ubah" : "Tentukan"}
-                          className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
@@ -191,7 +191,7 @@ export default function WaliKelasPage() {
                           <button
                             onClick={() => setDeleteTarget(wali)}
                             title="Hapus"
-                            className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600"
+                            className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -208,19 +208,19 @@ export default function WaliKelasPage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                 {isNew ? "Tambah Wali Kelas" : `Wali Kelas ${formRombel}`}
               </h3>
               <button onClick={() => setShowForm(false)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                   Rombel
                 </label>
                 <select
@@ -228,7 +228,7 @@ export default function WaliKelasPage() {
                   onChange={(e) => setFormRombel(e.target.value)}
                   required
                   disabled={!isNew}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white disabled:bg-slate-50 disabled:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">-- Pilih rombel --</option>
                   {rombelList.map((r) => (
@@ -240,14 +240,14 @@ export default function WaliKelasPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                   Pilih Guru
                 </label>
                 <select
                   value={formGtkId}
                   onChange={(e) => setFormGtkId(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">-- Pilih guru --</option>
                   {gtkOptions.map((g) => (
@@ -259,7 +259,7 @@ export default function WaliKelasPage() {
               </div>
 
               {actionError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
                   {actionError}
                 </p>
               )}
@@ -268,7 +268,7 @@ export default function WaliKelasPage() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -288,16 +288,16 @@ export default function WaliKelasPage() {
 
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Hapus penugasan wali kelas?</h3>
-            <p className="text-sm text-slate-500 mb-5">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus penugasan wali kelas?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
               Guru ini tidak akan lagi jadi wali kelas{" "}
-              <span className="font-medium text-slate-700">{deleteTarget.rombel}</span>.
+              <span className="font-medium text-slate-700 dark:text-slate-200">{deleteTarget.rombel}</span>.
             </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>

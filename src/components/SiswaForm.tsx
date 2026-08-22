@@ -185,13 +185,13 @@ export default function SiswaForm({
       <button
         type="button"
         onClick={() => router.back()}
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-4"
       >
         <ChevronLeft className="h-4 w-4" />
         Kembali
       </button>
 
-      <h1 className="text-2xl font-semibold text-slate-900 mb-6">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
         {isEdit ? (
           <>
             Edit Data Siswa{" "}
@@ -204,7 +204,7 @@ export default function SiswaForm({
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* Tab navigation */}
-        <div className="flex overflow-x-auto border-b border-slate-200 mb-6 gap-1">
+        <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-700 mb-6 gap-1">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.key;
@@ -215,8 +215,8 @@ export default function SiswaForm({
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
                   isActive
-                    ? "border-indigo-600 text-indigo-700"
-                    : "border-transparent text-slate-500 hover:text-slate-700"
+                    ? "border-indigo-600 text-indigo-700 dark:text-indigo-400"
+                    : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -226,7 +226,7 @@ export default function SiswaForm({
           })}
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
           {/* TAB 1: Data Pribadi */}
           <div className={activeTab === "pribadi" ? "grid sm:grid-cols-2 gap-5" : "hidden"}>
             <TextField label="Nama Lengkap" name="nama" register={register} required />
@@ -273,7 +273,7 @@ export default function SiswaForm({
           {/* TAB 3: Orang Tua & Wali */}
           <div className={activeTab === "keluarga" ? "space-y-8" : "hidden"}>
             <div>
-              <h3 className="text-sm font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
                 Data Ayah
               </h3>
               <div className="grid sm:grid-cols-2 gap-5">
@@ -287,7 +287,7 @@ export default function SiswaForm({
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
                 Data Ibu
               </h3>
               <div className="grid sm:grid-cols-2 gap-5">
@@ -301,7 +301,7 @@ export default function SiswaForm({
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
                 Data Wali (jika ada)
               </h3>
               <div className="grid sm:grid-cols-2 gap-5">
@@ -325,11 +325,11 @@ export default function SiswaForm({
             <TextField label="No. SKHUN" name="skhun" register={register} />
 
             {statusSiswa === "Mutasi" && (
-              <div className="sm:col-span-2 border-t border-slate-100 pt-5 mt-1">
-                <h3 className="text-sm font-semibold text-slate-900 mb-4">Data Mutasi Keluar</h3>
+              <div className="sm:col-span-2 border-t border-slate-100 dark:border-slate-700/60 pt-5 mt-1">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4">Data Mutasi Keluar</h3>
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                       Tanggal Mutasi
                     </label>
                     <input
@@ -338,11 +338,11 @@ export default function SiswaForm({
                       onChange={(e) =>
                         setMutasiForm((f) => ({ ...f, tanggal_mutasi: e.target.value }))
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                       Sekolah Tujuan
                     </label>
                     <input
@@ -351,11 +351,11 @@ export default function SiswaForm({
                       onChange={(e) =>
                         setMutasiForm((f) => ({ ...f, sekolah_tujuan: e.target.value }))
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                       Alasan Mutasi
                     </label>
                     <textarea
@@ -364,11 +364,11 @@ export default function SiswaForm({
                       onChange={(e) =>
                         setMutasiForm((f) => ({ ...f, alasan_mutasi: e.target.value }))
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                       Alamat Sekolah Tujuan
                     </label>
                     <textarea
@@ -377,7 +377,7 @@ export default function SiswaForm({
                       onChange={(e) =>
                         setMutasiForm((f) => ({ ...f, alamat_sekolah_tujuan: e.target.value }))
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                 </div>
@@ -402,7 +402,7 @@ export default function SiswaForm({
         </div>
 
         {errorMsg && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-4">
+          <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mt-4">
             {errorMsg}
           </p>
         )}
@@ -411,7 +411,7 @@ export default function SiswaForm({
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+            className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             Batal
           </button>

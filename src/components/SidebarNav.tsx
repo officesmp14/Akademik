@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -46,7 +46,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveReferensi = pathname.startsWith("/referensi");
   const isActiveTransferSiswaBaru = pathname.startsWith("/admin/transfer-siswa-baru");
 
-  const isGuruOrTu = role === "guru" || role === "staf_tu";
+  const showProfilSaya = role === "guru" || role === "staf_tu" || role === "kepala_sekolah";
   const isAdmin = role === "admin";
   const isFullAccessRole = role === "admin" || role === "kepala_sekolah";
 
@@ -63,25 +63,29 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const linkClass = (active: boolean) =>
     `flex items-center rounded-lg text-sm font-medium transition-colors ${
       collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
-    } ${active ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-50"}`;
+    } ${
+      active
+        ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400"
+        : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+    }`;
 
   const sectionLabel = (text: string) =>
     collapsed ? (
-      <div className="my-2 border-t border-slate-100" />
+      <div className="my-2 border-t border-slate-100 dark:border-slate-700" />
     ) : (
-      <p className="px-3 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+      <p className="px-3 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
         {text}
       </p>
     );
 
   return (
     <aside
-      className={`shrink-0 border-r border-slate-200 bg-white flex flex-col transition-all duration-200 ${
+      className={`shrink-0 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex flex-col transition-all duration-200 ${
         collapsed ? "w-16" : "w-64"
       }`}
     >
       <div
-        className={`h-16 flex items-center border-b border-slate-200 shrink-0 ${
+        className={`h-16 flex items-center border-b border-slate-200 dark:border-slate-700 shrink-0 ${
           collapsed ? "justify-center px-0" : "gap-2.5 px-5"
         }`}
       >
@@ -89,7 +93,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           <GraduationCap className="h-4.5 w-4.5 text-white" />
         </div>
         {!collapsed && (
-          <span className="font-semibold text-slate-900 text-sm leading-tight">
+          <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm leading-tight">
             Portal SMP14
           </span>
         )}
@@ -101,7 +105,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           {!collapsed && "Home"}
         </Link>
 
-        {isGuruOrTu && (
+        {showProfilSaya && (
           <Link href="/profil-saya" title="Profil Saya" className={linkClass(isActiveProfil)}>
             <UserCog className="h-4 w-4 shrink-0" />
             {!collapsed && "Profil Saya"}
@@ -155,9 +159,14 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
         )}
 
         {showLaporanMenu && (
-          <a href="/laporan" title="Laporan" className={linkClass(isActiveLaporan)}>
+          <a href="/laporan" title="Laporan (punya sub-halaman)" className={linkClass(isActiveLaporan)}>
             <FileBarChart className="h-4 w-4 shrink-0" />
-            {!collapsed && "Laporan"}
+            {!collapsed && (
+              <>
+                <span className="flex-1">Laporan</span>
+                <ChevronRight className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+              </>
+            )}
           </a>
         )}
 
@@ -247,9 +256,18 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
             </a>
 
             {sectionLabel("Data Master")}
-            <Link href="/referensi" title="Referensi" className={linkClass(isActiveReferensi)}>
+            <Link
+              href="/referensi"
+              title="Referensi (punya sub-halaman)"
+              className={linkClass(isActiveReferensi)}
+            >
               <Tags className="h-4 w-4 shrink-0" />
-              {!collapsed && "Referensi"}
+              {!collapsed && (
+                <>
+                  <span className="flex-1">Referensi</span>
+                  <ChevronRight className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+                </>
+              )}
             </Link>
             <Link
               href="/admin/transfer-siswa-baru"

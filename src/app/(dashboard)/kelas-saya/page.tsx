@@ -50,11 +50,11 @@ export default function KelasSayaPage() {
   if (!waliKelasRombel) {
     return (
       <div className="p-6 md:p-8 max-w-3xl mx-auto">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-          <h1 className="text-lg font-semibold text-amber-800 mb-2">
+        <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-6">
+          <h1 className="text-lg font-semibold text-amber-800 dark:text-amber-400 mb-2">
             Belum Ditugaskan sebagai Wali Kelas
           </h1>
-          <p className="text-sm text-amber-700">
+          <p className="text-sm text-amber-700 dark:text-amber-400">
             Akun Anda belum ditugaskan sebagai wali kelas rombel manapun. Silakan hubungi admin
             sekolah untuk mengaturnya lewat halaman Wali Kelas.
           </p>
@@ -66,8 +66,8 @@ export default function KelasSayaPage() {
   return (
     <div className="p-6 md:p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Data Siswa Kelas Saya</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Data Siswa Kelas Saya</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Wali Kelas <strong>{waliKelasRombel}</strong> &middot; {data.length} siswa
         </p>
       </div>
@@ -79,7 +79,7 @@ export default function KelasSayaPage() {
             setPageSize(Number(e.target.value));
             setPage(0);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
           {PAGE_SIZE_OPTIONS.map((n) => (
             <option key={n} value={n}>
@@ -89,7 +89,7 @@ export default function KelasSayaPage() {
         </select>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
           <input
             value={search}
             onChange={(e) => {
@@ -97,16 +97,16 @@ export default function KelasSayaPage() {
               setPage(0);
             }}
             placeholder="Cari nama siswa..."
-            className="w-full sm:w-80 rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full sm:w-80 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                 <th className="px-4 py-3 font-medium w-12">No</th>
                 <th className="px-4 py-3 font-medium">Nama</th>
                 <th className="px-4 py-3 font-medium">JK</th>
@@ -120,29 +120,29 @@ export default function KelasSayaPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-10 text-center text-slate-400">
+                  <td colSpan={8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-10 text-center text-slate-400">
+                  <td colSpan={8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     Belum ada data siswa di kelas ini.
                   </td>
                 </tr>
               ) : (
                 paginated.map((s, idx) => (
-                  <tr key={s.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                    <td className="px-4 py-3 text-slate-500">{page * pageSize + idx + 1}</td>
-                    <td className="px-4 py-3 font-medium text-slate-800">{s.nama || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{s.jk || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">{s.nisn || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600 max-w-[200px] truncate">{s.alamat || "-"}</td>
-                    <td className="px-4 py-3 text-slate-600">
+                  <tr key={s.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/40">
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{page * pageSize + idx + 1}</td>
+                    <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{s.nama || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{s.jk || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{s.nisn || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-[200px] truncate">{s.alamat || "-"}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">
                       {s.nama_ayah || "-"} / {s.nama_ibu || "-"}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
+                      <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300">
                         {s.status_siswa || "-"}
                       </span>
                     </td>
@@ -150,7 +150,7 @@ export default function KelasSayaPage() {
                       <div className="flex items-center justify-end">
                         <Link
                           href={`/siswa/${s.id}`}
-                          className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                           title="Edit"
                         >
                           <Pencil className="h-4 w-4" />
@@ -164,19 +164,19 @@ export default function KelasSayaPage() {
           </table>
         </div>
 
-        <div className="flex items-center justify-end px-4 py-3 border-t border-slate-200">
+        <div className="flex items-center justify-end px-4 py-3 border-t border-slate-200 dark:border-slate-700">
           <nav className="flex items-center gap-1 text-sm">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
-              className="px-2 py-1 font-medium tracking-wide text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:text-slate-500"
+              className="px-2 py-1 font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 disabled:opacity-40 disabled:hover:text-slate-500 dark:disabled:hover:text-slate-400"
             >
               PREVIOUS
             </button>
 
             {getPageNumbers(page + 1, totalPages).map((p, i) =>
               p === "..." ? (
-                <span key={`ellipsis-${i}`} className="px-1.5 text-slate-400 select-none">
+                <span key={`ellipsis-${i}`} className="px-1.5 text-slate-400 dark:text-slate-500 select-none">
                   ...
                 </span>
               ) : (
@@ -184,7 +184,7 @@ export default function KelasSayaPage() {
                   key={p}
                   onClick={() => setPage(p - 1)}
                   className={`h-7 w-7 rounded-full text-sm font-medium transition-colors ${
-                    p === page + 1 ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"
+                    p === page + 1 ? "bg-indigo-600 text-white" : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   {p}
@@ -195,7 +195,7 @@ export default function KelasSayaPage() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
-              className="px-2 py-1 font-medium tracking-wide text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:text-slate-500"
+              className="px-2 py-1 font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 disabled:opacity-40 disabled:hover:text-slate-500 dark:disabled:hover:text-slate-400"
             >
               NEXT
             </button>

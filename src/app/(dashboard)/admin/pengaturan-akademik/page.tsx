@@ -68,70 +68,70 @@ export default function PengaturanAkademikPage() {
 
   if (loading) {
     return (
-      <div className="p-6 md:p-8 max-w-3xl mx-auto flex justify-center py-20">
-        <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+      <div className="p-6 md:p-8 max-w-3xl mx-auto flex justify-center py-20 dark:bg-slate-900 min-h-full">
+        <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-3xl mx-auto">
+    <div className="p-6 md:p-8 max-w-3xl mx-auto dark:bg-slate-900 min-h-full">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Pengaturan Akademik</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Pengaturan Akademik</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Tahun ajaran & semester aktif ini jadi nilai default di seluruh aplikasi (Input Nilai,
           laporan, dst) — cukup ubah di sini setiap masuk periode baru
         </p>
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-xl p-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
         <div className="grid sm:grid-cols-2 gap-5 mb-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Tahun Ajaran Aktif
             </label>
             <input
               value={form.tahun_ajaran}
               onChange={(e) => updateField("tahun_ajaran", e.target.value)}
               placeholder="2026/2027"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
               Default hari ini: {getTahunAjaranSaatIni()}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Semester Aktif
             </label>
             <select
               value={form.semester}
               onChange={(e) => updateField("semester", e.target.value as "Ganjil" | "Genap")}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="Ganjil">Ganjil</option>
               <option value="Genap">Genap</option>
             </select>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
               Default hari ini: {getSemesterSaatIni()}
             </p>
           </div>
         </div>
 
-        <div className="border-t border-slate-100 pt-5">
-          <p className="text-sm font-semibold text-slate-800 mb-4">
+        <div className="border-t border-slate-100 dark:border-slate-700/60 pt-5">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-4">
             Tanggal Bagi Rapor Sisipan (STS)
           </p>
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                 Semester Ganjil
               </label>
               <input
@@ -140,11 +140,11 @@ export default function PengaturanAkademikPage() {
                 onChange={(e) =>
                   updateField("tanggal_bagi_rapor_sts_ganjil", e.target.value || null)
                 }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                 Semester Genap
               </label>
               <input
@@ -153,7 +153,7 @@ export default function PengaturanAkademikPage() {
                 onChange={(e) =>
                   updateField("tanggal_bagi_rapor_sts_genap", e.target.value || null)
                 }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>

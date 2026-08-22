@@ -195,40 +195,40 @@ export default function ProfilSekolahPage() {
 
   if (loading) {
     return (
-      <div className="p-6 md:p-8 max-w-4xl mx-auto flex justify-center py-20">
-        <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+      <div className="p-6 md:p-8 max-w-4xl mx-auto flex justify-center py-20 dark:bg-slate-900 min-h-full">
+        <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-4xl mx-auto">
+    <div className="p-6 md:p-8 max-w-4xl mx-auto dark:bg-slate-900 min-h-full">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Profil Sekolah</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Profil Sekolah</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Data ini dipakai sebagai kop surat/kepala laporan resmi di seluruh aplikasi
         </p>
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
       {/* Upload Logo */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 mb-6">
-        <p className="text-sm font-semibold text-slate-800 mb-1">Logo</p>
-        <p className="text-xs text-slate-400 mb-4">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 mb-6">
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Logo</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
           Gambar otomatis diperkecil ke maks 512×512px sebelum diupload (ukuran asli maks 5 MB)
         </p>
         <div className="grid sm:grid-cols-2 gap-6">
           {/* Logo Sekolah */}
           <div>
-            <p className="text-xs font-medium text-slate-500 mb-2">Logo Sekolah</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Logo Sekolah</p>
             <div
               onClick={() => inputSekolahRef.current?.click()}
-              className="h-32 w-32 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition-colors relative overflow-hidden"
+              className="h-32 w-32 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
             >
               {uploading === "logo_sekolah" ? (
                 <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
@@ -240,7 +240,7 @@ export default function ProfilSekolahPage() {
                   className="object-contain p-2"
                 />
               ) : (
-                <div className="flex flex-col items-center text-slate-400">
+                <div className="flex flex-col items-center text-slate-400 dark:text-slate-500">
                   <Upload className="h-5 w-5 mb-1" />
                   <span className="text-xs">Upload</span>
                 </div>
@@ -260,10 +260,10 @@ export default function ProfilSekolahPage() {
 
           {/* Logo Dinas */}
           <div>
-            <p className="text-xs font-medium text-slate-500 mb-2">Logo Dinas Pendidikan</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Logo Dinas Pendidikan</p>
             <div
               onClick={() => inputDinasRef.current?.click()}
-              className="h-32 w-32 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition-colors relative overflow-hidden"
+              className="h-32 w-32 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
             >
               {uploading === "logo_dinas" ? (
                 <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
@@ -275,7 +275,7 @@ export default function ProfilSekolahPage() {
                   className="object-contain p-2"
                 />
               ) : (
-                <div className="flex flex-col items-center text-slate-400">
+                <div className="flex flex-col items-center text-slate-400 dark:text-slate-500">
                   <ImageOff className="h-5 w-5 mb-1" />
                   <span className="text-xs">Upload</span>
                 </div>
@@ -296,133 +296,133 @@ export default function ProfilSekolahPage() {
       </div>
 
       {/* Form data teks */}
-      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-xl p-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
         <div className="grid sm:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Header Baris 1
             </label>
             <input
               value={form.header_baris1 ?? ""}
               onChange={(e) => updateField("header_baris1", e.target.value)}
               placeholder="PEMERINTAH KOTA TARAKAN"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Header Baris 2
             </label>
             <input
               value={form.header_baris2 ?? ""}
               onChange={(e) => updateField("header_baris2", e.target.value)}
               placeholder="DINAS PENDIDIKAN"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Nama Sekolah
             </label>
             <input
               value={form.nama_sekolah ?? ""}
               onChange={(e) => updateField("nama_sekolah", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">NSS</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">NSS</label>
             <input
               value={form.nss ?? ""}
               onChange={(e) => updateField("nss", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">NPSN</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">NPSN</label>
             <input
               value={form.npsn ?? ""}
               onChange={(e) => updateField("npsn", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Alamat Sekolah
             </label>
             <textarea
               rows={2}
               value={form.alamat ?? ""}
               onChange={(e) => updateField("alamat", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Kelurahan</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Kelurahan</label>
             <input
               value={form.kelurahan ?? ""}
               onChange={(e) => updateField("kelurahan", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Kecamatan</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Kecamatan</label>
             <input
               value={form.kecamatan ?? ""}
               onChange={(e) => updateField("kecamatan", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Kota / Kabupaten
             </label>
             <input
               value={form.kota_kabupaten ?? ""}
               onChange={(e) => updateField("kota_kabupaten", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Kode Pos</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Kode Pos</label>
             <input
               value={form.kode_pos ?? ""}
               onChange={(e) => updateField("kode_pos", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Website</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Website</label>
             <input
               value={form.website ?? ""}
               onChange={(e) => updateField("website", e.target.value)}
               placeholder="http://smpn14tarakan.sch.id"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Email</label>
             <input
               value={form.email ?? ""}
               onChange={(e) => updateField("email", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
               Akreditasi Sekolah
             </label>
             <input
               value={form.akreditasi ?? ""}
               onChange={(e) => updateField("akreditasi", e.target.value)}
               placeholder="AKREDITASI B"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>

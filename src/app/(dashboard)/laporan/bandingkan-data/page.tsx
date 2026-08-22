@@ -271,23 +271,23 @@ export default function BandingkanDataPage() {
     <div className="p-6 md:p-8">
       <a
         href="/laporan"
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 mb-4"
       >
         <ChevronLeft className="h-4 w-4" />
         Kembali ke Laporan
       </a>
 
-      <h1 className="text-2xl font-semibold text-slate-900 mb-1">Bandingkan Data</h1>
-      <p className="text-sm text-slate-500 mb-6">
-        Upload file Excel (format sama dengan tabel <code className="bg-slate-100 px-1 py-0.5 rounded text-xs">siswa01</code>,
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">Bandingkan Data</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+        Upload file Excel (format sama dengan tabel <code className="bg-slate-100 dark:bg-slate-700 px-1 py-0.5 rounded text-xs">siswa01</code>,
         mis. export Dapodik) untuk dibandingkan dengan data siswa yang tersimpan di aplikasi. Pencocokan memakai kolom <strong>NISN</strong>.
       </p>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 mb-6">
         <div className="mb-5">
-          <p className="text-sm font-medium text-slate-700 mb-2">Bandingkan dengan data siswa:</p>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Bandingkan dengan data siswa:</p>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-            <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
               <input
                 type="radio"
                 name="compareScope"
@@ -297,7 +297,7 @@ export default function BandingkanDataPage() {
               />
               Semua siswa
             </label>
-            <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
               <input
                 type="radio"
                 name="compareScope"
@@ -312,13 +312,13 @@ export default function BandingkanDataPage() {
 
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center py-10 cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition-colors"
+          className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl flex flex-col items-center justify-center py-10 cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors"
         >
-          <div className="h-12 w-12 rounded-full bg-indigo-50 flex items-center justify-center mb-3">
-            <Upload className="h-5 w-5 text-indigo-600" />
+          <div className="h-12 w-12 rounded-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mb-3">
+            <Upload className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
           </div>
-          <p className="text-sm font-medium text-slate-700">Klik untuk pilih file Excel</p>
-          <p className="text-xs text-slate-400 mt-1">Format .xlsx atau .xls</p>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Klik untuk pilih file Excel</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Format .xlsx atau .xls</p>
           <input
             ref={fileInputRef}
             type="file"
@@ -333,21 +333,21 @@ export default function BandingkanDataPage() {
         </div>
 
         {fileName && !loading && (
-          <div className="flex items-center gap-3 mt-4 text-sm text-slate-600">
-            <FileSpreadsheet className="h-4 w-4 text-emerald-600 shrink-0" />
+          <div className="flex items-center gap-3 mt-4 text-sm text-slate-600 dark:text-slate-300">
+            <FileSpreadsheet className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             {fileName}
           </div>
         )}
 
         {loading && (
-          <div className="flex items-center gap-2 mt-4 text-sm text-slate-500">
+          <div className="flex items-center gap-2 mt-4 text-sm text-slate-500 dark:text-slate-400">
             <Loader2 className="h-4 w-4 animate-spin" />
             Membaca & membandingkan data...
           </div>
         )}
 
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-4">
+          <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mt-4">
             {error}
           </p>
         )}
@@ -356,26 +356,26 @@ export default function BandingkanDataPage() {
       {hasResult && (
         <div className="space-y-6">
           <div className="grid sm:grid-cols-3 gap-4">
-            <div className="bg-white border border-slate-200 rounded-xl p-5">
-              <p className="text-2xl font-semibold text-slate-900">{excelTotal}</p>
-              <p className="text-sm text-slate-500 mt-1">Baris di file Excel (NISN terisi)</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+              <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{excelTotal}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Baris di file Excel (NISN terisi)</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-5">
-              <p className="text-2xl font-semibold text-slate-900">{dbTotal}</p>
-              <p className="text-sm text-slate-500 mt-1">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+              <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{dbTotal}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 Data siswa {compareScope === "aktif" ? "aktif" : ""} di aplikasi (NISN terisi)
               </p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-5">
-              <p className="text-2xl font-semibold text-slate-900">{mismatches!.length}</p>
-              <p className="text-sm text-slate-500 mt-1">Baris tidak cocok</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+              <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{mismatches!.length}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Baris tidak cocok</p>
             </div>
           </div>
 
           {emptyNisnCount > 0 && (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-2.5">
-              <AlertTriangle className="h-4.5 w-4.5 text-amber-600 shrink-0 mt-0.5" />
-              <p className="text-sm text-amber-800">
+            <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-4 flex items-start gap-2.5">
+              <AlertTriangle className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-800 dark:text-amber-400">
                 {emptyNisnCount} baris di file Excel memiliki NISN kosong, sehingga tidak bisa
                 dibandingkan dan diabaikan dari hasil di bawah ini.
               </p>
@@ -383,16 +383,16 @@ export default function BandingkanDataPage() {
           )}
 
           {/* Output 1: data tidak match */}
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-200">
-              <p className="text-sm font-semibold text-slate-800">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                 Data Tidak Cocok (NISN, Nama, Rombel)
               </p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+                  <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                     <th className="px-3 py-2.5 font-medium w-12">No</th>
                     <th className="px-3 py-2.5 font-medium">NISN</th>
                     <th className="px-3 py-2.5 font-medium">Nama (Excel)</th>
@@ -405,22 +405,22 @@ export default function BandingkanDataPage() {
                 <tbody>
                   {mismatches!.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-3 py-8 text-center text-slate-400">
-                        <CheckCircle2 className="h-5 w-5 mx-auto mb-2 text-emerald-400" />
+                      <td colSpan={7} className="px-3 py-8 text-center text-slate-400 dark:text-slate-500">
+                        <CheckCircle2 className="h-5 w-5 mx-auto mb-2 text-emerald-400 dark:text-emerald-500" />
                         Semua data cocok, tidak ada perbedaan.
                       </td>
                     </tr>
                   ) : (
                     mismatches!.map((m, idx) => (
-                      <tr key={m.nisn} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                        <td className="px-3 py-2 text-slate-500">{idx + 1}</td>
-                        <td className="px-3 py-2 text-slate-700">{m.nisn}</td>
-                        <td className="px-3 py-2 text-slate-700">{m.namaExcel}</td>
-                        <td className="px-3 py-2 text-slate-700">{m.namaDb}</td>
-                        <td className="px-3 py-2 text-slate-700">{m.rombelExcel}</td>
-                        <td className="px-3 py-2 text-slate-700">{m.rombelDb}</td>
+                      <tr key={m.nisn} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/60">
+                        <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                        <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{m.nisn}</td>
+                        <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{m.namaExcel}</td>
+                        <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{m.namaDb}</td>
+                        <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{m.rombelExcel}</td>
+                        <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{m.rombelDb}</td>
                         <td className="px-3 py-2">
-                          <span className="inline-flex items-center rounded-full bg-red-50 text-red-700 px-2.5 py-0.5 text-xs font-medium">
+                          <span className="inline-flex items-center rounded-full bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 px-2.5 py-0.5 text-xs font-medium">
                             {m.status}
                           </span>
                         </td>
@@ -433,14 +433,14 @@ export default function BandingkanDataPage() {
           </div>
 
           {/* Output 2: perbandingan agama */}
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-200">
-              <p className="text-sm font-semibold text-slate-800">Perbandingan Kolom Agama</p>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Perbandingan Kolom Agama</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+                  <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                     <th className="px-3 py-2.5 font-medium">Agama</th>
                     <th className="px-3 py-2.5 font-medium text-center">Jumlah di Excel</th>
                     <th className="px-3 py-2.5 font-medium text-center">Jumlah di Data Siswa</th>
@@ -451,13 +451,13 @@ export default function BandingkanDataPage() {
                   {agamaCompare!.map((row) => {
                     const selisih = row.excel - row.db;
                     return (
-                      <tr key={row.key} className="border-b border-slate-100 last:border-0">
-                        <td className="px-3 py-2 font-medium text-slate-800">{row.label}</td>
-                        <td className="px-3 py-2 text-center text-slate-600">{row.excel}</td>
-                        <td className="px-3 py-2 text-center text-slate-600">{row.db}</td>
+                      <tr key={row.key} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0">
+                        <td className="px-3 py-2 font-medium text-slate-800 dark:text-slate-200">{row.label}</td>
+                        <td className="px-3 py-2 text-center text-slate-600 dark:text-slate-300">{row.excel}</td>
+                        <td className="px-3 py-2 text-center text-slate-600 dark:text-slate-300">{row.db}</td>
                         <td
                           className={`px-3 py-2 text-center font-medium ${
-                            selisih === 0 ? "text-slate-400" : "text-red-600"
+                            selisih === 0 ? "text-slate-400 dark:text-slate-500" : "text-red-600 dark:text-red-400"
                           }`}
                         >
                           {selisih > 0 ? `+${selisih}` : selisih}

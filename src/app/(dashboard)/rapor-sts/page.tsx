@@ -392,12 +392,12 @@ export default function RaporStsPage() {
   return (
     <div className="p-6 md:p-8 max-w-4xl mx-auto print:p-0 print:max-w-none">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5 print:hidden">
-        <h1 className="text-2xl font-semibold text-slate-900">Cetak Rapor STS</h1>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Cetak Rapor STS</h1>
         <div className="flex gap-2">
           <button
             onClick={handlePrintSingle}
             disabled={!dataToPrint}
-            className="inline-flex items-center gap-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-sm font-medium px-3 py-2 hover:bg-slate-50 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50"
           >
             <Printer className="h-4 w-4" />
             Cetak Siswa Ini
@@ -418,7 +418,7 @@ export default function RaporStsPage() {
           <select
             value={selectedRombel}
             onChange={(e) => setSelectedRombel(e.target.value)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             {rombelOptions.map((r) => (
               <option key={r} value={r}>
@@ -431,7 +431,7 @@ export default function RaporStsPage() {
         <select
           value={semester}
           onChange={(e) => setSemester(e.target.value as "Ganjil" | "Genap")}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="Ganjil">Semester Ganjil</option>
           <option value="Genap">Semester Genap</option>
@@ -440,13 +440,13 @@ export default function RaporStsPage() {
         <input
           value={tahunAjaran}
           onChange={(e) => setTahunAjaran(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm w-32 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
 
         <select
           value={selectedSiswaId}
           onChange={(e) => setSelectedSiswaId(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           {ringkasanList.map((r) => (
             <option key={r.siswa.id} value={r.siswa.id}>
@@ -457,17 +457,17 @@ export default function RaporStsPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4 print:hidden">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4 print:hidden">
           {error}
         </p>
       )}
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-10 flex justify-center print:hidden">
-          <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 flex justify-center print:hidden">
+          <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
         </div>
       ) : ringkasanList.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-10 text-center text-slate-400 print:hidden">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-10 text-center text-slate-400 dark:text-slate-500 print:hidden">
           Tidak ada siswa aktif di kelas ini.
         </div>
       ) : printMode === "all" ? (

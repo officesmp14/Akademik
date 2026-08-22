@@ -54,27 +54,27 @@ export default function RiwayatMutasiPage() {
     <div className="p-6 md:p-8">
       <a
         href="/laporan"
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 mb-4"
       >
         <ChevronLeft className="h-4 w-4" />
         Kembali ke Laporan
       </a>
 
-      <h1 className="text-2xl font-semibold text-slate-900 mb-1">Riwayat Siswa Mutasi Keluar</h1>
-      <p className="text-sm text-slate-500 mb-6">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">Riwayat Siswa Mutasi Keluar</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
         Daftar siswa yang tercatat mutasi keluar beserta sekolah & alasan tujuannya
       </p>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
               <th className="px-4 py-3 font-medium w-12">No</th>
               <th className="px-4 py-3 font-medium">Nama</th>
               <th className="px-4 py-3 font-medium">NISN</th>
@@ -88,28 +88,28 @@ export default function RiwayatMutasiPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-slate-400">
-                  <LogOut className="h-6 w-6 mx-auto mb-2 text-slate-300" />
+                <td colSpan={8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <LogOut className="h-6 w-6 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
                   Belum ada riwayat siswa mutasi keluar.
                 </td>
               </tr>
             ) : (
               rows.map((row, idx) => (
-                <tr key={row.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                  <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
-                  <td className="px-4 py-3 font-medium text-slate-800">{row.siswa01?.nama || "-"}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.siswa01?.nisn || "-"}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.siswa01?.rombel || "-"}</td>
-                  <td className="px-4 py-3 text-slate-600">{formatTanggal(row.tanggal_mutasi)}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.sekolah_tujuan || "-"}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.alamat_sekolah_tujuan || "-"}</td>
-                  <td className="px-4 py-3 text-slate-600">{row.alasan_mutasi || "-"}</td>
+                <tr key={row.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/40">
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{row.siswa01?.nama || "-"}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.siswa01?.nisn || "-"}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.siswa01?.rombel || "-"}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{formatTanggal(row.tanggal_mutasi)}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.sekolah_tujuan || "-"}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.alamat_sekolah_tujuan || "-"}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.alasan_mutasi || "-"}</td>
                 </tr>
               ))
             )}

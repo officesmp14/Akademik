@@ -198,11 +198,11 @@ export default function MengajarKelasPage() {
   }
 
   return (
-    <div className="p-6 md:p-8">
+    <div className="p-6 md:p-8 dark:bg-slate-900 min-h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Penugasan Mengajar Kelas</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Penugasan Mengajar Kelas</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Tentukan guru mana mengajar mapel apa di rombel mana (dasar untuk fitur Input Nilai)
           </p>
         </div>
@@ -217,15 +217,15 @@ export default function MengajarKelasPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-left text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
               <th className="px-4 py-3 font-medium w-12">No</th>
               <th className="px-4 py-3 font-medium">Guru</th>
               <th className="px-4 py-3 font-medium">Mapel</th>
@@ -236,32 +236,32 @@ export default function MengajarKelasPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                 </td>
               </tr>
             ) : groups.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   Belum ada penugasan.
                 </td>
               </tr>
             ) : (
               groups.map((group, idx) => (
-                <tr key={group.key} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60">
-                  <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
-                  <td className="px-4 py-3 font-medium text-slate-800">
+                <tr key={group.key} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0 hover:bg-slate-50/60 dark:hover:bg-slate-700/60">
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
                     {gtkMap.get(group.gtk_id)?.nama || "-"}
                   </td>
-                  <td className="px-4 py-3 text-slate-700">
+                  <td className="px-4 py-3 text-slate-700 dark:text-slate-200">
                     {pelajaranMap.get(group.mapel_id)?.mapel || "-"}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">
                     <div className="flex flex-wrap gap-1">
                       {group.rombelList.map((r) => (
                         <span
                           key={r}
-                          className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600"
+                          className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300"
                         >
                           {r}
                         </span>
@@ -272,13 +272,13 @@ export default function MengajarKelasPage() {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => openEdit(group)}
-                        className="p-2 rounded-lg text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                        className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setDeleteTarget(group)}
-                        className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600"
+                        className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -293,13 +293,13 @@ export default function MengajarKelasPage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-5xl w-full shadow-xl max-h-[92vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-5xl w-full shadow-xl max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-semibold text-slate-900">
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                 {editingGroup ? "Edit Penugasan" : "Tambah Penugasan"}
               </h3>
               <button onClick={() => setShowForm(false)}>
-                <X className="h-4 w-4 text-slate-400" />
+                <X className="h-4 w-4 text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
@@ -307,13 +307,13 @@ export default function MengajarKelasPage() {
               <div className="grid sm:grid-cols-3 gap-5 mb-5">
                 {/* Guru: radio, pilih satu */}
                 <div>
-                  <p className="text-sm font-medium text-slate-700 mb-2">Guru</p>
-                  <div className="border border-slate-200 rounded-lg max-h-[28rem] overflow-y-auto">
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Guru</p>
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg max-h-[28rem] overflow-y-auto">
                     {gtkOptions.map((g) => (
                       <label
                         key={g.id}
-                        className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer border-b border-slate-100 last:border-0 ${
-                          editingGroup ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50"
+                        className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer border-b border-slate-100 dark:border-slate-700/60 last:border-0 ${
+                          editingGroup ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50 dark:hover:bg-slate-700"
                         }`}
                       >
                         <input
@@ -332,13 +332,13 @@ export default function MengajarKelasPage() {
 
                 {/* Mapel: radio, pilih satu */}
                 <div>
-                  <p className="text-sm font-medium text-slate-700 mb-2">Mapel</p>
-                  <div className="border border-slate-200 rounded-lg max-h-[28rem] overflow-y-auto">
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Mapel</p>
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg max-h-[28rem] overflow-y-auto">
                     {pelajaranOptions.map((p) => (
                       <label
                         key={p.id}
-                        className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer border-b border-slate-100 last:border-0 ${
-                          editingGroup ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50"
+                        className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer border-b border-slate-100 dark:border-slate-700/60 last:border-0 ${
+                          editingGroup ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50 dark:hover:bg-slate-700"
                         }`}
                       >
                         <input
@@ -357,12 +357,12 @@ export default function MengajarKelasPage() {
 
                 {/* Rombel: checklist, bisa banyak */}
                 <div>
-                  <p className="text-sm font-medium text-slate-700 mb-2">Rombel</p>
-                  <div className="border border-slate-200 rounded-lg max-h-[28rem] overflow-y-auto">
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Rombel</p>
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg max-h-[28rem] overflow-y-auto">
                     {rombelOptions.map((r) => (
                       <label
                         key={r}
-                        className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-slate-50 border-b border-slate-100 last:border-0"
+                        className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700/60 last:border-0"
                       >
                         <input
                           type="checkbox"
@@ -378,14 +378,14 @@ export default function MengajarKelasPage() {
               </div>
 
               {editingGroup && (
-                <p className="text-xs text-slate-400 mb-4">
+                <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
                   Guru & mapel tidak bisa diubah di sini — hapus penugasan ini dan buat baru kalau
                   perlu ganti guru/mapel. Anda bisa menambah/menghapus rombel dengan centang di atas.
                 </p>
               )}
 
               {actionError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-4">
+                <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                   {actionError}
                 </p>
               )}
@@ -394,7 +394,7 @@ export default function MengajarKelasPage() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -414,11 +414,11 @@ export default function MengajarKelasPage() {
 
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold text-slate-900 mb-1.5">Hapus penugasan ini?</h3>
-            <p className="text-sm text-slate-500 mb-5">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus penugasan ini?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
               {gtkMap.get(deleteTarget.gtk_id)?.nama} akan berhenti mengajar{" "}
-              <span className="font-medium text-slate-700">
+              <span className="font-medium text-slate-700 dark:text-slate-200">
                 {pelajaranMap.get(deleteTarget.mapel_id)?.mapel}
               </span>{" "}
               di semua rombel ({deleteTarget.rombelList.join(", ")}).
@@ -426,7 +426,7 @@ export default function MengajarKelasPage() {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Batal
               </button>
