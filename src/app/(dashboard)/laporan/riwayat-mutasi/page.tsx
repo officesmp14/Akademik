@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { ChevronLeft, Loader2, LogOut } from "lucide-react";
+import { useRole } from "@/lib/role-context";
+import { ChevronLeft, Loader2, LogOut, Trash2 } from "lucide-react";
 
 type RiwayatMutasiRow = {
   id: string;
+  siswa_id: string;
   tanggal_mutasi: string | null;
   alasan_mutasi: string | null;
   sekolah_tujuan: string | null;
@@ -23,32 +25,77 @@ function formatTanggal(tanggal: string | null) {
 }
 
 export default function RiwayatMutasiPage() {
+  const { role } = useRole();
+  const isFullAccessRole = role === "admin" || role === "kepala_sekolah";
+
   const [rows, setRows] = useState<RiwayatMutasiRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("siswa_mutasi_keluar")
-        .select(
-          "id, tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, siswa01(nama, nisn, rombel)"
-        )
-        .order("tanggal_mutasi", { ascending: false });
+  const [deleteTarget, setDeleteTarget] = useState<RiwayatMutasiRow | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-        return;
-      }
+  async function fetchData() {
+    setLoading(true);
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("siswa_mutasi_keluar")
+      .select(
+        "id, siswa_id, tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, siswa01(nama, nisn, rombel)"
+      )
+      .order("tanggal_mutasi", { ascending: false });
 
-      setRows((data ?? []) as unknown as RiwayatMutasiRow[]);
+    if (error) {
+      setError(error.message);
       setLoading(false);
+      return;
     }
+
+    setRows((data ?? []) as unknown as RiwayatMutasiRow[]);
+    setLoading(false);
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setActionError(null);
+    const supabase = createClient();
+
+    const { error: deleteError } = await supabase
+      .from("siswa_mutasi_keluar")
+      .delete()
+      .eq("id", deleteTarget.id);
+
+    if (deleteError) {
+      setDeleting(false);
+      setActionError(deleteError.message);
+      return;
+    }
+
+    // Kembalikan status siswa ke Aktif -- kalau tidak, siswa akan tetap
+    // berstatus "Mutasi" tanpa ada riwayat yang menjelaskan alasannya.
+    const { error: statusError } = await supabase
+      .from("siswa01")
+      .update({ status_siswa: "Aktif" })
+      .eq("id", deleteTarget.siswa_id);
+
+    setDeleting(false);
+
+    if (statusError) {
+      setActionError(
+        `Riwayat berhasil dihapus, tapi gagal mengembalikan status siswa ke Aktif: ${statusError.message}`
+      );
+      return;
+    }
+
+    setDeleteTarget(null);
+    fetchData();
+  }
 
   return (
     <div className="p-6 md:p-8">
@@ -83,18 +130,19 @@ export default function RiwayatMutasiPage() {
               <th className="px-4 py-3 font-medium">Sekolah Tujuan</th>
               <th className="px-4 py-3 font-medium">Alamat Sekolah Tujuan</th>
               <th className="px-4 py-3 font-medium">Alasan Mutasi</th>
+              {isFullAccessRole && <th className="px-4 py-3 font-medium text-right">Aksi</th>}
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                <td colSpan={isFullAccessRole ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                <td colSpan={isFullAccessRole ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <LogOut className="h-6 w-6 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
                   Belum ada riwayat siswa mutasi keluar.
                 </td>
@@ -110,12 +158,67 @@ export default function RiwayatMutasiPage() {
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.sekolah_tujuan || "-"}</td>
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.alamat_sekolah_tujuan || "-"}</td>
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.alasan_mutasi || "-"}</td>
+                  {isFullAccessRole && (
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end">
+                        <button
+                          onClick={() => {
+                            setActionError(null);
+                            setDeleteTarget(row);
+                          }}
+                          title="Hapus riwayat mutasi (kembalikan status siswa ke Aktif)"
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
+
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">
+              Hapus riwayat mutasi ini?
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
+              Riwayat mutasi keluar{" "}
+              <span className="font-medium text-slate-700 dark:text-slate-200">
+                {deleteTarget.siswa01?.nama}
+              </span>{" "}
+              akan dihapus permanen, dan status siswa ini akan dikembalikan menjadi{" "}
+              <strong>Aktif</strong>.
+            </p>
+            {actionError && (
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
+                {actionError}
+              </p>
+            )}
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-60 inline-flex items-center gap-2"
+              >
+                {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
