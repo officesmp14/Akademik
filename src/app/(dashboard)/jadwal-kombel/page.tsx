@@ -54,17 +54,29 @@ export default function JadwalKombelPage() {
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
+  const [gtkNamaOptions, setGtkNamaOptions] = useState<{ id: string; nama: string | null }[]>([]);
+
   const fetchAll = useCallback(async () => {
     setLoading(true);
     setError(null);
     const supabase = createClient();
 
-    const [jadwalRes, gtkRes] = await Promise.all([
+    // gtkNamaOptions dipakai untuk MENAMPILKAN nama guru di tabel jadwal --
+    // ambil dari view gtk_nama_publik (cuma id+nama) supaya semua role bisa
+    // lihat nama guru lain, bukan dari tabel datagtk yang RLS-nya membatasi
+    // guru/staf TU cuma boleh SELECT baris miliknya sendiri.
+    //
+    // gtkOptions (dari datagtk asli, ada NIP-nya) cuma dipakai di form
+    // Tambah yang cuma bisa dibuka admin/kepsek -- mereka sudah punya akses
+    // penuh ke datagtk lewat policy masing-masing, jadi tidak kena masalah
+    // yang sama.
+    const [jadwalRes, gtkRes, gtkNamaRes] = await Promise.all([
       supabase
         .from("jadwal_kombel")
         .select("id, tanggal, pekan_ke, gtk_id, topik_materi")
         .order("tanggal", { ascending: true }),
       supabase.from("datagtk").select("id, nama, nip").order("nama", { ascending: true }),
+      supabase.from("gtk_nama_publik").select("id, nama").order("nama", { ascending: true }),
     ]);
 
     if (jadwalRes.error) {
@@ -75,6 +87,7 @@ export default function JadwalKombelPage() {
 
     setJadwalList(jadwalRes.data ?? []);
     setGtkOptions(gtkRes.data ?? []);
+    setGtkNamaOptions(gtkNamaRes.data ?? []);
     setLoading(false);
   }, []);
 
@@ -82,7 +95,10 @@ export default function JadwalKombelPage() {
     fetchAll();
   }, [fetchAll]);
 
-  const gtkMap = useMemo(() => new Map(gtkOptions.map((g) => [g.id, g])), [gtkOptions]);
+  const gtkMap = useMemo(
+    () => new Map(gtkNamaOptions.map((g) => [g.id, g])),
+    [gtkNamaOptions]
+  );
 
   function openAdd() {
     setAddRows(
