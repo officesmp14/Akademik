@@ -1,4 +1,4 @@
-import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks } from "lucide-react";
+import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText } from "lucide-react";
 
 const LAPORAN_LIST = [
   {
@@ -70,6 +70,13 @@ const LAPORAN_LIST = [
     title: "Cek Data Ijazah Kelas IX",
     description:
       "Cek data siswa kelas IX (NIPD, NISN, NIK, nama ayah, No KK, dll) per kelas, dengan pagination.",
+  },
+  {
+    href: "/laporan/verifikasi-presensi",
+    icon: FileText,
+    title: "Verifikasi Presensi",
+    description:
+      "Form verifikasi kehadiran siswa (Alpa/Izin/Sakit) per bulan berdasarkan hari efektif, untuk kebutuhan verifikasi ke Dinas Pendidikan.",
   },
 ];
 
