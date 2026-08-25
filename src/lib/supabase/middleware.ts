@@ -14,6 +14,7 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/laporan/dinas-gtk", modules: ["laporan_dinas_gtk"] },
   { prefix: "/laporan/kesehatan", modules: ["laporan_kesehatan"] },
   { prefix: "/laporan/kelas-ix", modules: ["laporan_kelas_ix"] },
+  { prefix: "/laporan/verifikasi-presensi", modules: ["laporan_verifikasi_presensi"] },
   {
     prefix: "/laporan",
     modules: [
@@ -24,6 +25,7 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
       "laporan_dinas_gtk",
       "laporan_kesehatan",
       "laporan_kelas_ix",
+      "laporan_verifikasi_presensi",
     ],
   },
 ];
@@ -131,6 +133,20 @@ export async function updateSession(request: NextRequest) {
     // Bukan wali kelas IX -> lanjut ke pengecekan hak akses modul umum di bawah
   }
 
+  // Wali kelas (kelas berapapun) boleh buka /laporan/verifikasi-presensi
+  // langsung untuk kelasnya sendiri, tanpa perlu hak akses modul
+  // laporan_verifikasi_presensi dari admin.
+  if (path.startsWith("/laporan/verifikasi-presensi")) {
+    const { data: waliRow } = gtkId
+      ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
+      : { data: null };
+
+    if (waliRow) {
+      return supabaseResponse;
+    }
+    // Bukan wali kelas -> lanjut ke pengecekan hak akses modul umum di bawah
+  }
+
   // Wali kelas boleh buka halaman EDIT siswa spesifik (/siswa/{uuid}) untuk
   // siswa di kelasnya, terlepas dari hak akses modul 'siswa'. RLS di
   // database tetap jadi penjaga akhir kalau siswa itu bukan di kelasnya.
@@ -144,6 +160,66 @@ export async function updateSession(request: NextRequest) {
     if (waliRow) {
       return supabaseResponse;
     }
+  }
+
+  // /presensi/rekap-harian HANYA untuk wali kelas (pantau kelasnya sendiri
+  // per jam pelajaran hari itu), tidak untuk guru pengajar biasa. Dicek
+  // sebelum aturan /presensi umum di bawah supaya tidak ikut disyaratkan
+  // punya penugasan mengajar.
+  if (path === "/presensi/rekap-harian" || path.startsWith("/presensi/rekap-harian/")) {
+    const { data: waliRow } = gtkId
+      ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
+      : { data: null };
+
+    if (!waliRow) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/profil-saya";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
+  // /presensi/rekap boleh diakses guru pengajar ATAU wali kelas (untuk
+  // pantau kelasnya), jadi dicek lebih dulu sebelum aturan /presensi umum
+  // di bawah (yang HANYA untuk guru pengajar). Pengecekan per-segment
+  // (bukan cuma startsWith) supaya tidak salah menangkap path lain seperti
+  // /presensi/rekap-mapel yang aturannya beda (HANYA guru pengajar).
+  if (path === "/presensi/rekap" || path.startsWith("/presensi/rekap/")) {
+    const [{ count: mengajarCount }, { data: waliRow }] = await Promise.all([
+      gtkId
+        ? supabase
+            .from("guru_mengajar_kelas")
+            .select("id", { count: "exact", head: true })
+            .eq("gtk_id", gtkId)
+        : Promise.resolve({ count: 0 }),
+      gtkId
+        ? supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
+
+    if (!mengajarCount && !waliRow) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/profil-saya";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
+  // /presensi HANYA untuk guru yang punya penugasan mengajar kelas
+  if (path.startsWith("/presensi")) {
+    const { count } = gtkId
+      ? await supabase
+          .from("guru_mengajar_kelas")
+          .select("id", { count: "exact", head: true })
+          .eq("gtk_id", gtkId)
+      : { count: 0 };
+
+    if (!count) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/profil-saya";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
   }
 
   // /nilai HANYA untuk guru yang punya penugasan mengajar kelas

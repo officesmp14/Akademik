@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2 } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -16,6 +16,7 @@ const LAPORAN_MODULES = [
   "laporan_dinas_gtk",
   "laporan_kesehatan",
   "laporan_kelas_ix",
+  "laporan_verifikasi_presensi",
 ];
 
 export default function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
@@ -34,15 +35,21 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveAdminWaliKelas = pathname.startsWith("/admin/wali-kelas");
   const isActiveNilai = pathname === "/nilai" || (pathname.startsWith("/nilai/") && !pathname.startsWith("/nilai-sts"));
   const isActiveNilaiSts = pathname.startsWith("/nilai-sts");
+  const isActivePresensi = pathname === "/presensi";
+  const isActiveRekapPresensi = pathname === "/presensi/rekap";
+  const isActiveRekapPresensiMapel = pathname.startsWith("/presensi/rekap-mapel");
+  const isActiveRekapHarian = pathname.startsWith("/presensi/rekap-harian");
   const isActiveKelolaUjian = pathname.startsWith("/kelola-ujian");
   const isActiveAdminMengajarKelas = pathname.startsWith("/admin/mengajar-kelas");
   const isActiveAdminPengaturanNilai = pathname.startsWith("/admin/pengaturan-nilai");
   const isActiveAdminProfilSekolah = pathname.startsWith("/admin/profil-sekolah");
   const isActiveAdminAkademik = pathname.startsWith("/admin/pengaturan-akademik");
+  const isActiveAdminHariEfektif = pathname.startsWith("/admin/hari-efektif");
   const isActiveJadwalKombel = pathname.startsWith("/jadwal-kombel");
   const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
   const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
+  const isActiveVerifikasiPresensi = pathname.startsWith("/laporan/verifikasi-presensi");
   const isActiveReferensi = pathname.startsWith("/referensi");
   const isActiveTransferSiswaBaru = pathname.startsWith("/admin/transfer-siswa-baru");
 
@@ -59,6 +66,10 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const showSiswaMenu = isFullAccessRole || hasExtraSiswaAccess;
   const showGtkMenu = isFullAccessRole || hasExtraGtkAccess;
   const showLaporanMenu = isFullAccessRole || hasExtraLaporanAccess;
+
+  const showDataSiswaSection = showSiswaMenu || Boolean(waliKelasRombel);
+  const showPresensiSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole;
+  const showNilaiUjianSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole;
 
   const linkClass = (active: boolean) =>
     `flex items-center rounded-lg text-sm font-medium transition-colors ${
@@ -112,45 +123,130 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           </Link>
         )}
 
-        {showSiswaMenu && (
-          <Link href="/siswa" title="Data Siswa" className={linkClass(isActiveSiswa)}>
-            <Users className="h-4 w-4 shrink-0" />
-            {!collapsed && "Data Siswa"}
-          </Link>
+        {showDataSiswaSection && (
+          <>
+            {sectionLabel("Data Siswa")}
+            {showSiswaMenu && (
+              <Link href="/siswa" title="Data Siswa" className={linkClass(isActiveSiswa)}>
+                <Users className="h-4 w-4 shrink-0" />
+                {!collapsed && "Data Siswa"}
+              </Link>
+            )}
+
+            {waliKelasRombel && (
+              <Link href="/kelas-saya" title="Data Siswa Kelas Saya" className={linkClass(isActiveKelasSaya)}>
+                <School className="h-4 w-4 shrink-0" />
+                {!collapsed && "Data Siswa Kelas Saya"}
+              </Link>
+            )}
+
+            <Link
+              href="/registrasi-peserta-didik"
+              title="Registrasi Peserta Didik"
+              className={linkClass(isActiveRegistrasi)}
+            >
+              <ClipboardList className="h-4 w-4 shrink-0" />
+              {!collapsed && "Registrasi Peserta Didik"}
+            </Link>
+
+            <Link href="/data-periodik" title="Data Periodik" className={linkClass(isActiveDataPeriodik)}>
+              <Ruler className="h-4 w-4 shrink-0" />
+              {!collapsed && "Data Periodik"}
+            </Link>
+
+            {waliKelasRombel?.startsWith("IX.") && (
+              <Link href="/laporan/kelas-ix" title="Cek Data Ijazah Kelas IX" className={linkClass(isActiveLaporanKelasIx)}>
+                <ListChecks className="h-4 w-4 shrink-0" />
+                {!collapsed && "Cek Data Ijazah Kelas IX"}
+              </Link>
+            )}
+          </>
         )}
 
-        {waliKelasRombel && (
-          <Link href="/kelas-saya" title="Data Siswa Kelas Saya" className={linkClass(isActiveKelasSaya)}>
-            <School className="h-4 w-4 shrink-0" />
-            {!collapsed && "Data Siswa Kelas Saya"}
-          </Link>
+        {showPresensiSection && (
+          <>
+            {sectionLabel("Presensi")}
+            {hasMengajarKelas && (
+              <Link href="/presensi" title="Presensi" className={linkClass(isActivePresensi)}>
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Presensi"}
+              </Link>
+            )}
+
+            {hasMengajarKelas && (
+              <Link
+                href="/presensi/rekap-mapel"
+                title="Rekap Presensi Mapel Saya"
+                className={linkClass(isActiveRekapPresensiMapel)}
+              >
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Rekap Presensi Mapel Saya"}
+              </Link>
+            )}
+
+            {waliKelasRombel && (
+              <Link
+                href="/presensi/rekap-harian"
+                title="Rekap Presensi Harian"
+                className={linkClass(isActiveRekapHarian)}
+              >
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Rekap Presensi Harian"}
+              </Link>
+            )}
+
+            <Link href="/presensi/rekap" title="Rekap Presensi" className={linkClass(isActiveRekapPresensi)}>
+              <ClipboardCheck className="h-4 w-4 shrink-0" />
+              {!collapsed && "Rekap Presensi"}
+            </Link>
+
+            {waliKelasRombel && (
+              <Link
+                href="/laporan/verifikasi-presensi"
+                title="Verifikasi Presensi"
+                className={linkClass(isActiveVerifikasiPresensi)}
+              >
+                <FileText className="h-4 w-4 shrink-0" />
+                {!collapsed && "Verifikasi Presensi"}
+              </Link>
+            )}
+          </>
         )}
 
-        {(showSiswaMenu || waliKelasRombel) && (
-          <Link
-            href="/registrasi-peserta-didik"
-            title="Registrasi Peserta Didik"
-            className={linkClass(isActiveRegistrasi)}
-          >
-            <ClipboardList className="h-4 w-4 shrink-0" />
-            {!collapsed && "Registrasi Peserta Didik"}
-          </Link>
+        {showNilaiUjianSection && (
+          <>
+            {sectionLabel("Nilai & Ujian")}
+            {hasMengajarKelas && (
+              <Link href="/nilai" title="Input Nilai" className={linkClass(isActiveNilai)}>
+                <NotebookPen className="h-4 w-4 shrink-0" />
+                {!collapsed && "Input Nilai"}
+              </Link>
+            )}
+
+            {hasMengajarKelas && (
+              <Link href="/nilai-sts" title="Input Nilai STS" className={linkClass(isActiveNilaiSts)}>
+                <NotebookPen className="h-4 w-4 shrink-0" />
+                {!collapsed && "Input Nilai STS"}
+              </Link>
+            )}
+
+            {(waliKelasRombel || isFullAccessRole) && (
+              <Link href="/rapor-sts" title="Cetak Rapor STS" className={linkClass(isActiveRaporSts)}>
+                <FileText className="h-4 w-4 shrink-0" />
+                {!collapsed && "Cetak Rapor STS"}
+              </Link>
+            )}
+
+            {(hasMengajarKelas || isFullAccessRole) && (
+              <Link href="/kelola-ujian" title="Kelola Ujian" className={linkClass(isActiveKelolaUjian)}>
+                <FileEdit className="h-4 w-4 shrink-0" />
+                {!collapsed && "Kelola Ujian"}
+              </Link>
+            )}
+          </>
         )}
 
-        {waliKelasRombel?.startsWith("IX.") && (
-          <Link href="/laporan/kelas-ix" title="Cek Data Ijazah Kelas IX" className={linkClass(isActiveLaporanKelasIx)}>
-            <ListChecks className="h-4 w-4 shrink-0" />
-            {!collapsed && "Cek Data Ijazah Kelas IX"}
-          </Link>
-        )}
-
-        {(showSiswaMenu || waliKelasRombel) && (
-          <Link href="/data-periodik" title="Data Periodik" className={linkClass(isActiveDataPeriodik)}>
-            <Ruler className="h-4 w-4 shrink-0" />
-            {!collapsed && "Data Periodik"}
-          </Link>
-        )}
-
+        {sectionLabel("Lainnya")}
         {showGtkMenu && (
           <Link href="/gtk" title="Data GTK" className={linkClass(isActiveGtk)}>
             <Users2 className="h-4 w-4 shrink-0" />
@@ -174,34 +270,6 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           <CalendarClock className="h-4 w-4 shrink-0" />
           {!collapsed && "Jadwal Kombel"}
         </Link>
-
-        {(waliKelasRombel || isFullAccessRole) && (
-          <Link href="/rapor-sts" title="Cetak Rapor STS" className={linkClass(isActiveRaporSts)}>
-            <FileText className="h-4 w-4 shrink-0" />
-            {!collapsed && "Cetak Rapor STS"}
-          </Link>
-        )}
-
-        {hasMengajarKelas && (
-          <Link href="/nilai" title="Input Nilai" className={linkClass(isActiveNilai)}>
-            <NotebookPen className="h-4 w-4 shrink-0" />
-            {!collapsed && "Input Nilai"}
-          </Link>
-        )}
-
-        {hasMengajarKelas && (
-          <Link href="/nilai-sts" title="Input Nilai STS" className={linkClass(isActiveNilaiSts)}>
-            <NotebookPen className="h-4 w-4 shrink-0" />
-            {!collapsed && "Input Nilai STS"}
-          </Link>
-        )}
-
-        {(hasMengajarKelas || isFullAccessRole) && (
-          <Link href="/kelola-ujian" title="Kelola Ujian" className={linkClass(isActiveKelolaUjian)}>
-            <FileEdit className="h-4 w-4 shrink-0" />
-            {!collapsed && "Kelola Ujian"}
-          </Link>
-        )}
 
         {isAdmin && (
           <>
@@ -245,6 +313,14 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
             >
               <CalendarDays className="h-4 w-4 shrink-0" />
               {!collapsed && "Pengaturan Akademik"}
+            </a>
+            <a
+              href="/admin/hari-efektif"
+              title="Hari Efektif per Bulan"
+              className={linkClass(isActiveAdminHariEfektif)}
+            >
+              <CalendarCheck2 className="h-4 w-4 shrink-0" />
+              {!collapsed && "Hari Efektif per Bulan"}
             </a>
             <a
               href="/admin/pengaturan-nilai"
