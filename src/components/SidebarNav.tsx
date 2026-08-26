@@ -46,6 +46,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveAdminAkademik = pathname.startsWith("/admin/pengaturan-akademik");
   const isActiveAdminHariEfektif = pathname.startsWith("/admin/hari-efektif");
   const isActiveJadwalKombel = pathname.startsWith("/jadwal-kombel");
+  const isActiveJadwalSupervisi = pathname.startsWith("/jadwal-supervisi");
   const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
   const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
@@ -269,6 +270,11 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
         <Link href="/jadwal-kombel" title="Jadwal Kombel" className={linkClass(isActiveJadwalKombel)}>
           <CalendarClock className="h-4 w-4 shrink-0" />
           {!collapsed && "Jadwal Kombel"}
+        </Link>
+
+        <Link href="/jadwal-supervisi" title="Jadwal Supervisi" className={linkClass(isActiveJadwalSupervisi)}>
+          <CalendarCheck2 className="h-4 w-4 shrink-0" />
+          {!collapsed && "Jadwal Supervisi"}
         </Link>
 
         {isAdmin && (
