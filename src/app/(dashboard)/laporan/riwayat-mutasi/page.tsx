@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRole } from "@/lib/role-context";
 import { ChevronLeft, Loader2, LogOut, Trash2, ExternalLink } from "lucide-react";
@@ -26,8 +26,9 @@ function formatTanggal(tanggal: string | null) {
 }
 
 export default function RiwayatMutasiPage() {
-  const { role } = useRole();
+  const { role, waliKelasRombel } = useRole();
   const isFullAccessRole = role === "admin" || role === "kepala_sekolah";
+  const lockedToOwnClass = !isFullAccessRole && Boolean(waliKelasRombel);
 
   const [rows, setRows] = useState<RiwayatMutasiRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,15 +38,27 @@ export default function RiwayatMutasiPage() {
   const [deleting, setDeleting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     const supabase = createClient();
-    const { data, error } = await supabase
+
+    // Wali kelas dikunci ke siswa yang rombel terakhirnya (sebelum mutasi)
+    // adalah kelasnya sendiri -- pakai !inner supaya filter siswa01.rombel
+    // ikut membatasi baris siswa_mutasi_keluar yang dikembalikan.
+    let query = supabase
       .from("siswa_mutasi_keluar")
       .select(
-        "id, siswa_id, tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, link_dokumen, siswa01(nama, nisn, rombel)"
+        lockedToOwnClass
+          ? "id, siswa_id, tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, link_dokumen, siswa01!inner(nama, nisn, rombel)"
+          : "id, siswa_id, tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, link_dokumen, siswa01(nama, nisn, rombel)"
       )
       .order("tanggal_mutasi", { ascending: false });
+
+    if (lockedToOwnClass) {
+      query = query.eq("siswa01.rombel", waliKelasRombel!);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       setError(error.message);
@@ -55,11 +68,11 @@ export default function RiwayatMutasiPage() {
 
     setRows((data ?? []) as unknown as RiwayatMutasiRow[]);
     setLoading(false);
-  }
+  }, [lockedToOwnClass, waliKelasRombel]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -110,6 +123,11 @@ export default function RiwayatMutasiPage() {
 
       <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">Riwayat Siswa Mutasi Keluar</h1>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+        {lockedToOwnClass && (
+          <>
+            Wali Kelas <strong>{waliKelasRombel}</strong> &middot;{" "}
+          </>
+        )}
         Daftar siswa yang tercatat mutasi keluar beserta sekolah & alasan tujuannya
       </p>
 

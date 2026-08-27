@@ -15,10 +15,14 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/laporan/kesehatan", modules: ["laporan_kesehatan"] },
   { prefix: "/laporan/kelas-ix", modules: ["laporan_kelas_ix"] },
   { prefix: "/laporan/verifikasi-presensi", modules: ["laporan_verifikasi_presensi"] },
+  { prefix: "/laporan/riwayat-mutasi", modules: ["laporan_riwayat_mutasi"] },
   {
     prefix: "/laporan",
     modules: [
       "laporan_rekap_siswa",
+      "laporan_statistik_sekolah",
+      "laporan_bandingkan_data",
+      "laporan_riwayat_mutasi",
       "laporan_cek_kursi",
       "laporan_cek_nis",
       "laporan_data_siswa_mbg",
@@ -137,6 +141,20 @@ export async function updateSession(request: NextRequest) {
   // langsung untuk kelasnya sendiri, tanpa perlu hak akses modul
   // laporan_verifikasi_presensi dari admin.
   if (path.startsWith("/laporan/verifikasi-presensi")) {
+    const { data: waliRow } = gtkId
+      ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
+      : { data: null };
+
+    if (waliRow) {
+      return supabaseResponse;
+    }
+    // Bukan wali kelas -> lanjut ke pengecekan hak akses modul umum di bawah
+  }
+
+  // Wali kelas (kelas berapapun) boleh buka /laporan/riwayat-mutasi langsung
+  // untuk kelasnya sendiri, tanpa perlu hak akses modul
+  // laporan_riwayat_mutasi dari admin.
+  if (path.startsWith("/laporan/riwayat-mutasi")) {
     const { data: waliRow } = gtkId
       ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
       : { data: null };

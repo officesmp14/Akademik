@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2 } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -50,6 +50,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
   const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
+  const isActiveRiwayatMutasi = pathname.startsWith("/laporan/riwayat-mutasi");
   const isActiveVerifikasiPresensi = pathname.startsWith("/laporan/verifikasi-presensi");
   const isActiveReferensi = pathname.startsWith("/referensi");
   const isActiveTransferSiswaBaru = pathname.startsWith("/admin/transfer-siswa-baru");
@@ -159,6 +160,17 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               <Link href="/laporan/kelas-ix" title="Cek Data Ijazah Kelas IX" className={linkClass(isActiveLaporanKelasIx)}>
                 <ListChecks className="h-4 w-4 shrink-0" />
                 {!collapsed && "Cek Data Ijazah Kelas IX"}
+              </Link>
+            )}
+
+            {waliKelasRombel && (
+              <Link
+                href="/laporan/riwayat-mutasi"
+                title="Riwayat Mutasi Keluar"
+                className={linkClass(isActiveRiwayatMutasi)}
+              >
+                <LogOut className="h-4 w-4 shrink-0" />
+                {!collapsed && "Riwayat Mutasi Keluar"}
               </Link>
             )}
           </>
