@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2 } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -24,7 +24,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const { role, moduleAccess, waliKelasRombel, hasMengajarKelas } = useRole();
 
   const isActiveHome = pathname === "/home";
-  const isActiveSiswa = pathname.startsWith("/siswa");
+  const isActiveSiswa = pathname.startsWith("/siswa") && !pathname.startsWith("/siswa/mutasi-masuk");
   const isActiveGtk = pathname.startsWith("/gtk");
   const isActiveLaporan = pathname.startsWith("/laporan");
   const isActiveProfil = pathname.startsWith("/profil-saya");
@@ -47,10 +47,12 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveAdminHariEfektif = pathname.startsWith("/admin/hari-efektif");
   const isActiveJadwalKombel = pathname.startsWith("/jadwal-kombel");
   const isActiveJadwalSupervisi = pathname.startsWith("/jadwal-supervisi");
+  const isActiveLinkBebanKerja = pathname.startsWith("/link-beban-kerja");
   const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
   const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
   const isActiveRiwayatMutasi = pathname.startsWith("/laporan/riwayat-mutasi");
+  const isActiveMutasiMasuk = pathname.startsWith("/siswa/mutasi-masuk");
   const isActiveVerifikasiPresensi = pathname.startsWith("/laporan/verifikasi-presensi");
   const isActiveReferensi = pathname.startsWith("/referensi");
   const isActiveTransferSiswaBaru = pathname.startsWith("/admin/transfer-siswa-baru");
@@ -132,6 +134,13 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               <Link href="/siswa" title="Data Siswa" className={linkClass(isActiveSiswa)}>
                 <Users className="h-4 w-4 shrink-0" />
                 {!collapsed && "Data Siswa"}
+              </Link>
+            )}
+
+            {showSiswaMenu && (
+              <Link href="/siswa/mutasi-masuk" title="Siswa Mutasi Masuk" className={linkClass(isActiveMutasiMasuk)}>
+                <UserPlus className="h-4 w-4 shrink-0" />
+                {!collapsed && "Siswa Mutasi Masuk"}
               </Link>
             )}
 
@@ -287,6 +296,11 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
         <Link href="/jadwal-supervisi" title="Jadwal Supervisi" className={linkClass(isActiveJadwalSupervisi)}>
           <CalendarCheck2 className="h-4 w-4 shrink-0" />
           {!collapsed && "Jadwal Supervisi"}
+        </Link>
+
+        <Link href="/link-beban-kerja" title="Link Beban Kerja" className={linkClass(isActiveLinkBebanKerja)}>
+          <Link2 className="h-4 w-4 shrink-0" />
+          {!collapsed && "Link Beban Kerja"}
         </Link>
 
         {isAdmin && (
