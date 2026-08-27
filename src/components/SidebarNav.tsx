@@ -66,13 +66,31 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const hasExtraLaporanAccess = moduleAccess.some(
     (a) => LAPORAN_MODULES.includes(a.module) && a.can_view
   );
+  const hasExtraMutasiMasukAccess = moduleAccess.some(
+    (a) => a.module === "mutasi_masuk_siswa" && a.can_view
+  );
+  const hasExtraRegistrasiAccess = moduleAccess.some(
+    (a) => a.module === "registrasi_peserta_didik" && a.can_view
+  );
+  const hasExtraDataPeriodikAccess = moduleAccess.some(
+    (a) => a.module === "data_periodik" && a.can_view
+  );
+  const hasExtraPresensiRekapAccess = moduleAccess.some(
+    (a) => a.module === "presensi_rekap" && a.can_view
+  );
 
   const showSiswaMenu = isFullAccessRole || hasExtraSiswaAccess;
   const showGtkMenu = isFullAccessRole || hasExtraGtkAccess;
   const showLaporanMenu = isFullAccessRole || hasExtraLaporanAccess;
+  const showMutasiMasukMenu = isFullAccessRole || hasExtraMutasiMasukAccess;
+  const showRegistrasiMenu = isFullAccessRole || hasExtraRegistrasiAccess || Boolean(waliKelasRombel);
+  const showDataPeriodikMenu = isFullAccessRole || hasExtraDataPeriodikAccess || Boolean(waliKelasRombel);
+  const showRekapPresensiMenu =
+    hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole || hasExtraPresensiRekapAccess;
 
-  const showDataSiswaSection = showSiswaMenu || Boolean(waliKelasRombel);
-  const showPresensiSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole;
+  const showDataSiswaSection =
+    showSiswaMenu || showMutasiMasukMenu || showRegistrasiMenu || showDataPeriodikMenu || Boolean(waliKelasRombel);
+  const showPresensiSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole || showRekapPresensiMenu;
   const showNilaiUjianSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole;
 
   const linkClass = (active: boolean) =>
@@ -137,7 +155,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               </Link>
             )}
 
-            {showSiswaMenu && (
+            {showMutasiMasukMenu && (
               <Link href="/siswa/mutasi-masuk" title="Siswa Mutasi Masuk" className={linkClass(isActiveMutasiMasuk)}>
                 <UserPlus className="h-4 w-4 shrink-0" />
                 {!collapsed && "Siswa Mutasi Masuk"}
@@ -151,19 +169,23 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               </Link>
             )}
 
-            <Link
-              href="/registrasi-peserta-didik"
-              title="Registrasi Peserta Didik"
-              className={linkClass(isActiveRegistrasi)}
-            >
-              <ClipboardList className="h-4 w-4 shrink-0" />
-              {!collapsed && "Registrasi Peserta Didik"}
-            </Link>
+            {showRegistrasiMenu && (
+              <Link
+                href="/registrasi-peserta-didik"
+                title="Registrasi Peserta Didik"
+                className={linkClass(isActiveRegistrasi)}
+              >
+                <ClipboardList className="h-4 w-4 shrink-0" />
+                {!collapsed && "Registrasi Peserta Didik"}
+              </Link>
+            )}
 
-            <Link href="/data-periodik" title="Data Periodik" className={linkClass(isActiveDataPeriodik)}>
-              <Ruler className="h-4 w-4 shrink-0" />
-              {!collapsed && "Data Periodik"}
-            </Link>
+            {showDataPeriodikMenu && (
+              <Link href="/data-periodik" title="Data Periodik" className={linkClass(isActiveDataPeriodik)}>
+                <Ruler className="h-4 w-4 shrink-0" />
+                {!collapsed && "Data Periodik"}
+              </Link>
+            )}
 
             {waliKelasRombel?.startsWith("IX.") && (
               <Link href="/laporan/kelas-ix" title="Cek Data Ijazah Kelas IX" className={linkClass(isActiveLaporanKelasIx)}>
@@ -217,10 +239,12 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               </Link>
             )}
 
-            <Link href="/presensi/rekap" title="Rekap Presensi" className={linkClass(isActiveRekapPresensi)}>
-              <ClipboardCheck className="h-4 w-4 shrink-0" />
-              {!collapsed && "Rekap Presensi"}
-            </Link>
+            {showRekapPresensiMenu && (
+              <Link href="/presensi/rekap" title="Rekap Presensi" className={linkClass(isActiveRekapPresensi)}>
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Rekap Presensi"}
+              </Link>
+            )}
 
             {waliKelasRombel && (
               <Link

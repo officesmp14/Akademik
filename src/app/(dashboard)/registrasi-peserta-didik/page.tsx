@@ -54,7 +54,7 @@ const emptyEditForm: EditForm = {
 };
 
 export default function RegistrasiPesertaDidikPage() {
-  const { canEdit: canEditModule } = useModulePermission("siswa");
+  const { canEdit: canEditModule } = useModulePermission("registrasi_peserta_didik");
   const { role, waliKelasRombel } = useRole();
   const isFullAccessRole = role === "admin" || role === "kepala_sekolah";
   const lockedToOwnClass = !isFullAccessRole && Boolean(waliKelasRombel);

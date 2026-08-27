@@ -11,7 +11,11 @@ export type ModuleKey =
   | "laporan_dinas_gtk"
   | "laporan_kesehatan"
   | "laporan_kelas_ix"
-  | "laporan_verifikasi_presensi";
+  | "laporan_verifikasi_presensi"
+  | "mutasi_masuk_siswa"
+  | "registrasi_peserta_didik"
+  | "data_periodik"
+  | "presensi_rekap";
 
 export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "siswa", label: "Data Siswa" },
@@ -27,6 +31,10 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "laporan_kesehatan", label: "Laporan - Data Pemeriksaan Kesehatan" },
   { key: "laporan_kelas_ix", label: "Laporan - Cek Data Ijazah Kelas IX" },
   { key: "laporan_verifikasi_presensi", label: "Laporan - Verifikasi Presensi" },
+  { key: "mutasi_masuk_siswa", label: "Data Mutasi Masuk" },
+  { key: "registrasi_peserta_didik", label: "Registrasi Peserta Didik" },
+  { key: "data_periodik", label: "Data Periodik" },
+  { key: "presensi_rekap", label: "Rekap Presensi" },
 ];
 
 export const MODULE_LABEL: Record<string, string> = Object.fromEntries(

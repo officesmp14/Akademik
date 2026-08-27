@@ -5,8 +5,11 @@ const ADMIN_ONLY = ["/admin"];
 
 // Peta prefix path -> daftar modul yang bisa membuka akses (any match cukup)
 const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
+  { prefix: "/siswa/mutasi-masuk", modules: ["mutasi_masuk_siswa"] },
   { prefix: "/siswa", modules: ["siswa"] },
   { prefix: "/gtk", modules: ["gtk"] },
+  { prefix: "/registrasi-peserta-didik", modules: ["registrasi_peserta_didik"] },
+  { prefix: "/data-periodik", modules: ["data_periodik"] },
   { prefix: "/laporan/rekap-siswa", modules: ["laporan_rekap_siswa"] },
   { prefix: "/laporan/cek-kursi", modules: ["laporan_cek_kursi"] },
   { prefix: "/laporan/cek-nis", modules: ["laporan_cek_nis"] },
@@ -124,6 +127,21 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
+  // Wali kelas boleh buka /registrasi-peserta-didik dan /data-periodik
+  // langsung (dua path ini dulu sama sekali tidak dibatasi middleware,
+  // jadi bypass ini menjaga wali kelas tetap bisa kelola kelasnya sendiri
+  // sekarang keduanya digating modul registrasi_peserta_didik/data_periodik).
+  if (path.startsWith("/registrasi-peserta-didik") || path.startsWith("/data-periodik")) {
+    const { data: waliRow } = gtkId
+      ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
+      : { data: null };
+
+    if (waliRow) {
+      return supabaseResponse;
+    }
+    // Bukan wali kelas -> lanjut ke pengecekan hak akses modul umum di bawah
+  }
+
   // Wali kelas IX boleh buka /laporan/kelas-ix langsung (tanpa perlu hak akses
   // modul laporan_kelas_ix dari admin), sama seperti /kelas-saya di atas.
   if (path.startsWith("/laporan/kelas-ix")) {
@@ -198,12 +216,13 @@ export async function updateSession(request: NextRequest) {
   }
 
   // /presensi/rekap boleh diakses guru pengajar ATAU wali kelas (untuk
-  // pantau kelasnya), jadi dicek lebih dulu sebelum aturan /presensi umum
-  // di bawah (yang HANYA untuk guru pengajar). Pengecekan per-segment
-  // (bukan cuma startsWith) supaya tidak salah menangkap path lain seperti
+  // pantau kelasnya), ATAU siapa pun yang diberi modul presensi_rekap
+  // lewat Hak Akses -- dicek lebih dulu sebelum aturan /presensi umum di
+  // bawah (yang HANYA untuk guru pengajar). Pengecekan per-segment (bukan
+  // cuma startsWith) supaya tidak salah menangkap path lain seperti
   // /presensi/rekap-mapel yang aturannya beda (HANYA guru pengajar).
   if (path === "/presensi/rekap" || path.startsWith("/presensi/rekap/")) {
-    const [{ count: mengajarCount }, { data: waliRow }] = await Promise.all([
+    const [{ count: mengajarCount }, { data: waliRow }, { data: accessRows }] = await Promise.all([
       gtkId
         ? supabase
             .from("guru_mengajar_kelas")
@@ -213,9 +232,15 @@ export async function updateSession(request: NextRequest) {
       gtkId
         ? supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
         : Promise.resolve({ data: null }),
+      supabase
+        .from("user_module_access")
+        .select("module")
+        .eq("user_id", user.id)
+        .eq("can_view", true)
+        .eq("module", "presensi_rekap"),
     ]);
 
-    if (!mengajarCount && !waliRow) {
+    if (!mengajarCount && !waliRow && !(accessRows?.length ?? 0)) {
       const url = request.nextUrl.clone();
       url.pathname = "/profil-saya";
       return NextResponse.redirect(url);

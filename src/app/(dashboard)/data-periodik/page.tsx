@@ -58,7 +58,7 @@ const emptyEditForm: EditForm = {
 };
 
 export default function DataPeriodikPage() {
-  const { canEdit: canEditModule } = useModulePermission("siswa");
+  const { canEdit: canEditModule } = useModulePermission("data_periodik");
   const { role, waliKelasRombel } = useRole();
   const isFullAccessRole = role === "admin" || role === "kepala_sekolah";
   const lockedToOwnClass = !isFullAccessRole && Boolean(waliKelasRombel);

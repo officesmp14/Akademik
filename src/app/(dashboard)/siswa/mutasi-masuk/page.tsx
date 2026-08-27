@@ -28,7 +28,7 @@ const STATUS_STYLE: Record<string, string> = {
 };
 
 export default function MutasiMasukPage() {
-  const { canEdit } = useModulePermission("siswa");
+  const { canEdit } = useModulePermission("mutasi_masuk_siswa");
 
   const [rows, setRows] = useState<SiswaMutasiMasuk[]>([]);
   const [loading, setLoading] = useState(true);
