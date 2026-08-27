@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRole } from "@/lib/role-context";
-import { ChevronLeft, Loader2, LogOut, Trash2 } from "lucide-react";
+import { ChevronLeft, Loader2, LogOut, Trash2, ExternalLink } from "lucide-react";
 
 type RiwayatMutasiRow = {
   id: string;
@@ -12,6 +12,7 @@ type RiwayatMutasiRow = {
   alasan_mutasi: string | null;
   sekolah_tujuan: string | null;
   alamat_sekolah_tujuan: string | null;
+  link_dokumen: string | null;
   siswa01: { nama: string | null; nisn: string | null; rombel: string | null } | null;
 };
 
@@ -42,7 +43,7 @@ export default function RiwayatMutasiPage() {
     const { data, error } = await supabase
       .from("siswa_mutasi_keluar")
       .select(
-        "id, siswa_id, tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, siswa01(nama, nisn, rombel)"
+        "id, siswa_id, tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, link_dokumen, siswa01(nama, nisn, rombel)"
       )
       .order("tanggal_mutasi", { ascending: false });
 
@@ -130,19 +131,20 @@ export default function RiwayatMutasiPage() {
               <th className="px-4 py-3 font-medium">Sekolah Tujuan</th>
               <th className="px-4 py-3 font-medium">Alamat Sekolah Tujuan</th>
               <th className="px-4 py-3 font-medium">Alasan Mutasi</th>
+              <th className="px-4 py-3 font-medium">Dokumen</th>
               {isFullAccessRole && <th className="px-4 py-3 font-medium text-right">Aksi</th>}
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={isFullAccessRole ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                <td colSpan={isFullAccessRole ? 10 : 9} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={isFullAccessRole ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                <td colSpan={isFullAccessRole ? 10 : 9} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   <LogOut className="h-6 w-6 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
                   Belum ada riwayat siswa mutasi keluar.
                 </td>
@@ -158,6 +160,22 @@ export default function RiwayatMutasiPage() {
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.sekolah_tujuan || "-"}</td>
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.alamat_sekolah_tujuan || "-"}</td>
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.alasan_mutasi || "-"}</td>
+                  <td className="px-4 py-3">
+                    {row.link_dokumen ? (
+                      <a
+                        href={row.link_dokumen}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={row.link_dokumen}
+                        className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        Lihat
+                      </a>
+                    ) : (
+                      <span className="text-slate-300 dark:text-slate-600">-</span>
+                    )}
+                  </td>
                   {isFullAccessRole && (
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end">

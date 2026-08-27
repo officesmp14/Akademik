@@ -78,6 +78,7 @@ export default function SiswaForm({
     alasan_mutasi: "",
     sekolah_tujuan: "",
     alamat_sekolah_tujuan: "",
+    link_dokumen: "",
   };
   const [mutasiForm, setMutasiForm] = useState(emptyMutasiForm);
 
@@ -87,7 +88,7 @@ export default function SiswaForm({
       const supabase = createClient();
       const { data } = await supabase
         .from("siswa_mutasi_keluar")
-        .select("tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan")
+        .select("tanggal_mutasi, alasan_mutasi, sekolah_tujuan, alamat_sekolah_tujuan, link_dokumen")
         .eq("siswa_id", siswaId)
         .maybeSingle();
 
@@ -97,6 +98,7 @@ export default function SiswaForm({
           alasan_mutasi: data.alasan_mutasi ?? "",
           sekolah_tujuan: data.sekolah_tujuan ?? "",
           alamat_sekolah_tujuan: data.alamat_sekolah_tujuan ?? "",
+          link_dokumen: data.link_dokumen ?? "",
         });
       }
     }
@@ -164,6 +166,7 @@ export default function SiswaForm({
           alasan_mutasi: mutasiForm.alasan_mutasi || null,
           sekolah_tujuan: mutasiForm.sekolah_tujuan || null,
           alamat_sekolah_tujuan: mutasiForm.alamat_sekolah_tujuan || null,
+          link_dokumen: mutasiForm.link_dokumen || null,
         },
         { onConflict: "siswa_id" }
       );
@@ -377,6 +380,20 @@ export default function SiswaForm({
                       onChange={(e) =>
                         setMutasiForm((f) => ({ ...f, alamat_sekolah_tujuan: e.target.value }))
                       }
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+                      Link Dokumen (Bukti Surat Keluar Dapodik)
+                    </label>
+                    <input
+                      type="url"
+                      value={mutasiForm.link_dokumen}
+                      onChange={(e) =>
+                        setMutasiForm((f) => ({ ...f, link_dokumen: e.target.value }))
+                      }
+                      placeholder="https://drive.google.com/..."
                       className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
