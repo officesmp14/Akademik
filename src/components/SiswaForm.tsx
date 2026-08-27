@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useModulePermission } from "@/lib/role-context";
 import {
   Siswa,
   STATUS_SISWA_OPTIONS,
@@ -62,6 +63,11 @@ export default function SiswaForm({
 }) {
   const router = useRouter();
   const isEdit = Boolean(siswaId);
+  // Link dokumen bukti surat keluar Dapodik cuma boleh diubah admin atau
+  // staf yang memang diberi akses edit modul siswa (operator dapodik,
+  // kesiswaan) -- wali kelas yang masuk ke halaman ini lewat bypass
+  // middleware (khusus kelasnya sendiri) tidak otomatis dapat izin ini.
+  const { canEdit: canEditLinkDokumen } = useModulePermission("siswa");
   const [activeTab, setActiveTab] = useState<TabKey>("pribadi");
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -166,7 +172,10 @@ export default function SiswaForm({
           alasan_mutasi: mutasiForm.alasan_mutasi || null,
           sekolah_tujuan: mutasiForm.sekolah_tujuan || null,
           alamat_sekolah_tujuan: mutasiForm.alamat_sekolah_tujuan || null,
-          link_dokumen: mutasiForm.link_dokumen || null,
+          // Wali kelas tidak berizin ubah link dokumen -- jangan ikut kirim
+          // kolomnya sama sekali, supaya tidak tertimpa walau field-nya
+          // dipaksa aktif lewat devtools.
+          ...(canEditLinkDokumen ? { link_dokumen: mutasiForm.link_dokumen || null } : {}),
         },
         { onConflict: "siswa_id" }
       );
@@ -393,8 +402,9 @@ export default function SiswaForm({
                       onChange={(e) =>
                         setMutasiForm((f) => ({ ...f, link_dokumen: e.target.value }))
                       }
+                      disabled={!canEditLinkDokumen}
                       placeholder="https://drive.google.com/..."
-                      className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500"
                     />
                   </div>
                 </div>
