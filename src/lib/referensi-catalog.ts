@@ -72,6 +72,12 @@ export const REFERENSI_TABLES: ReferensiConfig[] = [
     label: "Jenis PTK Dinas Pendidikan",
     description: "Kode & uraian jenis PTK sesuai referensi Dinas Pendidikan",
   },
+  {
+    slug: "ekstrakurikuler",
+    table: "ref_ekstrakurikuler",
+    label: "Ekstrakurikuler",
+    description: "Kode & uraian ekstrakurikuler sekolah (mis. PMR, Basket)",
+  },
 ];
 
 export function getReferensiConfig(slug: string): ReferensiConfig | undefined {
