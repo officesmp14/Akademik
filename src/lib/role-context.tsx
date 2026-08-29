@@ -11,6 +11,7 @@ type RoleContextValue = {
   moduleAccess: ModuleAccessEntry[];
   waliKelasRombel: string | null;
   hasMengajarKelas: boolean;
+  isKetuaEkskul: boolean;
 };
 
 const RoleContext = createContext<RoleContextValue>({
@@ -21,6 +22,7 @@ const RoleContext = createContext<RoleContextValue>({
   moduleAccess: [],
   waliKelasRombel: null,
   hasMengajarKelas: false,
+  isKetuaEkskul: false,
 });
 
 export function RoleProvider({

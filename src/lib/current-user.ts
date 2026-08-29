@@ -18,6 +18,7 @@ export type CurrentUser = {
   moduleAccess: ModuleAccessEntry[];
   waliKelasRombel: string | null;
   hasMengajarKelas: boolean;
+  isKetuaEkskul: boolean;
 };
 
 /** Ambil user yang sedang login beserta role, gtk_id, nama, hak akses, & rombel wali kelasnya (server-side). */
@@ -45,16 +46,22 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
 
   let waliKelasRombel: string | null = null;
   let hasMengajarKelas = false;
+  let isKetuaEkskul = false;
   if (roleRow?.gtk_id) {
-    const [{ data: waliRow }, { count }] = await Promise.all([
+    const [{ data: waliRow }, { count: mengajarCount }, { count: ekskulCount }] = await Promise.all([
       supabase.from("wali_kelas").select("rombel").eq("gtk_id", roleRow.gtk_id).maybeSingle(),
       supabase
         .from("guru_mengajar_kelas")
         .select("id", { count: "exact", head: true })
         .eq("gtk_id", roleRow.gtk_id),
+      supabase
+        .from("ketua_ekskul")
+        .select("id", { count: "exact", head: true })
+        .eq("gtk_id", roleRow.gtk_id),
     ]);
     waliKelasRombel = waliRow?.rombel ?? null;
-    hasMengajarKelas = (count ?? 0) > 0;
+    hasMengajarKelas = (mengajarCount ?? 0) > 0;
+    isKetuaEkskul = (ekskulCount ?? 0) > 0;
   }
 
   return {
@@ -66,6 +73,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     moduleAccess: accessRows ?? [],
     waliKelasRombel,
     hasMengajarKelas,
+    isKetuaEkskul,
   };
 }
 

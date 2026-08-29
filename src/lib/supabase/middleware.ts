@@ -142,6 +142,27 @@ export async function updateSession(request: NextRequest) {
     // Bukan wali kelas -> lanjut ke pengecekan hak akses modul umum di bawah
   }
 
+  // /ekstrakurikuler-siswa HANYA untuk wali kelas (lihat siswanya sendiri)
+  // ATAU guru yang jadi ketua/pembina ekskul (kelola ekskul miliknya).
+  // Guru biasa yang bukan keduanya tidak perlu lihat menu ini sama sekali.
+  if (path.startsWith("/ekstrakurikuler-siswa")) {
+    const [{ data: waliRow }, { count: ekskulCount }] = await Promise.all([
+      gtkId
+        ? supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
+        : Promise.resolve({ data: null }),
+      gtkId
+        ? supabase.from("ketua_ekskul").select("id", { count: "exact", head: true }).eq("gtk_id", gtkId)
+        : Promise.resolve({ count: 0 }),
+    ]);
+
+    if (!waliRow && !(ekskulCount ?? 0)) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/profil-saya";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
   // Wali kelas IX boleh buka /laporan/kelas-ix langsung (tanpa perlu hak akses
   // modul laporan_kelas_ix dari admin), sama seperti /kelas-saya di atas.
   if (path.startsWith("/laporan/kelas-ix")) {

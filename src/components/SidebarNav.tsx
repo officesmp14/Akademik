@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2 } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -21,7 +21,7 @@ const LAPORAN_MODULES = [
 
 export default function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
   const pathname = usePathname();
-  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas } = useRole();
+  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas, isKetuaEkskul } = useRole();
 
   const isActiveHome = pathname === "/home";
   const isActiveSiswa = pathname.startsWith("/siswa") && !pathname.startsWith("/siswa/mutasi-masuk");
@@ -33,6 +33,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveKelasSaya = pathname.startsWith("/kelas-saya");
   const isActiveRaporSts = pathname.startsWith("/rapor-sts");
   const isActiveAdminWaliKelas = pathname.startsWith("/admin/wali-kelas");
+  const isActiveAdminKetuaEkskul = pathname.startsWith("/admin/ketua-ekskul");
   const isActiveNilai = pathname === "/nilai" || (pathname.startsWith("/nilai/") && !pathname.startsWith("/nilai-sts"));
   const isActiveNilaiSts = pathname.startsWith("/nilai-sts");
   const isActivePresensi = pathname === "/presensi";
@@ -48,6 +49,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveJadwalKombel = pathname.startsWith("/jadwal-kombel");
   const isActiveJadwalSupervisi = pathname.startsWith("/jadwal-supervisi");
   const isActiveLinkBebanKerja = pathname.startsWith("/link-beban-kerja");
+  const isActiveEkstrakurikulerSiswa = pathname.startsWith("/ekstrakurikuler-siswa");
   const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
   const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
@@ -327,6 +329,17 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           {!collapsed && "Link Beban Kerja"}
         </Link>
 
+        {(isFullAccessRole || Boolean(waliKelasRombel) || isKetuaEkskul) && (
+          <Link
+            href="/ekstrakurikuler-siswa"
+            title="Ekstrakurikuler Siswa"
+            className={linkClass(isActiveEkstrakurikulerSiswa)}
+          >
+            <Trophy className="h-4 w-4 shrink-0" />
+            {!collapsed && "Ekstrakurikuler Siswa"}
+          </Link>
+        )}
+
         {isAdmin && (
           <>
             {sectionLabel("User & Akses")}
@@ -343,6 +356,14 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
             <a href="/admin/wali-kelas" title="Wali Kelas" className={linkClass(isActiveAdminWaliKelas)}>
               <School className="h-4 w-4 shrink-0" />
               {!collapsed && "Wali Kelas"}
+            </a>
+            <a
+              href="/admin/ketua-ekskul"
+              title="Ketua Ekstrakurikuler"
+              className={linkClass(isActiveAdminKetuaEkskul)}
+            >
+              <Trophy className="h-4 w-4 shrink-0" />
+              {!collapsed && "Ketua Ekstrakurikuler"}
             </a>
             <a
               href="/admin/mengajar-kelas"

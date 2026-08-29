@@ -24,6 +24,7 @@ export default async function DashboardLayout({
         moduleAccess: currentUser.moduleAccess,
         waliKelasRombel: currentUser.waliKelasRombel,
         hasMengajarKelas: currentUser.hasMengajarKelas,
+        isKetuaEkskul: currentUser.isKetuaEkskul,
       }}
     >
       <DashboardShell>{children}</DashboardShell>
