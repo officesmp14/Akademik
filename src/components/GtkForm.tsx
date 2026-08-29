@@ -122,7 +122,7 @@ export default function GtkForm({
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-5xl mx-auto">
+    <div className={`p-6 md:p-8 ${isOwnProfile ? "" : "max-w-5xl mx-auto"}`}>
       <Link
         href="/gtk"
         className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-4"
