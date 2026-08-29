@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { generateKodeSesi } from "@/lib/kode-sesi";
 import { Ujian, UjianSesi, UjianPeserta, UjianJawaban, UjianSoal, UjianPelanggaran, PELANGGARAN_LABEL } from "@/types/ujian";
+import RichTextView from "./RichTextView";
 import { Plus, Loader2, X, Users, Play, Square, ChevronDown, ChevronUp, ShieldAlert } from "lucide-react";
 
 const SESI_STATUS_BADGE: Record<UjianSesi["status"], string> = {
@@ -406,9 +407,10 @@ export default function SesiClient({
                   <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Jawaban</p>
                   {detailJawaban.map((j, idx) => (
                     <div key={j.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-3">
-                      <p className="text-sm text-slate-800 dark:text-slate-200 mb-1.5">
-                        {idx + 1}. {j.ujian_soal?.pertanyaan}
-                      </p>
+                      <div className="text-sm text-slate-800 dark:text-slate-200 mb-1.5 flex items-start gap-1">
+                        <span className="shrink-0">{idx + 1}.</span>
+                        <RichTextView html={j.ujian_soal?.pertanyaan ?? ""} />
+                      </div>
                       {j.ujian_soal?.tipe === "pilihan_ganda" ? (
                         <p className="text-sm">
                           Jawaban: <span className="font-medium">{j.jawaban_pg ?? "-"}</span>{" "}

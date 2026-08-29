@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Ujian, UjianSoal, SoalTipe } from "@/types/ujian";
+import { stripHtml, isRichTextEmpty } from "@/lib/rich-text";
+import RichTextEditor from "./RichTextEditor";
 import { Plus, Pencil, Trash2, Loader2, X, ListChecks, KeyRound } from "lucide-react";
 
 const STATUS_OPTIONS: { value: Ujian["status"]; label: string }[] = [
@@ -122,7 +124,7 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
 
   async function handleSoalSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!soalForm.pertanyaan.trim()) {
+    if (isRichTextEmpty(soalForm.pertanyaan)) {
       setActionError("Pertanyaan wajib diisi.");
       return;
     }
@@ -303,7 +305,7 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
                   </span>
                   <span className="text-xs text-slate-400 dark:text-slate-500">Bobot {soal.bobot}</span>
                 </div>
-                <p className="text-sm text-slate-800 dark:text-slate-200 line-clamp-2">{soal.pertanyaan}</p>
+                <p className="text-sm text-slate-800 dark:text-slate-200 line-clamp-2">{stripHtml(soal.pertanyaan)}</p>
                 {soal.tipe === "pilihan_ganda" && (
                   <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Kunci jawaban: {soal.kunci_jawaban}</p>
                 )}
@@ -354,12 +356,9 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Pertanyaan</label>
-                <textarea
+                <RichTextEditor
                   value={soalForm.pertanyaan}
-                  onChange={(e) => setSoalForm((f) => ({ ...f, pertanyaan: e.target.value }))}
-                  required
-                  rows={3}
-                  className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  onChange={(html) => setSoalForm((f) => ({ ...f, pertanyaan: html }))}
                 />
               </div>
 
@@ -436,7 +435,7 @@ export default function UjianDetailClient({ ujian, soalAwal }: { ujian: Ujian; s
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
             <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus soal ini?</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5 line-clamp-2">{deleteTarget.pertanyaan}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5 line-clamp-2">{stripHtml(deleteTarget.pertanyaan)}</p>
             {actionError && (
               <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
                 {actionError}
