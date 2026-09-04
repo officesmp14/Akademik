@@ -25,6 +25,7 @@ export default async function DashboardLayout({
         waliKelasRombel: currentUser.waliKelasRombel,
         hasMengajarKelas: currentUser.hasMengajarKelas,
         isKetuaEkskul: currentUser.isKetuaEkskul,
+        isPanitiaPtsPas: currentUser.isPanitiaPtsPas,
       }}
     >
       <DashboardShell>{children}</DashboardShell>

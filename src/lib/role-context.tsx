@@ -12,6 +12,7 @@ type RoleContextValue = {
   waliKelasRombel: string | null;
   hasMengajarKelas: boolean;
   isKetuaEkskul: boolean;
+  isPanitiaPtsPas: boolean;
 };
 
 const RoleContext = createContext<RoleContextValue>({
@@ -23,6 +24,7 @@ const RoleContext = createContext<RoleContextValue>({
   waliKelasRombel: null,
   hasMengajarKelas: false,
   isKetuaEkskul: false,
+  isPanitiaPtsPas: false,
 });
 
 export function RoleProvider({
