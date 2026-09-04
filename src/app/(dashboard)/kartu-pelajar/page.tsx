@@ -36,7 +36,7 @@ export default function KartuPelajarPage() {
 
       let siswaQuery = supabase
         .from("siswa01")
-        .select("id, nama, nipd, nisn, rombel, tempat_lahir, tanggal_lahir, jk, alamat")
+        .select("id, nama, foto_url, nipd, nisn, rombel, tempat_lahir, tanggal_lahir, jk, alamat")
         .eq("status_siswa", "Aktif")
         .order("nama", { ascending: true });
       if (lockedToOwnClass) siswaQuery = siswaQuery.eq("rombel", waliKelasRombel!);

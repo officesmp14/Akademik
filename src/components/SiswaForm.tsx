@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useModulePermission } from "@/lib/role-context";
+import FotoCropModal from "@/components/FotoCropModal";
 import {
   Siswa,
   STATUS_SISWA_OPTIONS,
   YA_TIDAK_OPTIONS,
   KEBUTUHAN_KHUSUS_OPTIONS,
 } from "@/types/siswa";
+
+const MAX_FOTO_ORIGINAL_MB = 5;
 
 type RefOption = { value: string; label: string };
 
@@ -77,6 +81,64 @@ export default function SiswaForm({
   });
   const statusSiswa = watch("status_siswa");
 
+  const [fotoUrl, setFotoUrl] = useState<string | null>(initialData?.foto_url ?? null);
+  const [fotoUploading, setFotoUploading] = useState(false);
+  const [fotoError, setFotoError] = useState<string | null>(null);
+  const [fotoPendingFile, setFotoPendingFile] = useState<File | null>(null);
+  const inputFotoRef = useRef<HTMLInputElement>(null);
+
+  function handleFotoSelected(file: File) {
+    setFotoError(null);
+
+    if (!file.type.startsWith("image/")) {
+      setFotoError("File harus berupa gambar (PNG/JPG).");
+      return;
+    }
+    if (file.size > MAX_FOTO_ORIGINAL_MB * 1024 * 1024) {
+      setFotoError(`Ukuran file terlalu besar (maks ${MAX_FOTO_ORIGINAL_MB} MB). Kompres dulu atau pakai gambar lain.`);
+      return;
+    }
+
+    setFotoPendingFile(file);
+  }
+
+  async function handleFotoCropped(blob: Blob) {
+    setFotoPendingFile(null);
+    if (!siswaId) return;
+
+    setFotoUploading(true);
+    const supabase = createClient();
+
+    const path = `${siswaId}.jpg`;
+    const { error: uploadError } = await supabase.storage
+      .from("foto-siswa")
+      .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
+
+    if (uploadError) {
+      setFotoUploading(false);
+      setFotoError(uploadError.message);
+      return;
+    }
+
+    const { data: publicUrlData } = supabase.storage.from("foto-siswa").getPublicUrl(path);
+    // Tambahkan timestamp supaya browser tidak menampilkan cache foto lama
+    const urlWithCacheBust = `${publicUrlData.publicUrl}?t=${Date.now()}`;
+
+    const { error: dbError } = await supabase
+      .from("siswa01")
+      .update({ foto_url: urlWithCacheBust })
+      .eq("id", siswaId);
+
+    setFotoUploading(false);
+
+    if (dbError) {
+      setFotoError(dbError.message);
+      return;
+    }
+
+    setFotoUrl(urlWithCacheBust);
+  }
+
   const [refOptions, setRefOptions] = useState(emptyRefOptions);
 
   const emptyMutasiForm = {
@@ -142,6 +204,11 @@ export default function SiswaForm({
     const payload = Object.fromEntries(
       Object.entries(values).map(([k, v]) => [k, v === "" ? null : v])
     );
+    // foto_url dikelola & disimpan langsung lewat modal crop foto (bukan
+    // field form biasa) -- jangan ikut ditimpa balik ke nilai lama di sini,
+    // karena "values" masih membawa foto_url dari defaultValues saat
+    // halaman pertama kali dimuat (sebelum foto baru diupload).
+    delete payload.foto_url;
 
     let targetId = siswaId;
 
@@ -240,6 +307,41 @@ export default function SiswaForm({
 
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
           {/* TAB 1: Data Pribadi */}
+          {isEdit && (
+            <div className={activeTab === "pribadi" ? "flex items-start gap-4 mb-6 pb-6 border-b border-slate-100 dark:border-slate-700/60" : "hidden"}>
+              <div
+                onClick={() => inputFotoRef.current?.click()}
+                className="h-28 w-24 shrink-0 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
+              >
+                {fotoUploading ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+                ) : fotoUrl ? (
+                  <Image src={fotoUrl} alt="Foto Siswa" fill className="object-cover" />
+                ) : (
+                  <div className="flex flex-col items-center text-slate-400 dark:text-slate-500 px-1 text-center">
+                    <User className="h-5 w-5 mb-1" />
+                    <span className="text-[11px] leading-tight">Upload Foto</span>
+                  </div>
+                )}
+              </div>
+              <input
+                ref={inputFotoRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFotoSelected(file);
+                  e.target.value = "";
+                }}
+              />
+              <div className="text-xs text-slate-400 dark:text-slate-500 pt-1">
+                <p className="font-medium text-slate-600 dark:text-slate-300 mb-1">Foto Siswa</p>
+                <p>Dipakai untuk Kartu Pelajar. Gambar otomatis diperkecil (maks 5 MB per file asli).</p>
+                {fotoError && <p className="text-red-600 dark:text-red-400 mt-1">{fotoError}</p>}
+              </div>
+            </div>
+          )}
           <div className={activeTab === "pribadi" ? "grid sm:grid-cols-2 gap-5" : "hidden"}>
             <TextField label="Nama Lengkap" name="nama" register={register} required />
             <TextField label="NIPD" name="nipd" register={register} />
@@ -452,6 +554,14 @@ export default function SiswaForm({
           </button>
         </div>
       </form>
+
+      {fotoPendingFile && (
+        <FotoCropModal
+          file={fotoPendingFile}
+          onCancel={() => setFotoPendingFile(null)}
+          onCropped={handleFotoCropped}
+        />
+      )}
     </div>
   );
 }

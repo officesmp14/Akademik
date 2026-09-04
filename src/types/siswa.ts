@@ -4,6 +4,7 @@ export interface Siswa {
   tahun_masuk?: string | null;
   semester?: string | null;
   nama?: string | null;
+  foto_url?: string | null;
   nipd?: string | null;
   jk?: "L" | "P" | null;
   nisn?: string | null;

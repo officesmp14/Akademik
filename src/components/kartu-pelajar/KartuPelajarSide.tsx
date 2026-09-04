@@ -4,6 +4,7 @@ import { ProfilSekolah } from "@/types/sekolah";
 
 export type SiswaKartu = {
   nama: string | null;
+  foto_url: string | null;
   nipd: string | null;
   nisn: string | null;
   tempat_lahir: string | null;
@@ -38,14 +39,23 @@ const CARD_STYLE: React.CSSProperties = {
   containerType: "inline-size",
 };
 
-/** Placeholder foto siswa -- belum ada fitur upload foto siswa di aplikasi
- *  ini, jadi kotak foto ditampilkan sebagai siluet kosong dulu. */
+/** Siluet placeholder untuk siswa yang belum punya foto diupload. */
 function FotoPlaceholder() {
   return (
     <div className="w-full h-full bg-slate-100 border border-slate-300 flex items-center justify-center overflow-hidden">
       <svg viewBox="0 0 24 24" className="w-2/3 h-2/3 text-slate-300" fill="currentColor">
         <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.34 0-10 1.68-10 5v3h20v-3c0-3.32-6.66-5-10-5z" />
       </svg>
+    </div>
+  );
+}
+
+function FotoSiswa({ url }: { url: string | null }) {
+  if (!url) return <FotoPlaceholder />;
+  return (
+    <div className="w-full h-full bg-slate-100 border border-slate-300 overflow-hidden">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={url} alt="" className="w-full h-full object-cover" />
     </div>
   );
 }
@@ -82,7 +92,7 @@ export function KartuPelajarDepan({
       )}
 
       <div className="absolute" style={{ left: "4%", top: "35%", width: "16%", height: "26%" }}>
-        <FotoPlaceholder />
+        <FotoSiswa url={siswa.foto_url} />
       </div>
 
       <div
