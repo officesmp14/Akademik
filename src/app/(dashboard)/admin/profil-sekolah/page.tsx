@@ -8,6 +8,7 @@ import { Loader2, Check, Upload, ImageOff } from "lucide-react";
 
 const MAX_ORIGINAL_FILE_MB = 5;
 const MAX_DIMENSION = 512;
+const MAX_DIMENSION_TEMPLATE = 1200;
 
 /** Resize gambar di browser (pakai Canvas) sebelum diupload, supaya file
  * besar dari kamera HP tidak membebani storage & bandwidth. Logo diperkecil
@@ -77,7 +78,28 @@ const EMPTY: ProfilSekolah = {
   akreditasi: "",
   logo_sekolah_url: null,
   logo_dinas_url: null,
+  nama_kepala_sekolah: "",
+  nip_kepala_sekolah: "",
+  ttd_kepala_sekolah_url: null,
+  cap_sekolah_url: null,
+  template_kartu_pelajar_depan_url: null,
+  template_kartu_pelajar_belakang_url: null,
 };
+
+type UploadKind =
+  | "logo_sekolah"
+  | "logo_dinas"
+  | "ttd_kepala_sekolah"
+  | "cap_sekolah"
+  | "template_kartu_pelajar_depan"
+  | "template_kartu_pelajar_belakang";
+type UploadField =
+  | "logo_sekolah_url"
+  | "logo_dinas_url"
+  | "ttd_kepala_sekolah_url"
+  | "cap_sekolah_url"
+  | "template_kartu_pelajar_depan_url"
+  | "template_kartu_pelajar_belakang_url";
 
 export default function ProfilSekolahPage() {
   const [form, setForm] = useState<ProfilSekolah>(EMPTY);
@@ -85,10 +107,14 @@ export default function ProfilSekolahPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [uploading, setUploading] = useState<"logo_sekolah" | "logo_dinas" | null>(null);
+  const [uploading, setUploading] = useState<UploadKind | null>(null);
 
   const inputSekolahRef = useRef<HTMLInputElement>(null);
   const inputDinasRef = useRef<HTMLInputElement>(null);
+  const inputTtdRef = useRef<HTMLInputElement>(null);
+  const inputCapRef = useRef<HTMLInputElement>(null);
+  const inputTemplateDepanRef = useRef<HTMLInputElement>(null);
+  const inputTemplateBelakangRef = useRef<HTMLInputElement>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -134,11 +160,7 @@ export default function ProfilSekolahPage() {
     }
   }
 
-  async function handleLogoUpload(
-    field: "logo_sekolah_url" | "logo_dinas_url",
-    kind: "logo_sekolah" | "logo_dinas",
-    file: File
-  ) {
+  async function handleLogoUpload(field: UploadField, kind: UploadKind, file: File, maxDimension = MAX_DIMENSION) {
     setError(null);
 
     if (!file.type.startsWith("image/")) {
@@ -155,7 +177,7 @@ export default function ProfilSekolahPage() {
 
     let resizedBlob: Blob;
     try {
-      resizedBlob = await resizeImage(file);
+      resizedBlob = await resizeImage(file, maxDimension);
     } catch (err) {
       setUploading(null);
       setError(err instanceof Error ? err.message : "Gagal memproses gambar.");
@@ -289,6 +311,199 @@ export default function ProfilSekolahPage() {
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) handleLogoUpload("logo_dinas_url", "logo_dinas", file);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Upload Kepala Sekolah: Tanda Tangan & Cap */}
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 mb-6">
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Kepala Sekolah</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
+          Dipakai untuk pengesahan dokumen/laporan resmi (mis. rapor, surat keterangan)
+        </p>
+        <div className="grid sm:grid-cols-2 gap-5 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+              Nama Kepala Sekolah
+            </label>
+            <input
+              value={form.nama_kepala_sekolah ?? ""}
+              onChange={(e) => updateField("nama_kepala_sekolah", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+              NIP Kepala Sekolah
+            </label>
+            <input
+              value={form.nip_kepala_sekolah ?? ""}
+              onChange={(e) => updateField("nip_kepala_sekolah", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
+          Gambar tanda tangan/cap otomatis diperkecil ke maks 512×512px (ukuran asli maks 5 MB) --
+          gunakan file PNG latar transparan supaya rapi saat ditumpuk di atas dokumen
+        </p>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {/* Tanda Tangan Kepala Sekolah */}
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+              Tanda Tangan Kepala Sekolah
+            </p>
+            <div
+              onClick={() => inputTtdRef.current?.click()}
+              className="h-32 w-32 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
+            >
+              {uploading === "ttd_kepala_sekolah" ? (
+                <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+              ) : form.ttd_kepala_sekolah_url ? (
+                <Image
+                  src={form.ttd_kepala_sekolah_url}
+                  alt="Tanda Tangan Kepala Sekolah"
+                  fill
+                  className="object-contain p-2"
+                />
+              ) : (
+                <div className="flex flex-col items-center text-slate-400 dark:text-slate-500">
+                  <Upload className="h-5 w-5 mb-1" />
+                  <span className="text-xs">Upload</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={inputTtdRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleLogoUpload("ttd_kepala_sekolah_url", "ttd_kepala_sekolah", file);
+              }}
+            />
+          </div>
+
+          {/* Cap / Stempel Sekolah */}
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Cap / Stempel Sekolah</p>
+            <div
+              onClick={() => inputCapRef.current?.click()}
+              className="h-32 w-32 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
+            >
+              {uploading === "cap_sekolah" ? (
+                <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+              ) : form.cap_sekolah_url ? (
+                <Image src={form.cap_sekolah_url} alt="Cap Sekolah" fill className="object-contain p-2" />
+              ) : (
+                <div className="flex flex-col items-center text-slate-400 dark:text-slate-500">
+                  <ImageOff className="h-5 w-5 mb-1" />
+                  <span className="text-xs">Upload</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={inputCapRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleLogoUpload("cap_sekolah_url", "cap_sekolah", file);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Template Kartu Pelajar */}
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 mb-6">
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Template Kartu Pelajar</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
+          Gambar latar/desain kartu pelajar sisi depan &amp; belakang (mis. hasil desain Canva).
+          Otomatis diperkecil ke maks 1200px pada sisi terpanjang (ukuran asli maks 5 MB)
+        </p>
+        <div className="grid sm:grid-cols-2 gap-6">
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Sisi Depan</p>
+            <div
+              onClick={() => inputTemplateDepanRef.current?.click()}
+              className="h-40 w-64 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
+            >
+              {uploading === "template_kartu_pelajar_depan" ? (
+                <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+              ) : form.template_kartu_pelajar_depan_url ? (
+                <Image
+                  src={form.template_kartu_pelajar_depan_url}
+                  alt="Template Kartu Pelajar - Sisi Depan"
+                  fill
+                  className="object-contain p-2"
+                />
+              ) : (
+                <div className="flex flex-col items-center text-slate-400 dark:text-slate-500">
+                  <Upload className="h-5 w-5 mb-1" />
+                  <span className="text-xs">Upload</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={inputTemplateDepanRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file)
+                  handleLogoUpload(
+                    "template_kartu_pelajar_depan_url",
+                    "template_kartu_pelajar_depan",
+                    file,
+                    MAX_DIMENSION_TEMPLATE
+                  );
+              }}
+            />
+          </div>
+
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Sisi Belakang</p>
+            <div
+              onClick={() => inputTemplateBelakangRef.current?.click()}
+              className="h-40 w-64 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
+            >
+              {uploading === "template_kartu_pelajar_belakang" ? (
+                <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+              ) : form.template_kartu_pelajar_belakang_url ? (
+                <Image
+                  src={form.template_kartu_pelajar_belakang_url}
+                  alt="Template Kartu Pelajar - Sisi Belakang"
+                  fill
+                  className="object-contain p-2"
+                />
+              ) : (
+                <div className="flex flex-col items-center text-slate-400 dark:text-slate-500">
+                  <ImageOff className="h-5 w-5 mb-1" />
+                  <span className="text-xs">Upload</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={inputTemplateBelakangRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file)
+                  handleLogoUpload(
+                    "template_kartu_pelajar_belakang_url",
+                    "template_kartu_pelajar_belakang",
+                    file,
+                    MAX_DIMENSION_TEMPLATE
+                  );
               }}
             />
           </div>

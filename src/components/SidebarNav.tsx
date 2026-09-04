@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -21,7 +21,7 @@ const LAPORAN_MODULES = [
 
 export default function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
   const pathname = usePathname();
-  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas, isKetuaEkskul } = useRole();
+  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas, isKetuaEkskul, isPanitiaPtsPas } = useRole();
 
   const isActiveHome = pathname === "/home";
   const isActiveSiswa = pathname.startsWith("/siswa") && !pathname.startsWith("/siswa/mutasi-masuk");
@@ -43,6 +43,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveKelolaUjian = pathname.startsWith("/kelola-ujian");
   const isActiveAdminMengajarKelas = pathname.startsWith("/admin/mengajar-kelas");
   const isActiveAdminPengaturanNilai = pathname.startsWith("/admin/pengaturan-nilai");
+  const isActiveAdminPanitiaPtsPas = pathname.startsWith("/admin/panitia-pts-pas");
   const isActiveAdminProfilSekolah = pathname.startsWith("/admin/profil-sekolah");
   const isActiveAdminAkademik = pathname.startsWith("/admin/pengaturan-akademik");
   const isActiveAdminHariEfektif = pathname.startsWith("/admin/hari-efektif");
@@ -50,6 +51,8 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveJadwalSupervisi = pathname.startsWith("/jadwal-supervisi");
   const isActiveLinkBebanKerja = pathname.startsWith("/link-beban-kerja");
   const isActiveEkstrakurikulerSiswa = pathname.startsWith("/ekstrakurikuler-siswa");
+  const isActiveDataSiswaPanitia = pathname.startsWith("/data-siswa-panitia");
+  const isActiveKartuPelajar = pathname.startsWith("/kartu-pelajar");
   const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
   const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
@@ -340,6 +343,24 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           </Link>
         )}
 
+        {(isFullAccessRole || isPanitiaPtsPas) && (
+          <Link
+            href="/data-siswa-panitia"
+            title="Data Siswa (Panitia PTS/PAS)"
+            className={linkClass(isActiveDataSiswaPanitia)}
+          >
+            <Users className="h-4 w-4 shrink-0" />
+            {!collapsed && "Data Siswa (Panitia)"}
+          </Link>
+        )}
+
+        {(isFullAccessRole || Boolean(waliKelasRombel)) && (
+          <Link href="/kartu-pelajar" title="Kartu Pelajar" className={linkClass(isActiveKartuPelajar)}>
+            <IdCard className="h-4 w-4 shrink-0" />
+            {!collapsed && "Kartu Pelajar"}
+          </Link>
+        )}
+
         {isAdmin && (
           <>
             {sectionLabel("User & Akses")}
@@ -406,6 +427,14 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
             >
               <Settings2 className="h-4 w-4 shrink-0" />
               {!collapsed && "Pengaturan Nilai"}
+            </a>
+            <a
+              href="/admin/panitia-pts-pas"
+              title="Panitia PTS & PAS"
+              className={linkClass(isActiveAdminPanitiaPtsPas)}
+            >
+              <ClipboardList className="h-4 w-4 shrink-0" />
+              {!collapsed && "Panitia PTS & PAS"}
             </a>
 
             {sectionLabel("Data Master")}

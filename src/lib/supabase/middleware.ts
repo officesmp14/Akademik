@@ -163,6 +163,39 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
+  // /kartu-pelajar HANYA untuk wali kelas (cetak kartu kelasnya sendiri) --
+  // admin/kepala_sekolah sudah lolos di blok isFullAccessRole di atas.
+  if (path.startsWith("/kartu-pelajar")) {
+    const { data: waliRow } = gtkId
+      ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
+      : { data: null };
+
+    if (!waliRow) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/profil-saya";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
+  // /data-siswa-panitia HANYA untuk yang ditugaskan jadi ketua/sekretaris
+  // panitia PTS atau PAS (guru biasa lainnya tidak perlu lihat menu ini).
+  if (path.startsWith("/data-siswa-panitia")) {
+    const { count: panitiaCount } = gtkId
+      ? await supabase
+          .from("panitia_pts_pas")
+          .select("id", { count: "exact", head: true })
+          .or(`ketua_gtk_id.eq.${gtkId},sekretaris_gtk_id.eq.${gtkId}`)
+      : { count: 0 };
+
+    if (!(panitiaCount ?? 0)) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/profil-saya";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
   // Wali kelas IX boleh buka /laporan/kelas-ix langsung (tanpa perlu hak akses
   // modul laporan_kelas_ix dari admin), sama seperti /kelas-saya di atas.
   if (path.startsWith("/laporan/kelas-ix")) {

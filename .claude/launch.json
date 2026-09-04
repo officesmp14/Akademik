@@ -14,6 +14,13 @@
       "runtimeArgs": ["--prefix", "../siswa-ujian", "run", "dev"],
       "port": 3001,
       "autoPort": true
+    },
+    {
+      "name": "cms-inf9-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "../cms-inf9", "run", "dev"],
+      "port": 3002,
+      "autoPort": true
     }
   ]
 }
