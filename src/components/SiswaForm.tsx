@@ -7,6 +7,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useModulePermission } from "@/lib/role-context";
 import FotoCropModal from "@/components/FotoCropModal";
+import FotoCameraModal from "@/components/FotoCameraModal";
 import {
   Siswa,
   STATUS_SISWA_OPTIONS,
@@ -46,6 +47,7 @@ import {
   HeartHandshake,
   Loader2,
   ChevronLeft,
+  Camera,
 } from "lucide-react";
 
 const TABS = [
@@ -85,6 +87,7 @@ export default function SiswaForm({
   const [fotoUploading, setFotoUploading] = useState(false);
   const [fotoError, setFotoError] = useState<string | null>(null);
   const [fotoPendingFile, setFotoPendingFile] = useState<File | null>(null);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const inputFotoRef = useRef<HTMLInputElement>(null);
 
   function handleFotoSelected(file: File) {
@@ -337,7 +340,15 @@ export default function SiswaForm({
               />
               <div className="text-xs text-slate-400 dark:text-slate-500 pt-1">
                 <p className="font-medium text-slate-600 dark:text-slate-300 mb-1">Foto Siswa</p>
-                <p>Dipakai untuk Kartu Pelajar. Gambar otomatis diperkecil (maks 5 MB per file asli).</p>
+                <p className="mb-2">Dipakai untuk Kartu Pelajar. Gambar otomatis diperkecil (maks 5 MB per file asli).</p>
+                <button
+                  type="button"
+                  onClick={() => setCameraOpen(true)}
+                  className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                >
+                  <Camera className="h-3.5 w-3.5" />
+                  Ambil dari Kamera
+                </button>
                 {fotoError && <p className="text-red-600 dark:text-red-400 mt-1">{fotoError}</p>}
               </div>
             </div>
@@ -560,6 +571,16 @@ export default function SiswaForm({
           file={fotoPendingFile}
           onCancel={() => setFotoPendingFile(null)}
           onCropped={handleFotoCropped}
+        />
+      )}
+
+      {cameraOpen && (
+        <FotoCameraModal
+          onCancel={() => setCameraOpen(false)}
+          onCapture={(file) => {
+            setCameraOpen(false);
+            handleFotoSelected(file);
+          }}
         />
       )}
     </div>
