@@ -20,6 +20,7 @@ export type CurrentUser = {
   hasMengajarKelas: boolean;
   isKetuaEkskul: boolean;
   isPanitiaPtsPas: boolean;
+  isPanitiaHibot: boolean;
 };
 
 /** Ambil user yang sedang login beserta role, gtk_id, nama, hak akses, & rombel wali kelasnya (server-side). */
@@ -49,27 +50,38 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   let hasMengajarKelas = false;
   let isKetuaEkskul = false;
   let isPanitiaPtsPas = false;
+  let isPanitiaHibot = false;
   if (roleRow?.gtk_id) {
-    const [{ data: waliRow }, { count: mengajarCount }, { count: ekskulCount }, { count: panitiaCount }] =
-      await Promise.all([
-        supabase.from("wali_kelas").select("rombel").eq("gtk_id", roleRow.gtk_id).maybeSingle(),
-        supabase
-          .from("guru_mengajar_kelas")
-          .select("id", { count: "exact", head: true })
-          .eq("gtk_id", roleRow.gtk_id),
-        supabase
-          .from("ketua_ekskul")
-          .select("id", { count: "exact", head: true })
-          .eq("gtk_id", roleRow.gtk_id),
-        supabase
-          .from("panitia_pts_pas")
-          .select("id", { count: "exact", head: true })
-          .or(`ketua_gtk_id.eq.${roleRow.gtk_id},sekretaris_gtk_id.eq.${roleRow.gtk_id}`),
-      ]);
+    const [
+      { data: waliRow },
+      { count: mengajarCount },
+      { count: ekskulCount },
+      { count: panitiaCount },
+      { count: hibotCount },
+    ] = await Promise.all([
+      supabase.from("wali_kelas").select("rombel").eq("gtk_id", roleRow.gtk_id).maybeSingle(),
+      supabase
+        .from("guru_mengajar_kelas")
+        .select("id", { count: "exact", head: true })
+        .eq("gtk_id", roleRow.gtk_id),
+      supabase
+        .from("ketua_ekskul")
+        .select("id", { count: "exact", head: true })
+        .eq("gtk_id", roleRow.gtk_id),
+      supabase
+        .from("panitia_pts_pas")
+        .select("id", { count: "exact", head: true })
+        .or(`ketua_gtk_id.eq.${roleRow.gtk_id},sekretaris_gtk_id.eq.${roleRow.gtk_id}`),
+      supabase
+        .from("panitia_hibot")
+        .select("id", { count: "exact", head: true })
+        .or(`ketua_gtk_id.eq.${roleRow.gtk_id},sekretaris_gtk_id.eq.${roleRow.gtk_id}`),
+    ]);
     waliKelasRombel = waliRow?.rombel ?? null;
     hasMengajarKelas = (mengajarCount ?? 0) > 0;
     isKetuaEkskul = (ekskulCount ?? 0) > 0;
     isPanitiaPtsPas = (panitiaCount ?? 0) > 0;
+    isPanitiaHibot = (hibotCount ?? 0) > 0;
   }
 
   return {
@@ -83,6 +95,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     hasMengajarKelas,
     isKetuaEkskul,
     isPanitiaPtsPas,
+    isPanitiaHibot,
   };
 }
 

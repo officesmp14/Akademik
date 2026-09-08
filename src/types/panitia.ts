@@ -13,3 +13,9 @@ export const JENIS_PANITIA_LABEL: Record<JenisPanitia, string> = {
   PTS: "Penilaian Tengah Semester (PTS)",
   PAS: "Penilaian Akhir Semester (PAS)",
 };
+
+export interface PanitiaHibot {
+  id: number;
+  ketua_gtk_id: string | null;
+  sekretaris_gtk_id: string | null;
+}

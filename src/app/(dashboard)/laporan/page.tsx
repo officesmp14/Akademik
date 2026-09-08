@@ -1,4 +1,4 @@
-import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText } from "lucide-react";
+import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText, Users } from "lucide-react";
 
 const LAPORAN_LIST = [
   {
@@ -77,6 +77,13 @@ const LAPORAN_LIST = [
     title: "Verifikasi Presensi",
     description:
       "Form verifikasi kehadiran siswa (Alpa/Izin/Sakit) per bulan berdasarkan hari efektif, untuk kebutuhan verifikasi ke Dinas Pendidikan.",
+  },
+  {
+    href: "/laporan/ganak-hibot",
+    icon: Users,
+    title: "Ganak Hibot",
+    description:
+      "Daftar siswa (NISN, nama, jenis kelamin, agama, kelas, alamat, nama ayah) per kelas.",
   },
 ];
 

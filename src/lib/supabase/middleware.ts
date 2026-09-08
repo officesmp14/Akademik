@@ -19,6 +19,8 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/laporan/kelas-ix", modules: ["laporan_kelas_ix"] },
   { prefix: "/laporan/verifikasi-presensi", modules: ["laporan_verifikasi_presensi"] },
   { prefix: "/laporan/riwayat-mutasi", modules: ["laporan_riwayat_mutasi"] },
+  { prefix: "/laporan/ganak-hibot", modules: ["laporan_ganak_hibot"] },
+  { prefix: "/laporan/ganak-hibot", modules: ["laporan_ganak_hibot"] },
   {
     prefix: "/laporan",
     modules: [
@@ -33,6 +35,7 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
       "laporan_kesehatan",
       "laporan_kelas_ix",
       "laporan_verifikasi_presensi",
+      "laporan_ganak_hibot",
     ],
   },
 ];
@@ -207,6 +210,22 @@ export async function updateSession(request: NextRequest) {
       return supabaseResponse;
     }
     // Bukan wali kelas IX -> lanjut ke pengecekan hak akses modul umum di bawah
+  }
+
+  // Ketua/sekretaris Panitia Hibot boleh buka /laporan/ganak-hibot langsung
+  // (tanpa perlu hak akses modul laporan_ganak_hibot dari admin).
+  if (path.startsWith("/laporan/ganak-hibot")) {
+    const { count: hibotCount } = gtkId
+      ? await supabase
+          .from("panitia_hibot")
+          .select("id", { count: "exact", head: true })
+          .or(`ketua_gtk_id.eq.${gtkId},sekretaris_gtk_id.eq.${gtkId}`)
+      : { count: 0 };
+
+    if ((hibotCount ?? 0) > 0) {
+      return supabaseResponse;
+    }
+    // Bukan panitia Hibot -> lanjut ke pengecekan hak akses modul umum di bawah
   }
 
   // Wali kelas (kelas berapapun) boleh buka /laporan/verifikasi-presensi

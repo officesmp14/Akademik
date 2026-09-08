@@ -12,6 +12,7 @@ export type ModuleKey =
   | "laporan_kesehatan"
   | "laporan_kelas_ix"
   | "laporan_verifikasi_presensi"
+  | "laporan_ganak_hibot"
   | "mutasi_masuk_siswa"
   | "registrasi_peserta_didik"
   | "data_periodik"
@@ -31,6 +32,7 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "laporan_kesehatan", label: "Laporan - Data Pemeriksaan Kesehatan" },
   { key: "laporan_kelas_ix", label: "Laporan - Cek Data Ijazah Kelas IX" },
   { key: "laporan_verifikasi_presensi", label: "Laporan - Verifikasi Presensi" },
+  { key: "laporan_ganak_hibot", label: "Laporan - Ganak Hibot" },
   { key: "mutasi_masuk_siswa", label: "Data Mutasi Masuk" },
   { key: "registrasi_peserta_didik", label: "Registrasi Peserta Didik" },
   { key: "data_periodik", label: "Data Periodik" },

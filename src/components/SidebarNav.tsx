@@ -17,11 +17,12 @@ const LAPORAN_MODULES = [
   "laporan_kesehatan",
   "laporan_kelas_ix",
   "laporan_verifikasi_presensi",
+  "laporan_ganak_hibot",
 ];
 
 export default function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
   const pathname = usePathname();
-  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas, isKetuaEkskul, isPanitiaPtsPas } = useRole();
+  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas, isKetuaEkskul, isPanitiaPtsPas, isPanitiaHibot } = useRole();
 
   const isActiveHome = pathname === "/home";
   const isActiveSiswa = pathname.startsWith("/siswa") && !pathname.startsWith("/siswa/mutasi-masuk");
@@ -44,6 +45,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveAdminMengajarKelas = pathname.startsWith("/admin/mengajar-kelas");
   const isActiveAdminPengaturanNilai = pathname.startsWith("/admin/pengaturan-nilai");
   const isActiveAdminPanitiaPtsPas = pathname.startsWith("/admin/panitia-pts-pas");
+  const isActiveAdminPanitiaHibot = pathname.startsWith("/admin/panitia-hibot");
   const isActiveAdminProfilSekolah = pathname.startsWith("/admin/profil-sekolah");
   const isActiveAdminAkademik = pathname.startsWith("/admin/pengaturan-akademik");
   const isActiveAdminHariEfektif = pathname.startsWith("/admin/hari-efektif");
@@ -53,6 +55,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveEkstrakurikulerSiswa = pathname.startsWith("/ekstrakurikuler-siswa");
   const isActiveDataSiswaPanitia = pathname.startsWith("/data-siswa-panitia");
   const isActiveKartuPelajar = pathname.startsWith("/kartu-pelajar");
+  const isActiveGanakHibot = pathname.startsWith("/laporan/ganak-hibot");
   const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
   const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
@@ -71,6 +74,9 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const hasExtraLaporanAccess = moduleAccess.some(
     (a) => LAPORAN_MODULES.includes(a.module) && a.can_view
   );
+  const hasExtraGanakHibotAccess = moduleAccess.some(
+    (a) => a.module === "laporan_ganak_hibot" && a.can_view
+  );
   const hasExtraMutasiMasukAccess = moduleAccess.some(
     (a) => a.module === "mutasi_masuk_siswa" && a.can_view
   );
@@ -86,7 +92,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
 
   const showSiswaMenu = isFullAccessRole || hasExtraSiswaAccess;
   const showGtkMenu = isFullAccessRole || hasExtraGtkAccess;
-  const showLaporanMenu = isFullAccessRole || hasExtraLaporanAccess;
+  const showLaporanMenu = isFullAccessRole || hasExtraLaporanAccess || isPanitiaHibot;
   const showMutasiMasukMenu = isFullAccessRole || hasExtraMutasiMasukAccess;
   const showRegistrasiMenu = isFullAccessRole || hasExtraRegistrasiAccess || Boolean(waliKelasRombel);
   const showDataPeriodikMenu = isFullAccessRole || hasExtraDataPeriodikAccess || Boolean(waliKelasRombel);
@@ -361,6 +367,13 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           </Link>
         )}
 
+        {(isFullAccessRole || isPanitiaHibot || hasExtraGanakHibotAccess) && (
+          <Link href="/laporan/ganak-hibot" title="Ganak Hibot" className={linkClass(isActiveGanakHibot)}>
+            <Users className="h-4 w-4 shrink-0" />
+            {!collapsed && "Ganak Hibot"}
+          </Link>
+        )}
+
         {isAdmin && (
           <>
             {sectionLabel("User & Akses")}
@@ -435,6 +448,14 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
             >
               <ClipboardList className="h-4 w-4 shrink-0" />
               {!collapsed && "Panitia PTS & PAS"}
+            </a>
+            <a
+              href="/admin/panitia-hibot"
+              title="Panitia Hibot"
+              className={linkClass(isActiveAdminPanitiaHibot)}
+            >
+              <ClipboardList className="h-4 w-4 shrink-0" />
+              {!collapsed && "Panitia Hibot"}
             </a>
 
             {sectionLabel("Data Master")}
