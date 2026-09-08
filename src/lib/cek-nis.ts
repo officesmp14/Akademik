@@ -1,15 +1,15 @@
-// Format NIS (7 digit): AA B C DDD
-// AA  = 2 digit terakhir tahun ajaran
-// B   = jenis siswa: 1 = siswa baru, 2 = siswa pindahan/mutasi
-// C   = semester masuk: 1 = ganjil, 2 = genap
-// DDD = nomor urut 3 digit, reset tiap tahun ajaran baru (berbagi urutan
-//       yang sama lintas jenis siswa & semester dalam satu tahun ajaran)
+// Format NIS (8 digit): AA B C DDDD
+// AA   = 2 digit terakhir tahun ajaran
+// B    = jenis siswa: 1 = siswa baru, 2 = siswa pindahan/mutasi
+// C    = semester masuk: 1 = ganjil, 2 = genap
+// DDDD = nomor urut 4 digit, reset tiap tahun ajaran baru (berbagi urutan
+//        yang sama lintas jenis siswa & semester dalam satu tahun ajaran)
 //
-// Contoh: 2611001 -> tahun 26, siswa baru, semester ganjil, urut 001
-//         2621002 -> tahun 26, siswa pindahan, semester ganjil, urut 002
-//         2622003 -> tahun 26, siswa pindahan, semester genap, urut 003
+// Contoh: 26110001 -> tahun 26, siswa baru, semester ganjil, urut 0001
+//         26210002 -> tahun 26, siswa pindahan, semester ganjil, urut 0002
+//         26220003 -> tahun 26, siswa pindahan, semester genap, urut 0003
 
-const NIS_REGEX = /^(\d{2})(\d)(\d)(\d{3})$/;
+const NIS_REGEX = /^(\d{2})(\d)(\d)(\d{4})$/;
 
 export type ParsedNis = {
   nipd: string;
@@ -90,5 +90,5 @@ export function buildNis(
   semester: "1" | "2",
   urut: number
 ): string {
-  return `${tahunAjaranKode}${jenis}${semester}${String(urut).padStart(3, "0")}`;
+  return `${tahunAjaranKode}${jenis}${semester}${String(urut).padStart(4, "0")}`;
 }
