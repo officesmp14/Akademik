@@ -20,7 +20,7 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/laporan/verifikasi-presensi", modules: ["laporan_verifikasi_presensi"] },
   { prefix: "/laporan/riwayat-mutasi", modules: ["laporan_riwayat_mutasi"] },
   { prefix: "/laporan/ganak-hibot", modules: ["laporan_ganak_hibot"] },
-  { prefix: "/laporan/ganak-hibot", modules: ["laporan_ganak_hibot"] },
+  { prefix: "/nilai-leger", modules: ["nilai_leger"] },
   {
     prefix: "/laporan",
     modules: [
@@ -134,7 +134,7 @@ export async function updateSession(request: NextRequest) {
   // langsung (dua path ini dulu sama sekali tidak dibatasi middleware,
   // jadi bypass ini menjaga wali kelas tetap bisa kelola kelasnya sendiri
   // sekarang keduanya digating modul registrasi_peserta_didik/data_periodik).
-  if (path.startsWith("/registrasi-peserta-didik") || path.startsWith("/data-periodik")) {
+  if (path.startsWith("/registrasi-peserta-didik") || path.startsWith("/data-periodik") || path.startsWith("/nilai-leger")) {
     const { data: waliRow } = gtkId
       ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
       : { data: null };

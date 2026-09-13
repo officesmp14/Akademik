@@ -50,7 +50,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/siswa");
+      router.push("/home");
       router.refresh();
     } catch {
       setLoading(false);

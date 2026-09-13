@@ -36,6 +36,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveAdminWaliKelas = pathname.startsWith("/admin/wali-kelas");
   const isActiveAdminKetuaEkskul = pathname.startsWith("/admin/ketua-ekskul");
   const isActiveNilai = pathname === "/nilai" || (pathname.startsWith("/nilai/") && !pathname.startsWith("/nilai-sts"));
+  const isActiveNilaiLeger = pathname.startsWith("/nilai-leger");
   const isActiveNilaiSts = pathname.startsWith("/nilai-sts");
   const isActivePresensi = pathname === "/presensi";
   const isActiveRekapPresensi = pathname === "/presensi/rekap";
@@ -77,6 +78,9 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const hasExtraGanakHibotAccess = moduleAccess.some(
     (a) => a.module === "laporan_ganak_hibot" && a.can_view
   );
+  const hasExtraNilaiLegerAccess = moduleAccess.some(
+    (a) => a.module === "nilai_leger" && a.can_view
+  );
   const hasExtraMutasiMasukAccess = moduleAccess.some(
     (a) => a.module === "mutasi_masuk_siswa" && a.can_view
   );
@@ -103,6 +107,8 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
     showSiswaMenu || showMutasiMasukMenu || showRegistrasiMenu || showDataPeriodikMenu || Boolean(waliKelasRombel);
   const showPresensiSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole || showRekapPresensiMenu;
   const showNilaiUjianSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole;
+  const showSklSection =
+    isFullAccessRole || hasExtraNilaiLegerAccess || Boolean(waliKelasRombel?.startsWith("IX."));
 
   const linkClass = (active: boolean) =>
     `flex items-center rounded-lg text-sm font-medium transition-colors ${
@@ -300,6 +306,16 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
                 {!collapsed && "Kelola Ujian"}
               </Link>
             )}
+          </>
+        )}
+
+        {showSklSection && (
+          <>
+            {sectionLabel("SKL")}
+            <Link href="/nilai-leger" title="Nilai Leger" className={linkClass(isActiveNilaiLeger)}>
+              <NotebookPen className="h-4 w-4 shrink-0" />
+              {!collapsed && "Nilai Leger"}
+            </Link>
           </>
         )}
 
