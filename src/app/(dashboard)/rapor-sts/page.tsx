@@ -397,18 +397,16 @@ export default function RaporStsPage() {
               ))
             )}
           </tbody>
-          <tfoot>
-            <tr className="border-t-2 border-slate-800">
-              <td colSpan={2} className="border-r border-slate-800 px-2 py-1.5">
-                Total Nilai : {data.total ?? "-"}
-              </td>
-              <td colSpan={2} className="px-2 py-1.5">
-                Rata - rata: {data.rataRata ?? "-"} &nbsp;&nbsp;&nbsp; Peringkat :{" "}
-                {data.peringkat ?? "-"} dari {totalSiswaKelas} murid
-              </td>
-            </tr>
-          </tfoot>
         </table>
+
+        {/* Ringkasan nilai -- Total Nilai kiri, Rata-rata tengah, Peringkat kanan */}
+        <div className="grid grid-cols-3 border border-slate-800 px-4 py-1.5 text-sm mb-8">
+          <p className="text-left">Total Nilai : {data.total ?? "-"}</p>
+          <p className="text-center">Rata - rata: {data.rataRata ?? "-"}</p>
+          <p className="text-right">
+            Peringkat : {data.peringkat ?? "-"} dari {totalSiswaKelas} murid
+          </p>
+        </div>
 
         {/* Tanggapan orang tua */}
         <div className="border border-slate-800 mb-8">
