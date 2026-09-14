@@ -5,57 +5,23 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useRole } from "@/lib/role-context";
 import { compareKelas } from "@/lib/rekap-siswa";
-import { getKeterangan, getFase, formatTanggalIndonesia } from "@/lib/rapor-sts";
+import {
+  getFase,
+  formatTanggalIndonesia,
+  isValidNip,
+  fetchWaliKelasInfo,
+  hitungRingkasanSiswa,
+  hitungPeringkat,
+  SiswaRingkasNilai,
+  MapelRingkas,
+  RingkasanSiswa,
+  WaliKelasInfo,
+} from "@/lib/rapor-sts";
 import { getTahunAjaranSaatIni, getSemesterSaatIni, Nilai } from "@/types/nilai";
 import { ProfilSekolah } from "@/types/sekolah";
 import { Loader2, Printer } from "lucide-react";
 
-type SiswaRingkas = {
-  id: string;
-  nama: string | null;
-  nipd: string | null;
-  nisn: string | null;
-  agama: string | null;
-};
-
-type MapelRingkas = { id: number; mapel: string };
-
-// Mapel Agama tercatat sebagai mata pelajaran terpisah per agama (Agama
-// Islam, Agama Protestan, dst) -- di rapor cukup ditampilkan SATU baris
-// "Agama" berisi nilai dari mapel yang sesuai agama siswa itu sendiri.
-const AGAMA_MAPEL_BY_AGAMA: Record<string, string> = {
-  Islam: "Agama Islam",
-  Kristen: "Agama Protestan",
-  Katholik: "Agama Katolik",
-  Budha: "Agama Budha",
-  Hindu: "Agama Hindu",
-  Konghucu: "Agama Konghucu",
-};
-
-function isMapelAgama(nama: string): boolean {
-  return nama.startsWith("Agama ");
-}
-
-type WaliKelasInfo = { nama: string | null; nip: string | null; label: string };
-
-type BarisNilai = { mapel: string; nilai: number | null; keterangan: string };
-
-type RingkasanSiswa = {
-  siswa: SiswaRingkas;
-  baris: BarisNilai[];
-  total: number | null;
-  rataRata: number | null;
-  peringkat: number | null;
-};
-
-// Nilai STS ditampilkan APA ADANYA (nilai murni STS/Susulan/Remedial yang
-// tertinggi), bukan nilai akhir gabungan Formatif + Sumatif Materi + SA.
-function getEffectiveSts(rows: Nilai[]): number | null {
-  const vals = rows
-    .filter((r) => r.jenis === "sts" || r.jenis === "susulan_sts" || r.jenis === "remedial_sts")
-    .map((r) => r.nilai);
-  return vals.length > 0 ? Math.max(...vals) : null;
-}
+type SiswaRingkas = SiswaRingkasNilai;
 
 export default function RaporStsPage() {
   const { role, waliKelasRombel } = useRole();
@@ -118,9 +84,9 @@ export default function RaporStsPage() {
     setError(null);
     const supabase = createClient();
 
-    const [profilRes, waliRes, siswaRes, gmkRes, panitiaRes] = await Promise.all([
+    const [profilRes, waliKelasInfoResult, siswaRes, gmkRes, panitiaRes] = await Promise.all([
       supabase.from("profil_sekolah").select("*").eq("id", 1).maybeSingle(),
-      supabase.from("wali_kelas").select("gtk_id").eq("rombel", selectedRombel).maybeSingle(),
+      fetchWaliKelasInfo(supabase, selectedRombel),
       supabase
         .from("siswa01")
         .select("id, nama, nipd, nisn, agama")
@@ -145,25 +111,7 @@ export default function RaporStsPage() {
 
     setProfil(profilRes.data ?? null);
     setTanggalCetakRapor(panitiaRes.data?.tanggal_cetak_rapor ?? null);
-
-    if (waliRes.data?.gtk_id) {
-      const { data: gtk } = await supabase
-        .from("datagtk")
-        .select("nama, nip, status_kepegawaian")
-        .eq("id", waliRes.data.gtk_id)
-        .maybeSingle();
-      setWaliKelasInfo(
-        gtk
-          ? {
-              nama: gtk.nama,
-              nip: gtk.nip,
-              label: gtk.status_kepegawaian === "PPPK" ? "NIPP3K" : "NIP",
-            }
-          : null
-      );
-    } else {
-      setWaliKelasInfo(null);
-    }
+    setWaliKelasInfo(waliKelasInfoResult);
 
     const mapelIds = Array.from(new Set((gmkRes.data ?? []).map((g) => g.mapel_id)));
     const { data: pelajaranData } = mapelIds.length
@@ -191,68 +139,10 @@ export default function RaporStsPage() {
       nilaiRows = nRows ?? [];
     }
 
-    // Nilai per siswa per mapel: nilai STS murni (tertinggi antara STS/Susulan/Remedial)
-    const summaries: RingkasanSiswa[] = siswaList.map((s) => {
-      const nonAgamaBaris: BarisNilai[] = mapelList
-        .filter((m) => !isMapelAgama(m.mapel))
-        .map((m) => {
-          const rows = nilaiRows.filter((r) => r.siswa_id === s.id && r.mapel_id === m.id);
-          const effectiveSts = getEffectiveSts(rows);
-
-          return {
-            mapel: m.mapel,
-            nilai: effectiveSts,
-            keterangan: effectiveSts !== null ? getKeterangan(effectiveSts) : "-",
-          };
-        });
-
-      // Gabungkan semua mapel Agama jadi SATU baris "Agama" -- isinya nilai
-      // dari mapel Agama yang cocok dengan agama siswa itu sendiri.
-      const adaMapelAgama = mapelList.some((m) => isMapelAgama(m.mapel));
-      const agamaBaris: BarisNilai[] = adaMapelAgama
-        ? (() => {
-            const agamaMapelNama = s.agama ? AGAMA_MAPEL_BY_AGAMA[s.agama] : undefined;
-            const agamaMapel = agamaMapelNama ? mapelList.find((m) => m.mapel === agamaMapelNama) : undefined;
-            const rows = agamaMapel
-              ? nilaiRows.filter((r) => r.siswa_id === s.id && r.mapel_id === agamaMapel.id)
-              : [];
-            const effectiveSts = getEffectiveSts(rows);
-            return [
-              {
-                mapel: "Agama",
-                nilai: effectiveSts,
-                keterangan: effectiveSts !== null ? getKeterangan(effectiveSts) : "-",
-              },
-            ];
-          })()
-        : [];
-
-      const baris: BarisNilai[] = [...agamaBaris, ...nonAgamaBaris];
-
-      const nilaiValid = baris.filter((b) => b.nilai !== null).map((b) => b.nilai!) as number[];
-      const total = nilaiValid.length > 0 ? nilaiValid.reduce((a, b) => a + b, 0) : null;
-      const rataRata = total !== null ? Math.round((total / nilaiValid.length) * 100) / 100 : null;
-
-      return { siswa: s, baris, total, rataRata, peringkat: null };
-    });
-
-    // Hitung peringkat berdasarkan rata-rata (ranking standar: nilai sama = peringkat sama)
-    const withRata = summaries
-      .filter((s) => s.rataRata !== null)
-      .sort((a, b) => (b.rataRata! - a.rataRata!));
-
-    let rank = 0;
-    let lastVal: number | null = null;
-    const rankMap: Record<string, number> = {};
-    for (const s of withRata) {
-      if (s.rataRata !== lastVal) {
-        rank += 1;
-        lastVal = s.rataRata;
-      }
-      rankMap[s.siswa.id] = rank;
-    }
-
-    const finalSummaries = summaries.map((s) => ({ ...s, peringkat: rankMap[s.siswa.id] ?? null }));
+    // Nilai per siswa per mapel: nilai STS murni (tertinggi antara STS/Susulan/Remedial),
+    // mapel Agama digabung satu baris, lalu peringkat dihitung dari rata-rata.
+    const summaries = hitungRingkasanSiswa(siswaList, mapelList, nilaiRows);
+    const finalSummaries = hitungPeringkat(summaries);
 
     setRingkasanList(finalSummaries);
     // Pertahankan siswa yang sedang dipilih kalau masih ada di daftar (mis.
@@ -330,8 +220,11 @@ export default function RaporStsPage() {
 
         {/* Info siswa -- kolom kiri dilebarkan (bukan 50/50) supaya nama
             siswa yang panjang tetap muat satu baris. */}
-        <div className="grid grid-cols-[2fr_1fr] gap-x-6 text-sm mb-4">
-          <table>
+        <div className="grid grid-cols-[2fr_1fr] gap-x-[170px] text-sm mb-4">
+          {/* w-fit -- tabel adalah grid item, defaultnya justify-self:stretch
+              melebarkannya ke seluruh lebar kolom grid, membuat label dan
+              nilai berjauhan; w-fit mengembalikannya ke lebar sesuai isi. */}
+          <table className="w-fit">
             <tbody>
               <tr>
                 <td className="py-0.5 pr-3 whitespace-nowrap">Nama Siswa</td>
@@ -347,7 +240,7 @@ export default function RaporStsPage() {
               </tr>
             </tbody>
           </table>
-          <table>
+          <table className="w-fit">
             <tbody>
               <tr>
                 <td className="py-0.5 pr-3 whitespace-nowrap">Kelas / Fase</td>
@@ -431,7 +324,7 @@ export default function RaporStsPage() {
             <p>Wali Kelas,</p>
             <div className="h-14" />
             <p className="underline">{waliKelasInfo?.nama || "________________"}</p>
-            {waliKelasInfo?.nip && (
+            {waliKelasInfo?.nip && isValidNip(waliKelasInfo.nip) && (
               <p>
                 {waliKelasInfo.label}. {waliKelasInfo.nip}
               </p>

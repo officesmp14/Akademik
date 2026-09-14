@@ -33,6 +33,8 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveAdminAccess = pathname.startsWith("/admin/access");
   const isActiveKelasSaya = pathname.startsWith("/kelas-saya");
   const isActiveRaporSts = pathname.startsWith("/rapor-sts");
+  const isActiveRekapSts = pathname.startsWith("/rekap-sts");
+  const isActiveTandaTerimaSts = pathname.startsWith("/tanda-terima-sts");
   const isActiveAdminWaliKelas = pathname.startsWith("/admin/wali-kelas");
   const isActiveAdminKetuaEkskul = pathname.startsWith("/admin/ketua-ekskul");
   const isActiveNilai = pathname === "/nilai" || (pathname.startsWith("/nilai/") && !pathname.startsWith("/nilai-sts"));
@@ -297,6 +299,24 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               <Link href="/rapor-sts" title="Cetak Rapor STS" className={linkClass(isActiveRaporSts)}>
                 <FileText className="h-4 w-4 shrink-0" />
                 {!collapsed && "Cetak Rapor STS"}
+              </Link>
+            )}
+
+            {(waliKelasRombel || isFullAccessRole) && (
+              <Link href="/rekap-sts" title="Rekap STS" className={linkClass(isActiveRekapSts)}>
+                <FileText className="h-4 w-4 shrink-0" />
+                {!collapsed && "Rekap STS"}
+              </Link>
+            )}
+
+            {(waliKelasRombel || isFullAccessRole) && (
+              <Link
+                href="/tanda-terima-sts"
+                title="Tanda Terima STS"
+                className={linkClass(isActiveTandaTerimaSts)}
+              >
+                <FileText className="h-4 w-4 shrink-0" />
+                {!collapsed && "Tanda Terima STS"}
               </Link>
             )}
 

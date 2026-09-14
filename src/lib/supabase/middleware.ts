@@ -116,8 +116,14 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  // /kelas-saya dan /rapor-sts HANYA untuk yang benar-benar ditugaskan jadi wali kelas
-  if (path.startsWith("/kelas-saya") || path.startsWith("/rapor-sts")) {
+  // /kelas-saya, /rapor-sts, /rekap-sts, dan /tanda-terima-sts HANYA untuk
+  // yang benar-benar ditugaskan jadi wali kelas
+  if (
+    path.startsWith("/kelas-saya") ||
+    path.startsWith("/rapor-sts") ||
+    path.startsWith("/rekap-sts") ||
+    path.startsWith("/tanda-terima-sts")
+  ) {
     const { data: waliRow } = gtkId
       ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
       : { data: null };
