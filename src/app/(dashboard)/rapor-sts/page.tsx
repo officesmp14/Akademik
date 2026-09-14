@@ -15,9 +15,26 @@ type SiswaRingkas = {
   nama: string | null;
   nipd: string | null;
   nisn: string | null;
+  agama: string | null;
 };
 
 type MapelRingkas = { id: number; mapel: string };
+
+// Mapel Agama tercatat sebagai mata pelajaran terpisah per agama (Agama
+// Islam, Agama Protestan, dst) -- di rapor cukup ditampilkan SATU baris
+// "Agama" berisi nilai dari mapel yang sesuai agama siswa itu sendiri.
+const AGAMA_MAPEL_BY_AGAMA: Record<string, string> = {
+  Islam: "Agama Islam",
+  Kristen: "Agama Protestan",
+  Katholik: "Agama Katolik",
+  Budha: "Agama Budha",
+  Hindu: "Agama Hindu",
+  Konghucu: "Agama Konghucu",
+};
+
+function isMapelAgama(nama: string): boolean {
+  return nama.startsWith("Agama ");
+}
 
 type WaliKelasInfo = { nama: string | null; nip: string | null; label: string };
 
@@ -50,6 +67,7 @@ export default function RaporStsPage() {
   const [tahunAjaran, setTahunAjaran] = useState(getTahunAjaranSaatIni());
 
   const [profil, setProfil] = useState<ProfilSekolah | null>(null);
+  const [tanggalCetakRapor, setTanggalCetakRapor] = useState<string | null>(null);
   const [waliKelasInfo, setWaliKelasInfo] = useState<WaliKelasInfo | null>(null);
   const [ringkasanList, setRingkasanList] = useState<RingkasanSiswa[]>([]);
   const [selectedSiswaId, setSelectedSiswaId] = useState<string>("");
@@ -100,16 +118,23 @@ export default function RaporStsPage() {
     setError(null);
     const supabase = createClient();
 
-    const [profilRes, waliRes, siswaRes, gmkRes] = await Promise.all([
+    const [profilRes, waliRes, siswaRes, gmkRes, panitiaRes] = await Promise.all([
       supabase.from("profil_sekolah").select("*").eq("id", 1).maybeSingle(),
       supabase.from("wali_kelas").select("gtk_id").eq("rombel", selectedRombel).maybeSingle(),
       supabase
         .from("siswa01")
-        .select("id, nama, nipd, nisn")
+        .select("id, nama, nipd, nisn, agama")
         .eq("rombel", selectedRombel)
         .eq("status_siswa", "Aktif")
         .order("nama", { ascending: true }),
       supabase.from("guru_mengajar_kelas").select("mapel_id").eq("rombel", selectedRombel),
+      supabase
+        .from("panitia_pts_pas")
+        .select("tanggal_cetak_rapor")
+        .eq("tahun_ajaran", tahunAjaran)
+        .eq("semester", semester)
+        .eq("jenis", "PTS")
+        .maybeSingle(),
     ]);
 
     if (siswaRes.error) {
@@ -119,6 +144,7 @@ export default function RaporStsPage() {
     }
 
     setProfil(profilRes.data ?? null);
+    setTanggalCetakRapor(panitiaRes.data?.tanggal_cetak_rapor ?? null);
 
     if (waliRes.data?.gtk_id) {
       const { data: gtk } = await supabase
@@ -167,16 +193,41 @@ export default function RaporStsPage() {
 
     // Nilai per siswa per mapel: nilai STS murni (tertinggi antara STS/Susulan/Remedial)
     const summaries: RingkasanSiswa[] = siswaList.map((s) => {
-      const baris: BarisNilai[] = mapelList.map((m) => {
-        const rows = nilaiRows.filter((r) => r.siswa_id === s.id && r.mapel_id === m.id);
-        const effectiveSts = getEffectiveSts(rows);
+      const nonAgamaBaris: BarisNilai[] = mapelList
+        .filter((m) => !isMapelAgama(m.mapel))
+        .map((m) => {
+          const rows = nilaiRows.filter((r) => r.siswa_id === s.id && r.mapel_id === m.id);
+          const effectiveSts = getEffectiveSts(rows);
 
-        return {
-          mapel: m.mapel,
-          nilai: effectiveSts,
-          keterangan: effectiveSts !== null ? getKeterangan(effectiveSts) : "-",
-        };
-      });
+          return {
+            mapel: m.mapel,
+            nilai: effectiveSts,
+            keterangan: effectiveSts !== null ? getKeterangan(effectiveSts) : "-",
+          };
+        });
+
+      // Gabungkan semua mapel Agama jadi SATU baris "Agama" -- isinya nilai
+      // dari mapel Agama yang cocok dengan agama siswa itu sendiri.
+      const adaMapelAgama = mapelList.some((m) => isMapelAgama(m.mapel));
+      const agamaBaris: BarisNilai[] = adaMapelAgama
+        ? (() => {
+            const agamaMapelNama = s.agama ? AGAMA_MAPEL_BY_AGAMA[s.agama] : undefined;
+            const agamaMapel = agamaMapelNama ? mapelList.find((m) => m.mapel === agamaMapelNama) : undefined;
+            const rows = agamaMapel
+              ? nilaiRows.filter((r) => r.siswa_id === s.id && r.mapel_id === agamaMapel.id)
+              : [];
+            const effectiveSts = getEffectiveSts(rows);
+            return [
+              {
+                mapel: "Agama",
+                nilai: effectiveSts,
+                keterangan: effectiveSts !== null ? getKeterangan(effectiveSts) : "-",
+              },
+            ];
+          })()
+        : [];
+
+      const baris: BarisNilai[] = [...agamaBaris, ...nonAgamaBaris];
 
       const nilaiValid = baris.filter((b) => b.nilai !== null).map((b) => b.nilai!) as number[];
       const total = nilaiValid.length > 0 ? nilaiValid.reduce((a, b) => a + b, 0) : null;
@@ -237,6 +288,11 @@ export default function RaporStsPage() {
     return kota.toUpperCase().split("").join(" ");
   }, [profil]);
 
+  // Tanggal cetak diambil dari panitia_pts_pas.tanggal_cetak_rapor (jenis
+  // PTS) untuk tahun ajaran & semester yang dipilih -- jatuh ke tanggal
+  // hari ini kalau panitia belum menentukannya.
+  const tanggalCetak = tanggalCetakRapor ? new Date(`${tanggalCetakRapor}T00:00:00`) : new Date();
+
   function RaporCard({ data }: { data: RingkasanSiswa }) {
     return (
       <div className="bg-white text-slate-900 border border-slate-200 rounded-xl p-8 mb-8 print:border-0 print:rounded-none print:mb-0 print:break-after-page">
@@ -272,8 +328,9 @@ export default function RaporStsPage() {
           SUMATIF TENGAH SEMESTER
         </p>
 
-        {/* Info siswa */}
-        <div className="grid grid-cols-2 gap-x-6 text-sm mb-4">
+        {/* Info siswa -- kolom kiri dilebarkan (bukan 50/50) supaya nama
+            siswa yang panjang tetap muat satu baris. */}
+        <div className="grid grid-cols-[2fr_1fr] gap-x-6 text-sm mb-4">
           <table>
             <tbody>
               <tr>
@@ -371,7 +428,7 @@ export default function RaporStsPage() {
           <div />
           <div className="text-center">
             <p>
-              {profil?.kota_kabupaten || "Tarakan"}, {formatTanggalIndonesia()}
+              {profil?.kota_kabupaten || "Tarakan"}, {formatTanggalIndonesia(tanggalCetak)}
             </p>
             <p>Wali Kelas,</p>
             <div className="h-14" />

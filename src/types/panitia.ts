@@ -7,6 +7,8 @@ export interface PanitiaPtsPas {
   jenis: JenisPanitia;
   ketua_gtk_id: string | null;
   sekretaris_gtk_id: string | null;
+  /** Tanggal cetak raport -- dipakai khusus untuk jenis PTS. */
+  tanggal_cetak_rapor: string | null;
 }
 
 export const JENIS_PANITIA_LABEL: Record<JenisPanitia, string> = {

@@ -8,14 +8,14 @@ import { Loader2, Check } from "lucide-react";
 
 type GtkOption = { id: string; nama: string | null; nip: string | null };
 
-type FormPerJenis = { ketua_gtk_id: string; sekretaris_gtk_id: string };
+type FormPerJenis = { ketua_gtk_id: string; sekretaris_gtk_id: string; tanggal_cetak_rapor: string };
 
 const JENIS_LIST: JenisPanitia[] = ["PTS", "PAS"];
 
 function emptyForm(): Record<JenisPanitia, FormPerJenis> {
   return {
-    PTS: { ketua_gtk_id: "", sekretaris_gtk_id: "" },
-    PAS: { ketua_gtk_id: "", sekretaris_gtk_id: "" },
+    PTS: { ketua_gtk_id: "", sekretaris_gtk_id: "", tanggal_cetak_rapor: "" },
+    PAS: { ketua_gtk_id: "", sekretaris_gtk_id: "", tanggal_cetak_rapor: "" },
   };
 }
 
@@ -55,7 +55,7 @@ export default function PanitiaPtsPasPage() {
       supabase.from("datagtk").select("id, nama, nip").order("nama", { ascending: true }),
       supabase
         .from("panitia_pts_pas")
-        .select("id, tahun_ajaran, semester, jenis, ketua_gtk_id, sekretaris_gtk_id")
+        .select("id, tahun_ajaran, semester, jenis, ketua_gtk_id, sekretaris_gtk_id, tanggal_cetak_rapor")
         .eq("tahun_ajaran", tahunAjaran)
         .eq("semester", semester),
     ]);
@@ -73,6 +73,7 @@ export default function PanitiaPtsPasPage() {
       next[row.jenis] = {
         ketua_gtk_id: row.ketua_gtk_id ?? "",
         sekretaris_gtk_id: row.sekretaris_gtk_id ?? "",
+        tanggal_cetak_rapor: row.tanggal_cetak_rapor ?? "",
       };
     }
     setForm(next);
@@ -100,6 +101,7 @@ export default function PanitiaPtsPasPage() {
       jenis,
       ketua_gtk_id: form[jenis].ketua_gtk_id || null,
       sekretaris_gtk_id: form[jenis].sekretaris_gtk_id || null,
+      tanggal_cetak_rapor: form[jenis].tanggal_cetak_rapor || null,
     }));
 
     const { error } = await supabase
@@ -198,6 +200,20 @@ export default function PanitiaPtsPasPage() {
                   </select>
                 </div>
               </div>
+
+              {jenis === "PTS" && (
+                <div className="mt-5 sm:w-[calc(50%-0.625rem)]">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+                    Tanggal Cetak Raport PTS
+                  </label>
+                  <input
+                    type="date"
+                    value={form.PTS.tanggal_cetak_rapor}
+                    onChange={(e) => updateField("PTS", "tanggal_cetak_rapor", e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              )}
             </div>
           ))}
 

@@ -17,6 +17,10 @@ create table if not exists panitia_pts_pas (
   unique (tahun_ajaran, semester, jenis)
 );
 
+-- Tanggal cetak raport -- dipakai khusus untuk baris jenis 'PTS' (baris PAS
+-- dibiarkan null); nullable karena tanggalnya belum tentu ditentukan di awal.
+alter table panitia_pts_pas add column if not exists tanggal_cetak_rapor date;
+
 alter table panitia_pts_pas enable row level security;
 
 -- Permisif untuk authenticated, konsisten dengan pola tabel penugasan lain
