@@ -39,13 +39,13 @@ export async function fetchWaliKelasInfo(
 
   const { data: gtk } = await supabase
     .from("datagtk")
-    .select("nama, nip, status_kepegawaian")
+    .select("nama, nip, status_kepegawaian, gelar_belakang")
     .eq("id", waliRow.gtk_id)
     .maybeSingle();
   if (!gtk) return null;
 
   return {
-    nama: gtk.nama,
+    nama: gtk.nama + ", " + (gtk.gelar_belakang || ""),
     nip: gtk.nip,
     label: gtk.status_kepegawaian === "PPPK" ? "NIPPPPK" : "NIP",
   };
