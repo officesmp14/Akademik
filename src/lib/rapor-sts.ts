@@ -47,7 +47,7 @@ export async function fetchWaliKelasInfo(
   return {
     nama: gtk.nama,
     nip: gtk.nip,
-    label: gtk.status_kepegawaian === "PPPK" ? "NIPP3K" : "NIP",
+    label: gtk.status_kepegawaian === "PPPK" ? "NIPPPPK" : "NIP",
   };
 }
 
