@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, Hash, FileCheck, Mail } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -39,6 +39,15 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveAdminKetuaEkskul = pathname.startsWith("/admin/ketua-ekskul");
   const isActiveNilai = pathname === "/nilai" || (pathname.startsWith("/nilai/") && !pathname.startsWith("/nilai-sts"));
   const isActiveNilaiLeger = pathname.startsWith("/nilai-leger");
+  const isActiveNilaiUjianSekolah = pathname.startsWith("/nilai-ujian-sekolah");
+  const isActiveNilaiRekap = pathname.startsWith("/nilai-rekap");
+  const isActiveNilaiIjazah = pathname.startsWith("/nilai-ijazah");
+  const isActiveCetakLeger = pathname.startsWith("/cetak-leger");
+  const isActiveCetakNilaiIjazah = pathname.startsWith("/cetak-nilai-ijazah");
+  const isActiveSuketLulus = pathname.startsWith("/suket-lulus");
+  const isActiveCetakAmplop = pathname.startsWith("/cetak-amplop");
+  const isActivePengaturanSkl = pathname.startsWith("/pengaturan-skl");
+  const isActiveNomorUnikSkl = pathname.startsWith("/nomor-unik-skl");
   const isActiveNilaiSts = pathname.startsWith("/nilai-sts");
   const isActivePresensi = pathname === "/presensi";
   const isActiveRekapPresensi = pathname === "/presensi/rekap";
@@ -83,6 +92,27 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const hasExtraNilaiLegerAccess = moduleAccess.some(
     (a) => a.module === "nilai_leger" && a.can_view
   );
+  const hasExtraNilaiUjianSekolahAccess = moduleAccess.some(
+    (a) => a.module === "nilai_ujian_sekolah" && a.can_view
+  );
+  const hasExtraNilaiRekapAccess = moduleAccess.some(
+    (a) => a.module === "nilai_rekap" && a.can_view
+  );
+  const hasExtraNilaiIjazahAccess = moduleAccess.some(
+    (a) => a.module === "nilai_ijazah" && a.can_view
+  );
+  const hasExtraCetakLegerAccess = moduleAccess.some(
+    (a) => a.module === "cetak_leger" && a.can_view
+  );
+  const hasExtraCetakNilaiIjazahAccess = moduleAccess.some(
+    (a) => a.module === "cetak_nilai_ijazah" && a.can_view
+  );
+  const hasExtraSuketLulusAccess = moduleAccess.some(
+    (a) => a.module === "suket_lulus" && a.can_view
+  );
+  const hasExtraCetakAmplopAccess = moduleAccess.some(
+    (a) => a.module === "cetak_amplop" && a.can_view
+  );
   const hasExtraMutasiMasukAccess = moduleAccess.some(
     (a) => a.module === "mutasi_masuk_siswa" && a.can_view
   );
@@ -109,8 +139,24 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
     showSiswaMenu || showMutasiMasukMenu || showRegistrasiMenu || showDataPeriodikMenu || Boolean(waliKelasRombel);
   const showPresensiSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole || showRekapPresensiMenu;
   const showNilaiUjianSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole;
+  const isWaliKelasIX = Boolean(waliKelasRombel?.startsWith("IX."));
+  const showNilaiLegerLink = isFullAccessRole || hasExtraNilaiLegerAccess || isWaliKelasIX;
+  const showNilaiUjianSekolahLink = isFullAccessRole || hasExtraNilaiUjianSekolahAccess || isWaliKelasIX;
+  const showNilaiRekapLink = isFullAccessRole || hasExtraNilaiRekapAccess || isWaliKelasIX;
+  const showNilaiIjazahLink = isFullAccessRole || hasExtraNilaiIjazahAccess || isWaliKelasIX;
+  const showCetakLegerLink = isFullAccessRole || hasExtraCetakLegerAccess || isWaliKelasIX;
+  const showCetakNilaiIjazahLink = isFullAccessRole || hasExtraCetakNilaiIjazahAccess || isWaliKelasIX;
+  const showSuketLulusLink = isFullAccessRole || hasExtraSuketLulusAccess || isWaliKelasIX;
+  const showCetakAmplopLink = isFullAccessRole || hasExtraCetakAmplopAccess || isWaliKelasIX;
   const showSklSection =
-    isFullAccessRole || hasExtraNilaiLegerAccess || Boolean(waliKelasRombel?.startsWith("IX."));
+    showNilaiLegerLink ||
+    showNilaiUjianSekolahLink ||
+    showNilaiRekapLink ||
+    showNilaiIjazahLink ||
+    showCetakLegerLink ||
+    showCetakNilaiIjazahLink ||
+    showSuketLulusLink ||
+    showCetakAmplopLink;
 
   const linkClass = (active: boolean) =>
     `flex items-center rounded-lg text-sm font-medium transition-colors ${
@@ -332,10 +378,82 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
         {showSklSection && (
           <>
             {sectionLabel("SKL")}
-            <Link href="/nilai-leger" title="Nilai Leger" className={linkClass(isActiveNilaiLeger)}>
-              <NotebookPen className="h-4 w-4 shrink-0" />
-              {!collapsed && "Nilai Leger"}
-            </Link>
+            {showNilaiLegerLink && (
+              <Link href="/nilai-leger" title="Nilai Leger" className={linkClass(isActiveNilaiLeger)}>
+                <NotebookPen className="h-4 w-4 shrink-0" />
+                {!collapsed && "Nilai Leger"}
+              </Link>
+            )}
+            {showNilaiUjianSekolahLink && (
+              <Link
+                href="/nilai-ujian-sekolah"
+                title="Nilai Ujian Sekolah"
+                className={linkClass(isActiveNilaiUjianSekolah)}
+              >
+                <ClipboardList className="h-4 w-4 shrink-0" />
+                {!collapsed && "Nilai Ujian Sekolah"}
+              </Link>
+            )}
+            {showNilaiRekapLink && (
+              <Link href="/nilai-rekap" title="Nilai Rekap" className={linkClass(isActiveNilaiRekap)}>
+                <FileBarChart className="h-4 w-4 shrink-0" />
+                {!collapsed && "Nilai Rekap"}
+              </Link>
+            )}
+            {showNilaiIjazahLink && (
+              <Link href="/nilai-ijazah" title="Nilai Ijazah" className={linkClass(isActiveNilaiIjazah)}>
+                <IdCard className="h-4 w-4 shrink-0" />
+                {!collapsed && "Nilai Ijazah"}
+              </Link>
+            )}
+            {showCetakLegerLink && (
+              <Link href="/cetak-leger" title="Cetak Leger" className={linkClass(isActiveCetakLeger)}>
+                <FileText className="h-4 w-4 shrink-0" />
+                {!collapsed && "Cetak Leger"}
+              </Link>
+            )}
+            {showCetakNilaiIjazahLink && (
+              <Link
+                href="/cetak-nilai-ijazah"
+                title="Cetak Nilai Ijazah"
+                className={linkClass(isActiveCetakNilaiIjazah)}
+              >
+                <Printer className="h-4 w-4 shrink-0" />
+                {!collapsed && "Cetak Nilai Ijazah"}
+              </Link>
+            )}
+            {showSuketLulusLink && (
+              <Link href="/suket-lulus" title="Suket Lulus" className={linkClass(isActiveSuketLulus)}>
+                <FileCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Suket Lulus"}
+              </Link>
+            )}
+            {showCetakAmplopLink && (
+              <Link href="/cetak-amplop" title="Cetak Amplop" className={linkClass(isActiveCetakAmplop)}>
+                <Mail className="h-4 w-4 shrink-0" />
+                {!collapsed && "Cetak Amplop"}
+              </Link>
+            )}
+            {isFullAccessRole && (
+              <Link
+                href="/nomor-unik-skl"
+                title="Nomor Unik SKL"
+                className={linkClass(isActiveNomorUnikSkl)}
+              >
+                <Hash className="h-4 w-4 shrink-0" />
+                {!collapsed && "Nomor Unik SKL"}
+              </Link>
+            )}
+            {isFullAccessRole && (
+              <Link
+                href="/pengaturan-skl"
+                title="Pengaturan"
+                className={linkClass(isActivePengaturanSkl)}
+              >
+                <Settings2 className="h-4 w-4 shrink-0" />
+                {!collapsed && "Pengaturan"}
+              </Link>
+            )}
           </>
         )}
 

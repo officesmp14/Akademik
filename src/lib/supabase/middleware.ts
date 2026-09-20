@@ -21,6 +21,13 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/laporan/riwayat-mutasi", modules: ["laporan_riwayat_mutasi"] },
   { prefix: "/laporan/ganak-hibot", modules: ["laporan_ganak_hibot"] },
   { prefix: "/nilai-leger", modules: ["nilai_leger"] },
+  { prefix: "/nilai-ujian-sekolah", modules: ["nilai_ujian_sekolah"] },
+  { prefix: "/nilai-rekap", modules: ["nilai_rekap"] },
+  { prefix: "/nilai-ijazah", modules: ["nilai_ijazah"] },
+  { prefix: "/cetak-leger", modules: ["cetak_leger"] },
+  { prefix: "/cetak-nilai-ijazah", modules: ["cetak_nilai_ijazah"] },
+  { prefix: "/suket-lulus", modules: ["suket_lulus"] },
+  { prefix: "/cetak-amplop", modules: ["cetak_amplop"] },
   {
     prefix: "/laporan",
     modules: [
@@ -140,7 +147,18 @@ export async function updateSession(request: NextRequest) {
   // langsung (dua path ini dulu sama sekali tidak dibatasi middleware,
   // jadi bypass ini menjaga wali kelas tetap bisa kelola kelasnya sendiri
   // sekarang keduanya digating modul registrasi_peserta_didik/data_periodik).
-  if (path.startsWith("/registrasi-peserta-didik") || path.startsWith("/data-periodik") || path.startsWith("/nilai-leger")) {
+  if (
+    path.startsWith("/registrasi-peserta-didik") ||
+    path.startsWith("/data-periodik") ||
+    path.startsWith("/nilai-leger") ||
+    path.startsWith("/nilai-ujian-sekolah") ||
+    path.startsWith("/nilai-rekap") ||
+    path.startsWith("/nilai-ijazah") ||
+    path.startsWith("/cetak-leger") ||
+    path.startsWith("/cetak-nilai-ijazah") ||
+    path.startsWith("/suket-lulus") ||
+    path.startsWith("/cetak-amplop")
+  ) {
     const { data: waliRow } = gtkId
       ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
       : { data: null };
@@ -185,6 +203,26 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url);
     }
     return supabaseResponse;
+  }
+
+  // /pengaturan-skl HANYA untuk admin/kepala sekolah -- yang benar-benar
+  // admin/kepsek sudah lolos duluan di blok isFullAccessRole di atas, jadi
+  // kalau eksekusi sampai sini pasti bukan admin/kepsek. Bobot SKL adalah
+  // keputusan kebijakan sekolah, bukan sesuatu yang didelegasikan lewat
+  // Hak Akses seperti modul lain.
+  if (path.startsWith("/pengaturan-skl")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/profil-saya";
+    return NextResponse.redirect(url);
+  }
+
+  // /nomor-unik-skl HANYA untuk admin/kepala sekolah -- nomor surat resmi,
+  // sama seperti /pengaturan-skl, bukan sesuatu yang didelegasikan lewat
+  // Hak Akses seperti modul lain.
+  if (path.startsWith("/nomor-unik-skl")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/profil-saya";
+    return NextResponse.redirect(url);
   }
 
   // /data-siswa-panitia HANYA untuk yang ditugaskan jadi ketua/sekretaris

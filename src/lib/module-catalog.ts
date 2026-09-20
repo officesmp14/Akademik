@@ -14,6 +14,13 @@ export type ModuleKey =
   | "laporan_verifikasi_presensi"
   | "laporan_ganak_hibot"
   | "nilai_leger"
+  | "nilai_ujian_sekolah"
+  | "nilai_rekap"
+  | "nilai_ijazah"
+  | "cetak_leger"
+  | "cetak_nilai_ijazah"
+  | "suket_lulus"
+  | "cetak_amplop"
   | "mutasi_masuk_siswa"
   | "registrasi_peserta_didik"
   | "data_periodik"
@@ -35,6 +42,13 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "laporan_verifikasi_presensi", label: "Laporan - Verifikasi Presensi" },
   { key: "laporan_ganak_hibot", label: "Laporan - Ganak Hibot" },
   { key: "nilai_leger", label: "Nilai Leger" },
+  { key: "nilai_ujian_sekolah", label: "Nilai Ujian Sekolah" },
+  { key: "nilai_rekap", label: "Nilai Rekap" },
+  { key: "nilai_ijazah", label: "Nilai Ijazah" },
+  { key: "cetak_leger", label: "Cetak Leger" },
+  { key: "cetak_nilai_ijazah", label: "Cetak Nilai Ijazah" },
+  { key: "suket_lulus", label: "Suket Lulus" },
+  { key: "cetak_amplop", label: "Cetak Amplop" },
   { key: "mutasi_masuk_siswa", label: "Data Mutasi Masuk" },
   { key: "registrasi_peserta_didik", label: "Registrasi Peserta Didik" },
   { key: "data_periodik", label: "Data Periodik" },

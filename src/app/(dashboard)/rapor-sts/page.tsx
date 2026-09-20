@@ -23,6 +23,13 @@ import { Loader2, Printer } from "lucide-react";
 
 type SiswaRingkas = SiswaRingkasNilai;
 
+// Baris Agama disimpan sebagai "Agama" (dipakai juga sebagai key lookup di
+// Rekap STS) -- di rapor ini saja label tampilannya diperpanjang jadi nama
+// resmi kurikulum, tanpa mengubah key aslinya.
+function labelMapel(mapel: string): string {
+  return mapel === "Agama" ? "Pendidikan Agama dan Budi Pekerti" : mapel;
+}
+
 export default function RaporStsPage() {
   const { role, waliKelasRombel } = useRole();
   const isFullAccessRole = role === "admin" || role === "kepala_sekolah";
@@ -219,8 +226,12 @@ export default function RaporStsPage() {
         </p>
 
         {/* Info siswa -- kolom kiri dilebarkan (bukan 50/50) supaya nama
-            siswa yang panjang tetap muat satu baris. */}
-        <div className="grid grid-cols-[2fr_1fr] gap-x-[170px] text-sm mb-4">
+            siswa yang panjang tetap muat satu baris. Gap [170px] ditentukan
+            untuk tampilan layar (max-w-4xl); saat dicetak di kertas A4,
+            lebar yang tersedia jauh lebih sempit, jadi gap segitu justru
+            menyita ruang dan membuat Nama Siswa/Tahun Pelajaran terpotong
+            dua baris -- gap dipersempit khusus untuk print. */}
+        <div className="grid grid-cols-[2fr_1fr] gap-x-[170px] print:gap-x-6 text-sm mb-4">
           {/* w-fit -- tabel adalah grid item, defaultnya justify-self:stretch
               melebarkannya ke seluruh lebar kolom grid, membuat label dan
               nilai berjauhan; w-fit mengembalikannya ke lebar sesuai isi. */}
@@ -228,7 +239,7 @@ export default function RaporStsPage() {
             <tbody>
               <tr>
                 <td className="py-0.5 pr-3 whitespace-nowrap">Nama Siswa</td>
-                <td className="py-0.5">: {data.siswa.nama}</td>
+                <td className="py-0.5 whitespace-nowrap">: {data.siswa.nama}</td>
               </tr>
               <tr>
                 <td className="py-0.5 pr-3 whitespace-nowrap">N I S</td>
@@ -254,7 +265,7 @@ export default function RaporStsPage() {
               </tr>
               <tr>
                 <td className="py-0.5 pr-3 whitespace-nowrap">Tahun Pelajaran</td>
-                <td className="py-0.5">: {tahunAjaran.replace("/", " / ")}</td>
+                <td className="py-0.5 whitespace-nowrap">: {tahunAjaran.replace("/", " / ")}</td>
               </tr>
             </tbody>
           </table>
@@ -265,7 +276,7 @@ export default function RaporStsPage() {
           <thead>
             <tr className="border-b border-slate-800">
               <th className="border-r border-slate-800 px-2 py-1.5 w-10">No</th>
-              <th className="border-r border-slate-800 px-2 py-1.5 text-left">Muatan Pelajaran</th>
+              <th className="border-r border-slate-800 px-2 py-1.5 text-center">Muatan Pelajaran</th>
               <th className="border-r border-slate-800 px-2 py-1.5 w-20">Nilai</th>
               <th className="px-2 py-1.5 w-24">Keterangan</th>
             </tr>
@@ -280,12 +291,12 @@ export default function RaporStsPage() {
             ) : (
               data.baris.map((b, idx) => (
                 <tr key={b.mapel} className="border-b border-slate-300 last:border-0">
-                  <td className="border-r border-slate-800 px-2 py-1 text-center">{idx + 1}</td>
-                  <td className="border-r border-slate-800 px-2 py-1">{b.mapel}</td>
-                  <td className="border-r border-slate-800 px-2 py-1 text-center">
+                  <td className="border-r border-slate-800 px-2 py-0.5 text-center">{idx + 1}</td>
+                  <td className="border-r border-slate-800 px-2 py-0.5">{labelMapel(b.mapel)}</td>
+                  <td className="border-r border-slate-800 px-2 py-0.5 text-center">
                     {b.nilai ?? "-"}
                   </td>
-                  <td className="px-2 py-1 text-center">{b.keterangan}</td>
+                  <td className="px-2 py-0.5 text-center">{b.keterangan}</td>
                 </tr>
               ))
             )}
@@ -339,6 +350,7 @@ export default function RaporStsPage() {
 
   return (
     <div className="p-6 md:p-8 max-w-4xl mx-auto print:p-0 print:max-w-none">
+      <style>{`@page { margin-right: 1cm; }`}</style>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5 print:hidden">
         <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Cetak Rapor STS</h1>
         <div className="flex gap-2">
