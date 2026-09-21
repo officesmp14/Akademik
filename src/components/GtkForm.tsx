@@ -171,7 +171,7 @@ export default function GtkForm({
 
       {/* Tab Penugasan Mengajar dikelola terpisah (langsung simpan ke DB, bukan lewat form utama) */}
       {activeTab === "penugasan" && isEdit ? (
-        <GtkPenugasanTab gtkId={gtkId!} readOnly={!canEdit} />
+        <GtkPenugasanTab gtkId={gtkId!} readOnly={isReadOnly} />
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <fieldset disabled={isReadOnly} className="contents">

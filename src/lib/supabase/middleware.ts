@@ -24,9 +24,11 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/nilai-ujian-sekolah", modules: ["nilai_ujian_sekolah"] },
   { prefix: "/nilai-rekap", modules: ["nilai_rekap"] },
   { prefix: "/nilai-ijazah", modules: ["nilai_ijazah"] },
+  { prefix: "/peringkat", modules: ["peringkat"] },
   { prefix: "/cetak-leger", modules: ["cetak_leger"] },
   { prefix: "/cetak-nilai-ijazah", modules: ["cetak_nilai_ijazah"] },
   { prefix: "/suket-lulus", modules: ["suket_lulus"] },
+  { prefix: "/tanda-terima-skl", modules: ["tanda_terima_skl"] },
   { prefix: "/cetak-amplop", modules: ["cetak_amplop"] },
   {
     prefix: "/laporan",
@@ -154,9 +156,11 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/nilai-ujian-sekolah") ||
     path.startsWith("/nilai-rekap") ||
     path.startsWith("/nilai-ijazah") ||
+    path.startsWith("/peringkat") ||
     path.startsWith("/cetak-leger") ||
     path.startsWith("/cetak-nilai-ijazah") ||
     path.startsWith("/suket-lulus") ||
+    path.startsWith("/tanda-terima-skl") ||
     path.startsWith("/cetak-amplop")
   ) {
     const { data: waliRow } = gtkId
@@ -211,15 +215,6 @@ export async function updateSession(request: NextRequest) {
   // keputusan kebijakan sekolah, bukan sesuatu yang didelegasikan lewat
   // Hak Akses seperti modul lain.
   if (path.startsWith("/pengaturan-skl")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/profil-saya";
-    return NextResponse.redirect(url);
-  }
-
-  // /nomor-unik-skl HANYA untuk admin/kepala sekolah -- nomor surat resmi,
-  // sama seperti /pengaturan-skl, bukan sesuatu yang didelegasikan lewat
-  // Hak Akses seperti modul lain.
-  if (path.startsWith("/nomor-unik-skl")) {
     const url = request.nextUrl.clone();
     url.pathname = "/profil-saya";
     return NextResponse.redirect(url);

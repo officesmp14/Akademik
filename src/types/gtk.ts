@@ -84,6 +84,7 @@ export interface Gtk {
 export interface GtkPenugasanMengajar {
   id?: string;
   gtk_id: string;
+  tahun_ajaran?: string | null;
   nama_sekolah?: string | null;
   jenjang_sekolah?: string | null;
   status_sekolah?: string | null;

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { GtkPenugasanMengajar, JENJANG_SEKOLAH_OPTIONS, STATUS_SEKOLAH_OPTIONS } from "@/types/gtk";
+import { getTahunAjaranSaatIni } from "@/types/nilai";
 import { TextField, SelectField } from "@/components/form-fields";
 import { useForm } from "react-hook-form";
 import { Plus, Pencil, Trash2, Loader2, X } from "lucide-react";
@@ -21,9 +22,13 @@ export default function GtkPenugasanTab({
   const [deleteTarget, setDeleteTarget] = useState<GtkPenugasanMengajar | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { register, handleSubmit, reset } = useForm<GtkPenugasanMengajar>();
 
+  // Penugasan mengajar berubah tiap tahun ajaran -- tampilkan semua tahun
+  // sekaligus (bukan difilter satu tahun) supaya riwayat tahun lalu tetap
+  // kelihatan, diurutkan dari tahun terbaru.
   const fetchList = useCallback(async () => {
     setLoading(true);
     const supabase = createClient();
@@ -31,6 +36,7 @@ export default function GtkPenugasanTab({
       .from("gtk_penugasan_mengajar")
       .select("*")
       .eq("gtk_id", gtkId)
+      .order("tahun_ajaran", { ascending: false })
       .order("created_at", { ascending: true });
 
     if (!error) setList(data ?? []);
@@ -43,22 +49,27 @@ export default function GtkPenugasanTab({
 
   function openAdd() {
     setEditing(null);
-    reset({ gtk_id: gtkId });
+    setError(null);
+    reset({ gtk_id: gtkId, tahun_ajaran: getTahunAjaranSaatIni() });
     setShowForm(true);
   }
 
   function openEdit(item: GtkPenugasanMengajar) {
     setEditing(item);
+    setError(null);
     reset(item);
     setShowForm(true);
   }
 
   async function onSubmit(values: GtkPenugasanMengajar) {
     setSaving(true);
+    setError(null);
     const supabase = createClient();
 
     const payload = Object.fromEntries(
-      Object.entries({ ...values, gtk_id: gtkId }).map(([k, v]) => [k, v === "" ? null : v])
+      Object.entries({ ...values, gtk_id: gtkId, tahun_ajaran: values.tahun_ajaran || getTahunAjaranSaatIni() }).map(
+        ([k, v]) => [k, v === "" ? null : v]
+      )
     );
 
     const { error } = editing?.id
@@ -67,43 +78,53 @@ export default function GtkPenugasanTab({
 
     setSaving(false);
 
-    if (!error) {
-      setShowForm(false);
-      fetchList();
+    if (error) {
+      setError(error.message);
+      return;
     }
+    setShowForm(false);
+    fetchList();
   }
 
   async function handleDelete() {
     if (!deleteTarget?.id) return;
     setDeleting(true);
+    setError(null);
     const supabase = createClient();
     const { error } = await supabase
       .from("gtk_penugasan_mengajar")
       .delete()
       .eq("id", deleteTarget.id);
     setDeleting(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
     setDeleteTarget(null);
-    if (!error) fetchList();
+    fetchList();
   }
 
-  const totalJjm = list.reduce((acc, item) => {
-    const n = parseFloat(item.jjm ?? "0");
-    return acc + (isNaN(n) ? 0 : n);
-  }, 0);
+  function hitungTotal(item: GtkPenugasanMengajar): number | null {
+    const jjm = parseFloat(item.jjm ?? "");
+    const tambahan = parseFloat(item.jam_tugas_tambahan ?? "");
+    if (isNaN(jjm) && isNaN(tambahan)) return null;
+    return (isNaN(jjm) ? 0 : jjm) + (isNaN(tambahan) ? 0 : tambahan);
+  }
 
   return (
     <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 gap-3">
         <div>
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Penugasan Mengajar</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Satu guru bisa punya lebih dari satu penugasan (mapel/sekolah berbeda)
+            Satu guru bisa punya lebih dari satu penugasan (mapel/sekolah berbeda) -- beban mengajar dicatat per
+            tahun ajaran, data tahun sebelumnya tetap tersimpan
           </p>
         </div>
         <button
           type="button"
           onClick={openAdd}
-          className={`inline-flex items-center gap-2 rounded-lg bg-indigo-600 text-white text-sm font-medium px-4 py-2 hover:bg-indigo-700 transition-colors ${readOnly ? "hidden" : ""}`}
+          className={`inline-flex items-center gap-2 rounded-lg bg-indigo-600 text-white text-sm font-medium px-4 py-2 hover:bg-indigo-700 transition-colors whitespace-nowrap shrink-0 ${readOnly ? "hidden" : ""}`}
         >
           <Plus className="h-4 w-4" />
           Tambah Penugasan
@@ -123,12 +144,15 @@ export default function GtkPenugasanTab({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
+                <th className="px-3 py-2.5 font-medium">Tahun</th>
                 <th className="px-3 py-2.5 font-medium">Sekolah</th>
                 <th className="px-3 py-2.5 font-medium">Jenjang</th>
                 <th className="px-3 py-2.5 font-medium">Status</th>
                 <th className="px-3 py-2.5 font-medium">Mengajar</th>
                 <th className="px-3 py-2.5 font-medium">Kompetensi</th>
                 <th className="px-3 py-2.5 font-medium text-center">JJM</th>
+                <th className="px-3 py-2.5 font-medium text-center">Tambahan</th>
+                <th className="px-3 py-2.5 font-medium text-center">Total</th>
                 <th className="px-3 py-2.5 font-medium text-center">Jml Siswa</th>
                 <th className="px-3 py-2.5 font-medium text-right">Aksi</th>
               </tr>
@@ -136,12 +160,19 @@ export default function GtkPenugasanTab({
             <tbody>
               {list.map((item) => (
                 <tr key={item.id} className="border-b border-slate-100 dark:border-slate-700/60 last:border-0">
+                  <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{item.tahun_ajaran || "-"}</td>
                   <td className="px-3 py-2.5 text-slate-700 dark:text-slate-200">{item.nama_sekolah || "-"}</td>
                   <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{item.jenjang_sekolah || "-"}</td>
                   <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{item.status_sekolah || "-"}</td>
                   <td className="px-3 py-2.5 text-slate-700 dark:text-slate-200 font-medium">{item.mengajar || "-"}</td>
                   <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{item.kompetensi || "-"}</td>
                   <td className="px-3 py-2.5 text-center text-slate-700 dark:text-slate-200">{item.jjm || "-"}</td>
+                  <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-300">
+                    {item.jam_tugas_tambahan || "-"}
+                  </td>
+                  <td className="px-3 py-2.5 text-center font-medium text-slate-700 dark:text-slate-200">
+                    {hitungTotal(item) ?? "-"}
+                  </td>
                   <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-300">{item.jumlah_siswa_diajar || "-"}</td>
                   <td className="px-3 py-2.5">
                     <div className={`flex items-center justify-end gap-1 ${readOnly ? "hidden" : ""}`}>
@@ -154,7 +185,10 @@ export default function GtkPenugasanTab({
                       </button>
                       <button
                         type="button"
-                        onClick={() => setDeleteTarget(item)}
+                        onClick={() => {
+                          setError(null);
+                          setDeleteTarget(item);
+                        }}
                         className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -164,15 +198,6 @@ export default function GtkPenugasanTab({
                 </tr>
               ))}
             </tbody>
-            <tfoot>
-              <tr className="bg-slate-50 dark:bg-slate-700/40 border-t border-slate-200 dark:border-slate-700 font-semibold text-slate-800 dark:text-slate-200">
-                <td className="px-3 py-2.5" colSpan={5}>
-                  Total JJM
-                </td>
-                <td className="px-3 py-2.5 text-center">{totalJjm || "-"}</td>
-                <td colSpan={2} />
-              </tr>
-            </tfoot>
           </table>
         </div>
       )}
@@ -190,8 +215,15 @@ export default function GtkPenugasanTab({
               </button>
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
+                {error}
+              </p>
+            )}
+
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid sm:grid-cols-2 gap-4 mb-5">
+                <TextField label="Tahun Ajaran" name="tahun_ajaran" register={register} placeholder="2025/2026" />
                 <TextField label="Nama Sekolah" name="nama_sekolah" register={register} />
                 <SelectField
                   label="Jenjang Sekolah"
@@ -239,6 +271,11 @@ export default function GtkPenugasanTab({
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full shadow-xl">
+            {error && (
+              <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
+                {error}
+              </p>
+            )}
             <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">Hapus penugasan ini?</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">
               Penugasan mengajar{" "}

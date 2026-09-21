@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, Hash, FileCheck, Mail } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -42,12 +42,13 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveNilaiUjianSekolah = pathname.startsWith("/nilai-ujian-sekolah");
   const isActiveNilaiRekap = pathname.startsWith("/nilai-rekap");
   const isActiveNilaiIjazah = pathname.startsWith("/nilai-ijazah");
+  const isActivePeringkat = pathname.startsWith("/peringkat");
   const isActiveCetakLeger = pathname.startsWith("/cetak-leger");
   const isActiveCetakNilaiIjazah = pathname.startsWith("/cetak-nilai-ijazah");
   const isActiveSuketLulus = pathname.startsWith("/suket-lulus");
+  const isActiveTandaTerimaSkl = pathname.startsWith("/tanda-terima-skl");
   const isActiveCetakAmplop = pathname.startsWith("/cetak-amplop");
   const isActivePengaturanSkl = pathname.startsWith("/pengaturan-skl");
-  const isActiveNomorUnikSkl = pathname.startsWith("/nomor-unik-skl");
   const isActiveNilaiSts = pathname.startsWith("/nilai-sts");
   const isActivePresensi = pathname === "/presensi";
   const isActiveRekapPresensi = pathname === "/presensi/rekap";
@@ -101,6 +102,9 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const hasExtraNilaiIjazahAccess = moduleAccess.some(
     (a) => a.module === "nilai_ijazah" && a.can_view
   );
+  const hasExtraPeringkatAccess = moduleAccess.some(
+    (a) => a.module === "peringkat" && a.can_view
+  );
   const hasExtraCetakLegerAccess = moduleAccess.some(
     (a) => a.module === "cetak_leger" && a.can_view
   );
@@ -109,6 +113,9 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   );
   const hasExtraSuketLulusAccess = moduleAccess.some(
     (a) => a.module === "suket_lulus" && a.can_view
+  );
+  const hasExtraTandaTerimaSklAccess = moduleAccess.some(
+    (a) => a.module === "tanda_terima_skl" && a.can_view
   );
   const hasExtraCetakAmplopAccess = moduleAccess.some(
     (a) => a.module === "cetak_amplop" && a.can_view
@@ -144,18 +151,22 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const showNilaiUjianSekolahLink = isFullAccessRole || hasExtraNilaiUjianSekolahAccess || isWaliKelasIX;
   const showNilaiRekapLink = isFullAccessRole || hasExtraNilaiRekapAccess || isWaliKelasIX;
   const showNilaiIjazahLink = isFullAccessRole || hasExtraNilaiIjazahAccess || isWaliKelasIX;
+  const showPeringkatLink = isFullAccessRole || hasExtraPeringkatAccess || isWaliKelasIX;
   const showCetakLegerLink = isFullAccessRole || hasExtraCetakLegerAccess || isWaliKelasIX;
   const showCetakNilaiIjazahLink = isFullAccessRole || hasExtraCetakNilaiIjazahAccess || isWaliKelasIX;
   const showSuketLulusLink = isFullAccessRole || hasExtraSuketLulusAccess || isWaliKelasIX;
+  const showTandaTerimaSklLink = isFullAccessRole || hasExtraTandaTerimaSklAccess || isWaliKelasIX;
   const showCetakAmplopLink = isFullAccessRole || hasExtraCetakAmplopAccess || isWaliKelasIX;
   const showSklSection =
     showNilaiLegerLink ||
     showNilaiUjianSekolahLink ||
     showNilaiRekapLink ||
     showNilaiIjazahLink ||
+    showPeringkatLink ||
     showCetakLegerLink ||
     showCetakNilaiIjazahLink ||
     showSuketLulusLink ||
+    showTandaTerimaSklLink ||
     showCetakAmplopLink;
 
   const linkClass = (active: boolean) =>
@@ -406,6 +417,12 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
                 {!collapsed && "Nilai Ijazah"}
               </Link>
             )}
+            {showPeringkatLink && (
+              <Link href="/peringkat" title="Peringkat" className={linkClass(isActivePeringkat)}>
+                <Trophy className="h-4 w-4 shrink-0" />
+                {!collapsed && "Peringkat"}
+              </Link>
+            )}
             {showCetakLegerLink && (
               <Link href="/cetak-leger" title="Cetak Leger" className={linkClass(isActiveCetakLeger)}>
                 <FileText className="h-4 w-4 shrink-0" />
@@ -428,20 +445,20 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
                 {!collapsed && "Suket Lulus"}
               </Link>
             )}
+            {showTandaTerimaSklLink && (
+              <Link
+                href="/tanda-terima-skl"
+                title="Tanda Terima SKL"
+                className={linkClass(isActiveTandaTerimaSkl)}
+              >
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Tanda Terima SKL"}
+              </Link>
+            )}
             {showCetakAmplopLink && (
               <Link href="/cetak-amplop" title="Cetak Amplop" className={linkClass(isActiveCetakAmplop)}>
                 <Mail className="h-4 w-4 shrink-0" />
                 {!collapsed && "Cetak Amplop"}
-              </Link>
-            )}
-            {isFullAccessRole && (
-              <Link
-                href="/nomor-unik-skl"
-                title="Nomor Unik SKL"
-                className={linkClass(isActiveNomorUnikSkl)}
-              >
-                <Hash className="h-4 w-4 shrink-0" />
-                {!collapsed && "Nomor Unik SKL"}
               </Link>
             )}
             {isFullAccessRole && (

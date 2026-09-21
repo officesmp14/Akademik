@@ -17,9 +17,11 @@ export type ModuleKey =
   | "nilai_ujian_sekolah"
   | "nilai_rekap"
   | "nilai_ijazah"
+  | "peringkat"
   | "cetak_leger"
   | "cetak_nilai_ijazah"
   | "suket_lulus"
+  | "tanda_terima_skl"
   | "cetak_amplop"
   | "mutasi_masuk_siswa"
   | "registrasi_peserta_didik"
@@ -45,9 +47,11 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "nilai_ujian_sekolah", label: "Nilai Ujian Sekolah" },
   { key: "nilai_rekap", label: "Nilai Rekap" },
   { key: "nilai_ijazah", label: "Nilai Ijazah" },
+  { key: "peringkat", label: "Peringkat" },
   { key: "cetak_leger", label: "Cetak Leger" },
   { key: "cetak_nilai_ijazah", label: "Cetak Nilai Ijazah" },
   { key: "suket_lulus", label: "Suket Lulus" },
+  { key: "tanda_terima_skl", label: "Tanda Terima SKL" },
   { key: "cetak_amplop", label: "Cetak Amplop" },
   { key: "mutasi_masuk_siswa", label: "Data Mutasi Masuk" },
   { key: "registrasi_peserta_didik", label: "Registrasi Peserta Didik" },
