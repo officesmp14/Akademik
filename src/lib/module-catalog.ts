@@ -13,6 +13,7 @@ export type ModuleKey =
   | "laporan_kelas_ix"
   | "laporan_verifikasi_presensi"
   | "laporan_ganak_hibot"
+  | "laporan_status_update_gtk"
   | "nilai_leger"
   | "nilai_ujian_sekolah"
   | "nilai_rekap"
@@ -43,6 +44,7 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "laporan_kelas_ix", label: "Laporan - Cek Data Ijazah Kelas IX" },
   { key: "laporan_verifikasi_presensi", label: "Laporan - Verifikasi Presensi" },
   { key: "laporan_ganak_hibot", label: "Laporan - Ganak Hibot" },
+  { key: "laporan_status_update_gtk", label: "Laporan - Status Update Data GTK" },
   { key: "nilai_leger", label: "Nilai Leger" },
   { key: "nilai_ujian_sekolah", label: "Nilai Ujian Sekolah" },
   { key: "nilai_rekap", label: "Nilai Rekap" },

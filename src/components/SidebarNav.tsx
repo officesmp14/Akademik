@@ -18,6 +18,7 @@ const LAPORAN_MODULES = [
   "laporan_kelas_ix",
   "laporan_verifikasi_presensi",
   "laporan_ganak_hibot",
+  "laporan_status_update_gtk",
 ];
 
 export default function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {

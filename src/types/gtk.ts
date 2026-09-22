@@ -79,6 +79,8 @@ export interface Gtk {
   keterangan?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
+  updated_by?: string | null;
+  updated_by_nama?: string | null;
 }
 
 export interface GtkPenugasanMengajar {

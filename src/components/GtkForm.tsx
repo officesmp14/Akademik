@@ -19,7 +19,7 @@ import {
 } from "@/types/gtk";
 import { TextField, SelectField, TextareaField } from "@/components/form-fields";
 import GtkPenugasanTab from "@/components/GtkPenugasanTab";
-import { useModulePermission } from "@/lib/role-context";
+import { useModulePermission, useRole } from "@/lib/role-context";
 import {
   User,
   Briefcase,
@@ -55,6 +55,7 @@ export default function GtkForm({
   isOwnProfile?: boolean;
 }) {
   const router = useRouter();
+  const { gtkNama, email } = useRole();
   const { canEdit } = useModulePermission("gtk");
   // Profil sendiri (guru/staf TU): selalu bisa edit, diatur RLS "Guru TU
   // update own datagtk", terlepas dari hak akses modul 'gtk' yang mungkin
@@ -106,9 +107,21 @@ export default function GtkForm({
       Object.entries(values).map(([k, v]) => [k, v === "" ? null : v])
     );
 
-    const { error } = isEdit
-      ? await supabase.from("datagtk").update(payload).eq("id", gtkId)
-      : await supabase.from("datagtk").insert(payload);
+    let error;
+    if (isEdit) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const updatePayload = {
+        ...payload,
+        updated_at: new Date().toISOString(),
+        updated_by: user?.id ?? null,
+        updated_by_nama: gtkNama || email || null,
+      };
+      ({ error } = await supabase.from("datagtk").update(updatePayload).eq("id", gtkId));
+    } else {
+      ({ error } = await supabase.from("datagtk").insert(payload));
+    }
 
     setSaving(false);
 

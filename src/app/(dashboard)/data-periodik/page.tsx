@@ -7,7 +7,7 @@ import { getPageNumbers } from "@/lib/pagination";
 import { compareKelas } from "@/lib/rekap-siswa";
 import { Siswa } from "@/types/siswa";
 import ExcelJS from "exceljs";
-import { Pencil, Loader2, X, Ruler, Search, Download } from "lucide-react";
+import { Pencil, Loader2, X, Ruler, Search, Download, Printer } from "lucide-react";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
@@ -80,6 +80,8 @@ export default function DataPeriodikPage() {
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [printIndividuData, setPrintIndividuData] = useState<Siswa[] | null>(null);
+  const [printingIndividu, setPrintingIndividu] = useState(false);
 
   useEffect(() => {
     if (lockedToOwnClass) return;
@@ -297,9 +299,38 @@ export default function DataPeriodikPage() {
     setExporting(false);
   }
 
+  async function handlePrintIndividu() {
+    setPrintingIndividu(true);
+    setError(null);
+    const supabase = createClient();
+
+    let query = supabase
+      .from("siswa01")
+      .select("id, nama, rombel")
+      .order("rombel", { ascending: true })
+      .order("nama", { ascending: true });
+
+    if (search.trim()) {
+      query = query.or(`nama.ilike.%${search}%,nisn.ilike.%${search}%,nipd.ilike.%${search}%`);
+    }
+    const effectiveRombel = lockedToOwnClass ? waliKelasRombel : filterRombel;
+    if (effectiveRombel) query = query.eq("rombel", effectiveRombel);
+
+    const { data: allData, error: fetchError } = await query;
+
+    setPrintingIndividu(false);
+    if (fetchError) {
+      setError(fetchError.message);
+      return;
+    }
+
+    setPrintIndividuData(allData ?? []);
+    setTimeout(() => window.print(), 50);
+  }
+
   return (
     <div className="p-6 md:p-8 dark:bg-slate-900">
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-6 flex items-center justify-between gap-4 print:hidden">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Data Periodik</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -311,19 +342,29 @@ export default function DataPeriodikPage() {
             {total} siswa terdaftar
           </p>
         </div>
-        {!lockedToOwnClass && (
+        <div className="flex items-center gap-2 shrink-0">
           <button
-            onClick={handleExport}
-            disabled={exporting}
-            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 shrink-0"
+            onClick={handlePrintIndividu}
+            disabled={printingIndividu}
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
           >
-            {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            Export Excel
+            {printingIndividu ? <Loader2 className="h-4 w-4 animate-spin" /> : <Printer className="h-4 w-4" />}
+            Print Individu
           </button>
-        )}
+          {!lockedToOwnClass && (
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+            >
+              {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              Export Excel
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 print:hidden">
         <select
           value={pageSize}
           onChange={(e) => {
@@ -372,12 +413,12 @@ export default function DataPeriodikPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mb-4 print:hidden">
           {error}
         </p>
       )}
 
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden print:hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -480,7 +521,7 @@ export default function DataPeriodikPage() {
       </div>
 
       {editTarget && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 print:hidden">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-2xl w-full shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{editTarget.nama || "-"}</h3>
@@ -639,6 +680,29 @@ export default function DataPeriodikPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {printIndividuData && (
+        <div className="hidden print:block">
+          <style>{`@page { size: A4 portrait; margin: 15mm; }`}</style>
+          <div className="flex flex-wrap gap-4">
+            {printIndividuData.map((s) => (
+              <div
+                key={s.id}
+                className="text-black border border-slate-800 rounded px-4 py-3 text-sm leading-relaxed w-[48%] print:break-inside-avoid"
+              >
+                <p>Nama : {s.nama || "-"}</p>
+                <p>Kelas : {s.rombel || "-"}</p>
+                <p>Tinggi (Cm) :</p>
+                <p>Berat (Kg) :</p>
+                <p>Lingkar Kepala :</p>
+                <p>Jumlah Saudara Kandung :</p>
+                <p>Jarak Rumah (Km) :</p>
+                <p>Waktu Tempuh :</p>
+              </div>
+            ))}
           </div>
         </div>
       )}

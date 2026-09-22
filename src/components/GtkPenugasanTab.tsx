@@ -6,6 +6,7 @@ import { GtkPenugasanMengajar, JENJANG_SEKOLAH_OPTIONS, STATUS_SEKOLAH_OPTIONS }
 import { getTahunAjaranSaatIni } from "@/types/nilai";
 import { TextField, SelectField } from "@/components/form-fields";
 import { useForm } from "react-hook-form";
+import { useRole } from "@/lib/role-context";
 import { Plus, Pencil, Trash2, Loader2, X } from "lucide-react";
 
 export default function GtkPenugasanTab({
@@ -15,6 +16,7 @@ export default function GtkPenugasanTab({
   gtkId: string;
   readOnly?: boolean;
 }) {
+  const { gtkNama, email } = useRole();
   const [list, setList] = useState<GtkPenugasanMengajar[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -61,6 +63,25 @@ export default function GtkPenugasanTab({
     setShowForm(true);
   }
 
+  // Penugasan Mengajar disimpan di tabel terpisah (gtk_penugasan_mengajar),
+  // jadi tidak otomatis menyentuh datagtk.updated_at -- padahal dari sudut
+  // pandang guru, ini masih bagian dari "memperbarui profil saya" (dipakai
+  // Laporan > Status Update Data GTK). Sentuh datagtk supaya tercatat,
+  // best-effort saja (gagal di sini tidak membatalkan penyimpanan utama).
+  async function touchDatagtk(supabase: ReturnType<typeof createClient>) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await supabase
+      .from("datagtk")
+      .update({
+        updated_at: new Date().toISOString(),
+        updated_by: user?.id ?? null,
+        updated_by_nama: gtkNama || email || null,
+      })
+      .eq("id", gtkId);
+  }
+
   async function onSubmit(values: GtkPenugasanMengajar) {
     setSaving(true);
     setError(null);
@@ -84,6 +105,7 @@ export default function GtkPenugasanTab({
     }
     setShowForm(false);
     fetchList();
+    touchDatagtk(supabase);
   }
 
   async function handleDelete() {
@@ -102,6 +124,7 @@ export default function GtkPenugasanTab({
     }
     setDeleteTarget(null);
     fetchList();
+    touchDatagtk(supabase);
   }
 
   function hitungTotal(item: GtkPenugasanMengajar): number | null {

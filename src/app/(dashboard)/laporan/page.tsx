@@ -1,4 +1,4 @@
-import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText, Users } from "lucide-react";
+import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText, Users, UserCheck } from "lucide-react";
 
 const LAPORAN_LIST = [
   {
@@ -84,6 +84,13 @@ const LAPORAN_LIST = [
     title: "Ganak Hibot",
     description:
       "Daftar siswa (NISN, nama, jenis kelamin, agama, kelas, alamat, nama ayah) per kelas.",
+  },
+  {
+    href: "/laporan/status-update-gtk",
+    icon: UserCheck,
+    title: "Status Update Data GTK",
+    description:
+      "Cek GTK mana saja yang sudah memperbarui datanya sendiri, diupdate orang lain, atau belum pernah diupdate sama sekali.",
   },
 ];
 
