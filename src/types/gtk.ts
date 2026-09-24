@@ -56,6 +56,7 @@ export interface Gtk {
   jenjang_pendidikan?: string | null;
   jurusan_prodi?: string | null;
   mapel_sertifikasi_ppg?: string | null;
+  kompetensi?: string | null;
   tmt_pengangkatan_awal?: string | null;
   besaran_gaji_pokok?: string | null;
   status_pasangan?: string | null;

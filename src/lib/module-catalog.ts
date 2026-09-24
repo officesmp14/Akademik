@@ -14,6 +14,7 @@ export type ModuleKey =
   | "laporan_verifikasi_presensi"
   | "laporan_ganak_hibot"
   | "laporan_status_update_gtk"
+  | "analisis_kebutuhan"
   | "nilai_leger"
   | "nilai_ujian_sekolah"
   | "nilai_rekap"
@@ -45,6 +46,7 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "laporan_verifikasi_presensi", label: "Laporan - Verifikasi Presensi" },
   { key: "laporan_ganak_hibot", label: "Laporan - Ganak Hibot" },
   { key: "laporan_status_update_gtk", label: "Laporan - Status Update Data GTK" },
+  { key: "analisis_kebutuhan", label: "Laporan - Analisis Kebutuhan" },
   { key: "nilai_leger", label: "Nilai Leger" },
   { key: "nilai_ujian_sekolah", label: "Nilai Ujian Sekolah" },
   { key: "nilai_rekap", label: "Nilai Rekap" },

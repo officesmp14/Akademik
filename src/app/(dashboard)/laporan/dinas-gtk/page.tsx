@@ -5,19 +5,32 @@ import Link from "next/link";
 import * as XLSX from "xlsx";
 import { createClient } from "@/lib/supabase/client";
 import { Gtk, GtkPenugasanMengajar, STATUS_AKTIF_OPTIONS } from "@/types/gtk";
-import { LAPORAN_DINAS_COLUMNS, buildLaporanDinasRows, LaporanDinasRow } from "@/lib/laporan-dinas-gtk";
+import {
+  LAPORAN_DINAS_COLUMNS,
+  buildLaporanDinasRows,
+  buildLaporanDinasRowsRingkas,
+  LaporanDinasRow,
+} from "@/lib/laporan-dinas-gtk";
 import { ChevronLeft, Loader2, Printer, Download } from "lucide-react";
 
 function rowKey(row: LaporanDinasRow): string {
   return `${row.gtk.id ?? ""}__${row.penugasan?.id ?? "none"}`;
 }
 
+type TabKey = "lengkap" | "ringkas";
+
+const TABS: { key: TabKey; label: string }[] = [
+  { key: "lengkap", label: "Data Lengkap (per penugasan)" },
+  { key: "ringkas", label: "Data Ringkas (1 baris per GTK)" },
+];
+
 export default function LaporanDinasGtkPage() {
   const [loading, setLoading] = useState(true);
   const [allGtk, setAllGtk] = useState<Gtk[]>([]);
   const [allPenugasan, setAllPenugasan] = useState<GtkPenugasanMengajar[]>([]);
-  const [filterStatusAktif, setFilterStatusAktif] = useState("");
+  const [filterStatusAktif, setFilterStatusAktif] = useState("Y");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState<TabKey>("lengkap");
 
   useEffect(() => {
     async function fetchData() {
@@ -42,8 +55,11 @@ export default function LaporanDinasGtkPage() {
   );
 
   const rows = useMemo(
-    () => buildLaporanDinasRows(filteredGtk, allPenugasan),
-    [filteredGtk, allPenugasan]
+    () =>
+      activeTab === "ringkas"
+        ? buildLaporanDinasRowsRingkas(filteredGtk, allPenugasan)
+        : buildLaporanDinasRows(filteredGtk, allPenugasan),
+    [filteredGtk, allPenugasan, activeTab]
   );
 
   // Default-nya semua baris terpilih (perilaku sama seperti sebelum ada fitur checklist ini)
@@ -91,7 +107,10 @@ export default function LaporanDinasGtkPage() {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "GTK");
-    XLSX.writeFile(wb, "Laporan-Dinas-GTK.xlsx");
+    XLSX.writeFile(
+      wb,
+      activeTab === "ringkas" ? "Laporan-Dinas-GTK-Ringkas.xlsx" : "Laporan-Dinas-GTK.xlsx"
+    );
   }
 
   return (
@@ -127,10 +146,29 @@ export default function LaporanDinasGtkPage() {
       </h1>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 print:hidden">
         Format kolom mengikuti file &quot;Master Update&quot; Dinas Pendidikan — data digabung
-        otomatis dari data personal GTK dan penugasan mengajar. Total{" "}
-        <strong>{rows.length}</strong> baris, <strong>{selectedRows.length}</strong> dipilih untuk
+        otomatis dari data personal GTK dan penugasan mengajar.{" "}
+        {activeTab === "ringkas"
+          ? "1 baris per GTK, mengambil penugasan mengajar TERBARU saja (tahun ajaran paling baru) kalau GTK punya lebih dari satu."
+          : "GTK dengan lebih dari satu penugasan mengajar akan muncul beberapa baris (satu baris per penugasan)."}{" "}
+        Total <strong>{rows.length}</strong> baris, <strong>{selectedRows.length}</strong> dipilih untuk
         dicetak/diunduh.
       </p>
+
+      <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-4 print:hidden">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setActiveTab(t.key)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+              activeTab === t.key
+                ? "border-indigo-600 text-indigo-600 dark:text-indigo-400"
+                : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
 
       <div className="mb-4 print:hidden">
         <select

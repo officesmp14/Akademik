@@ -1,4 +1,4 @@
-import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText, Users, UserCheck } from "lucide-react";
+import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText, Users, UserCheck, Calculator } from "lucide-react";
 
 const LAPORAN_LIST = [
   {
@@ -91,6 +91,13 @@ const LAPORAN_LIST = [
     title: "Status Update Data GTK",
     description:
       "Cek GTK mana saja yang sudah memperbarui datanya sendiri, diupdate orang lain, atau belum pernah diupdate sama sekali.",
+  },
+  {
+    href: "/laporan/analisis-kebutuhan",
+    icon: Calculator,
+    title: "Analisis Kebutuhan",
+    description:
+      "Analisis kebutuhan Guru, Tenaga Administrasi, dan Petugas Kebersihan & Keamanan — format sesuai laporan Dinas Pendidikan.",
   },
 ];
 

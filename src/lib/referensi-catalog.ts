@@ -78,6 +78,12 @@ export const REFERENSI_TABLES: ReferensiConfig[] = [
     label: "Ekstrakurikuler",
     description: "Kode & uraian ekstrakurikuler sekolah (mis. PMR, Basket)",
   },
+  {
+    slug: "pelajaran",
+    table: "pelajaran",
+    label: "Pelajaran",
+    description: "Daftar mata pelajaran, singkatan, JJM, dan jumlah rombel",
+  },
 ];
 
 export function getReferensiConfig(slug: string): ReferensiConfig | undefined {

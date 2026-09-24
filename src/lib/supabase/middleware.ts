@@ -21,6 +21,7 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/laporan/riwayat-mutasi", modules: ["laporan_riwayat_mutasi"] },
   { prefix: "/laporan/ganak-hibot", modules: ["laporan_ganak_hibot"] },
   { prefix: "/laporan/status-update-gtk", modules: ["laporan_status_update_gtk"] },
+  { prefix: "/laporan/analisis-kebutuhan", modules: ["analisis_kebutuhan"] },
   { prefix: "/nilai-leger", modules: ["nilai_leger"] },
   { prefix: "/nilai-ujian-sekolah", modules: ["nilai_ujian_sekolah"] },
   { prefix: "/nilai-rekap", modules: ["nilai_rekap"] },
@@ -47,6 +48,7 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
       "laporan_verifikasi_presensi",
       "laporan_ganak_hibot",
       "laporan_status_update_gtk",
+      "analisis_kebutuhan",
     ],
   },
 ];

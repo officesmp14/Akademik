@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -19,6 +19,7 @@ const LAPORAN_MODULES = [
   "laporan_verifikasi_presensi",
   "laporan_ganak_hibot",
   "laporan_status_update_gtk",
+  "analisis_kebutuhan",
 ];
 
 export default function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
@@ -28,6 +29,9 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveHome = pathname === "/home";
   const isActiveSiswa = pathname.startsWith("/siswa") && !pathname.startsWith("/siswa/mutasi-masuk");
   const isActiveGtk = pathname.startsWith("/gtk");
+  const isActiveLaporanDinasGtk = pathname.startsWith("/laporan/dinas-gtk");
+  const isActiveStatusUpdateGtk = pathname.startsWith("/laporan/status-update-gtk");
+  const isActiveAnalisisKebutuhan = pathname.startsWith("/laporan/analisis-kebutuhan");
   const isActiveLaporan = pathname.startsWith("/laporan");
   const isActiveProfil = pathname.startsWith("/profil-saya");
   const isActiveAdminUsers = pathname.startsWith("/admin/users");
@@ -85,6 +89,15 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
 
   const hasExtraSiswaAccess = moduleAccess.some((a) => a.module === "siswa" && a.can_view);
   const hasExtraGtkAccess = moduleAccess.some((a) => a.module === "gtk" && a.can_view);
+  const hasExtraLaporanDinasGtkAccess = moduleAccess.some(
+    (a) => a.module === "laporan_dinas_gtk" && a.can_view
+  );
+  const hasExtraStatusUpdateGtkAccess = moduleAccess.some(
+    (a) => a.module === "laporan_status_update_gtk" && a.can_view
+  );
+  const hasExtraAnalisisKebutuhanAccess = moduleAccess.some(
+    (a) => a.module === "analisis_kebutuhan" && a.can_view
+  );
   const hasExtraLaporanAccess = moduleAccess.some(
     (a) => LAPORAN_MODULES.includes(a.module) && a.can_view
   );
@@ -136,6 +149,11 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
 
   const showSiswaMenu = isFullAccessRole || hasExtraSiswaAccess;
   const showGtkMenu = isFullAccessRole || hasExtraGtkAccess;
+  const showLaporanDinasGtkLink = isFullAccessRole || hasExtraLaporanDinasGtkAccess;
+  const showStatusUpdateGtkLink = isFullAccessRole || hasExtraStatusUpdateGtkAccess;
+  const showAnalisisKebutuhanLink = isFullAccessRole || hasExtraAnalisisKebutuhanAccess;
+  const showDataGtkSection =
+    showGtkMenu || showLaporanDinasGtkLink || showStatusUpdateGtkLink || showAnalisisKebutuhanLink;
   const showLaporanMenu = isFullAccessRole || hasExtraLaporanAccess || isPanitiaHibot;
   const showMutasiMasukMenu = isFullAccessRole || hasExtraMutasiMasukAccess;
   const showRegistrasiMenu = isFullAccessRole || hasExtraRegistrasiAccess || Boolean(waliKelasRombel);
@@ -475,14 +493,49 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           </>
         )}
 
-        {sectionLabel("Lainnya")}
-        {showGtkMenu && (
-          <Link href="/gtk" title="Data GTK" className={linkClass(isActiveGtk)}>
-            <Users2 className="h-4 w-4 shrink-0" />
-            {!collapsed && "Data GTK"}
-          </Link>
+        {showDataGtkSection && (
+          <>
+            {sectionLabel("Data GTK")}
+            {showGtkMenu && (
+              <Link href="/gtk" title="Data GTK" className={linkClass(isActiveGtk)}>
+                <Users2 className="h-4 w-4 shrink-0" />
+                {!collapsed && "Data GTK"}
+              </Link>
+            )}
+            {showLaporanDinasGtkLink && (
+              <Link
+                href="/laporan/dinas-gtk"
+                title="Laporan Dinas Pdd"
+                className={linkClass(isActiveLaporanDinasGtk)}
+              >
+                <Landmark className="h-4 w-4 shrink-0" />
+                {!collapsed && "Laporan Dinas Pdd"}
+              </Link>
+            )}
+            {showStatusUpdateGtkLink && (
+              <Link
+                href="/laporan/status-update-gtk"
+                title="Status Update GTK"
+                className={linkClass(isActiveStatusUpdateGtk)}
+              >
+                <UserCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Status Update GTK"}
+              </Link>
+            )}
+            {showAnalisisKebutuhanLink && (
+              <Link
+                href="/laporan/analisis-kebutuhan"
+                title="Analisis Kebutuhan"
+                className={linkClass(isActiveAnalisisKebutuhan)}
+              >
+                <Calculator className="h-4 w-4 shrink-0" />
+                {!collapsed && "Analisis Kebutuhan"}
+              </Link>
+            )}
+          </>
         )}
 
+        {sectionLabel("Lainnya")}
         {showLaporanMenu && (
           <a href="/laporan" title="Laporan (punya sub-halaman)" className={linkClass(isActiveLaporan)}>
             <FileBarChart className="h-4 w-4 shrink-0" />

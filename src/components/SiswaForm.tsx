@@ -38,6 +38,34 @@ const REF_TABLE_BY_KEY: Record<keyof typeof emptyRefOptions, string> = {
   penghasilan: "ref_penghasilan",
   jalur: "ref_jalur_daftar",
 };
+const FIELD_REF_KEY: Record<string, keyof typeof emptyRefOptions> = {
+  agama: "agama",
+  jenis_tinggal: "jenisTinggal",
+  alat_transportasi: "transportasi",
+  ayah_pendidikan: "pendidikan",
+  ayah_pekerjaan: "pekerjaan",
+  ayah_penghasilan: "penghasilan",
+  ibu_pendidikan: "pendidikan",
+  ibu_pekerjaan: "pekerjaan",
+  ibu_penghasilan: "penghasilan",
+  wali_pendidikan: "pendidikan",
+  wali_pekerjaan: "pekerjaan",
+  wali_penghasilan: "penghasilan",
+  jalur: "jalur",
+};
+
+function normalizeRef(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/â€[“”"]|[–—]/g, "-")
+    .replace(/rp|[.,\s]/g, "");
+}
+
+function findRefOption(options: RefOption[], value: string): string | null {
+  const target = normalizeRef(value);
+  return options.find((o) => normalizeRef(o.value) === target)?.value ?? null;
+}
+
 import { TextField, SelectField, TextareaField } from "@/components/form-fields";
 import {
   User,
@@ -78,7 +106,7 @@ export default function SiswaForm({
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const { register, handleSubmit, watch } = useForm<Siswa>({
+  const { register, handleSubmit, watch, setValue } = useForm<Siswa>({
     defaultValues: initialData ?? {},
   });
   const statusSiswa = watch("status_siswa");
@@ -197,6 +225,31 @@ export default function SiswaForm({
     }
     fetchRefOptions();
   }, []);
+
+  // Pilihan referensi dimuat async SESUDAH form terisi, jadi <select> tidak
+  // otomatis memilih nilai tersimpan. Setelah opsi siap, cocokkan nilai
+  // siswa01 (toleran beda huruf besar/kecil, tanda minus, spasi, "Rp",
+  // titik/koma) ke opsi referensi lalu set ulang.
+  useEffect(() => {
+    if (!initialData) return;
+    if (refOptions.agama.length === 0) return;
+    for (const [field, key] of Object.entries(FIELD_REF_KEY)) {
+      const current = (initialData as unknown as Record<string, unknown>)[field];
+      if (typeof current !== "string" || current === "") continue;
+      const match = findRefOption(refOptions[key], current);
+      setValue(field as keyof Siswa, (match ?? current) as never);
+    }
+  }, [refOptions, initialData, setValue]);
+
+  // Nilai tersimpan yang tidak ada padanannya di referensi tetap ditampilkan
+  // (supaya tidak hilang diam-diam saat disimpan).
+  function optionsFor(key: keyof typeof emptyRefOptions, field: keyof Siswa): RefOption[] {
+    const opts = refOptions[key];
+    const current = (initialData as unknown as Record<string, unknown> | undefined)?.[field];
+    if (opts.length === 0 || typeof current !== "string" || current === "") return opts;
+    if (findRefOption(opts, current)) return opts;
+    return [...opts, { value: current, label: `${current} (tidak ada di referensi)` }];
+  }
 
   async function onSubmit(values: Siswa) {
     setSaving(true);
@@ -361,7 +414,7 @@ export default function SiswaForm({
             <TextField label="Tempat Lahir" name="tempat_lahir" register={register} />
             <TextField label="Tanggal Lahir" name="tanggal_lahir" type="date" register={register} />
             <TextField label="NIK" name="nik" register={register} />
-            <SelectField label="Agama" name="agama" register={register} options={refOptions.agama} />
+            <SelectField label="Agama" name="agama" register={register} options={optionsFor("agama", "agama")} />
             <TextField label="Anak Ke-" name="anak_ke" register={register} type="number" />
             <TextField label="Jumlah Saudara" name="jml_saudara" register={register} type="number" />
             <TextField label="Sekolah Asal" name="sekolah_asal" register={register} />
@@ -384,8 +437,8 @@ export default function SiswaForm({
             <TextField label="Kelurahan / Desa" name="kelurahan" register={register} />
             <TextField label="Kecamatan" name="kecamatan" register={register} />
             <TextField label="Kode Pos" name="kode_pos" register={register} />
-            <SelectField label="Jenis Tinggal" name="jenis_tinggal" register={register} options={refOptions.jenisTinggal} />
-            <SelectField label="Alat Transportasi" name="alat_transportasi" register={register} options={refOptions.transportasi} />
+            <SelectField label="Jenis Tinggal" name="jenis_tinggal" register={register} options={optionsFor("jenisTinggal", "jenis_tinggal")} />
+            <SelectField label="Alat Transportasi" name="alat_transportasi" register={register} options={optionsFor("transportasi", "alat_transportasi")} />
             <TextField label="Jarak Rumah ke Sekolah (km)" name="jarak_rumah" register={register} type="number" />
             <TextField label="Waktu Tempuh (menit)" name="jarak_tempuh" register={register} type="number" />
             <TextField label="Lintang" name="lintang" register={register} placeholder="-6.200000" />
@@ -405,9 +458,9 @@ export default function SiswaForm({
                 <TextField label="Nama Ayah" name="nama_ayah" register={register} />
                 <TextField label="Tahun Lahir Ayah" name="ayah_tahun_lahir" register={register} />
                 <TextField label="NIK Ayah" name="ayah_nik" register={register} />
-                <SelectField label="Pendidikan Ayah" name="ayah_pendidikan" register={register} options={refOptions.pendidikan} />
-                <SelectField label="Pekerjaan Ayah" name="ayah_pekerjaan" register={register} options={refOptions.pekerjaan} />
-                <SelectField label="Penghasilan Ayah" name="ayah_penghasilan" register={register} options={refOptions.penghasilan} />
+                <SelectField label="Pendidikan Ayah" name="ayah_pendidikan" register={register} options={optionsFor("pendidikan", "ayah_pendidikan")} />
+                <SelectField label="Pekerjaan Ayah" name="ayah_pekerjaan" register={register} options={optionsFor("pekerjaan", "ayah_pekerjaan")} />
+                <SelectField label="Penghasilan Ayah" name="ayah_penghasilan" register={register} options={optionsFor("penghasilan", "ayah_penghasilan")} />
               </div>
             </div>
 
@@ -419,9 +472,9 @@ export default function SiswaForm({
                 <TextField label="Nama Ibu" name="nama_ibu" register={register} />
                 <TextField label="Tahun Lahir Ibu" name="ibu_tahun_lahir" register={register} />
                 <TextField label="NIK Ibu" name="ibu_nik" register={register} />
-                <SelectField label="Pendidikan Ibu" name="ibu_pendidikan" register={register} options={refOptions.pendidikan} />
-                <SelectField label="Pekerjaan Ibu" name="ibu_pekerjaan" register={register} options={refOptions.pekerjaan} />
-                <SelectField label="Penghasilan Ibu" name="ibu_penghasilan" register={register} options={refOptions.penghasilan} />
+                <SelectField label="Pendidikan Ibu" name="ibu_pendidikan" register={register} options={optionsFor("pendidikan", "ibu_pendidikan")} />
+                <SelectField label="Pekerjaan Ibu" name="ibu_pekerjaan" register={register} options={optionsFor("pekerjaan", "ibu_pekerjaan")} />
+                <SelectField label="Penghasilan Ibu" name="ibu_penghasilan" register={register} options={optionsFor("penghasilan", "ibu_penghasilan")} />
               </div>
             </div>
 
@@ -433,9 +486,9 @@ export default function SiswaForm({
                 <TextField label="Nama Wali" name="nama_wali" register={register} />
                 <TextField label="Tahun Lahir Wali" name="wali_tahun_lahir" register={register} />
                 <TextField label="NIK Wali" name="wali_nik" register={register} />
-                <SelectField label="Pendidikan Wali" name="wali_pendidikan" register={register} options={refOptions.pendidikan} />
-                <SelectField label="Pekerjaan Wali" name="wali_pekerjaan" register={register} options={refOptions.pekerjaan} />
-                <SelectField label="Penghasilan Wali" name="wali_penghasilan" register={register} options={refOptions.penghasilan} />
+                <SelectField label="Pendidikan Wali" name="wali_pendidikan" register={register} options={optionsFor("pendidikan", "wali_pendidikan")} />
+                <SelectField label="Pekerjaan Wali" name="wali_pekerjaan" register={register} options={optionsFor("pekerjaan", "wali_pekerjaan")} />
+                <SelectField label="Penghasilan Wali" name="wali_penghasilan" register={register} options={optionsFor("penghasilan", "wali_penghasilan")} />
               </div>
             </div>
           </div>
@@ -443,7 +496,7 @@ export default function SiswaForm({
           {/* TAB 4: Akademik */}
           <div className={activeTab === "akademik" ? "grid sm:grid-cols-2 gap-5" : "hidden"}>
             <TextField label="Rombel / Kelas" name="rombel" register={register} />
-            <SelectField label="Jalur Masuk" name="jalur" register={register} options={refOptions.jalur} />
+            <SelectField label="Jalur Masuk" name="jalur" register={register} options={optionsFor("jalur", "jalur")} />
             <SelectField label="Status Siswa" name="status_siswa" register={register} options={STATUS_SISWA_OPTIONS} />
             <TextField label="No. Peserta UN" name="no_peserta_un" register={register} />
             <TextField label="No. Seri Ijazah" name="no_seri_ijazah" register={register} />

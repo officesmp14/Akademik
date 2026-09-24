@@ -36,7 +36,7 @@ export const LAPORAN_DINAS_COLUMNS: {
   { header: "JJM", get: (r) => v(r.penugasan?.jjm) },
   { header: "TOTAL JJM", get: (r) => r.totalJjm || "" },
   { header: "SISWA", get: (r) => v(r.penugasan?.jumlah_siswa_diajar) },
-  { header: "KOMPETENSI", get: (r) => v(r.penugasan?.kompetensi) },
+  { header: "KOMPETENSI", get: (r) => v(r.gtk.kompetensi) },
   { header: "SEKOLAH", get: (r) => v(r.penugasan?.nama_sekolah) },
   { header: "JENJANG ", get: (r) => v(r.penugasan?.jenjang_sekolah) }, // kolom "JENJANG" ke-2 (jenjang sekolah)
   { header: "SUMBER GAJI", get: (r) => v(r.gtk.sumber_gaji) },
@@ -73,16 +73,29 @@ export const LAPORAN_DINAS_COLUMNS: {
   { header: "KETERANGAN", get: (r) => v(r.gtk.keterangan) },
 ];
 
-export function buildLaporanDinasRows(
-  gtkList: Gtk[],
+function groupPenugasanByGtkId(
   penugasanList: GtkPenugasanMengajar[]
-): LaporanDinasRow[] {
+): Map<string, GtkPenugasanMengajar[]> {
   const penugasanByGtkId = new Map<string, GtkPenugasanMengajar[]>();
   for (const p of penugasanList) {
     if (!penugasanByGtkId.has(p.gtk_id)) penugasanByGtkId.set(p.gtk_id, []);
     penugasanByGtkId.get(p.gtk_id)!.push(p);
   }
+  return penugasanByGtkId;
+}
 
+function hitungTotalJjm(penugasanArr: GtkPenugasanMengajar[]): number {
+  return penugasanArr.reduce((acc, p) => {
+    const n = parseFloat(p.jjm ?? "0");
+    return acc + (isNaN(n) ? 0 : n);
+  }, 0);
+}
+
+export function buildLaporanDinasRows(
+  gtkList: Gtk[],
+  penugasanList: GtkPenugasanMengajar[]
+): LaporanDinasRow[] {
+  const penugasanByGtkId = groupPenugasanByGtkId(penugasanList);
   const rows: LaporanDinasRow[] = [];
 
   const sortedGtk = [...gtkList].sort((a, b) =>
@@ -91,10 +104,7 @@ export function buildLaporanDinasRows(
 
   for (const gtk of sortedGtk) {
     const penugasanArr = gtk.id ? penugasanByGtkId.get(gtk.id) ?? [] : [];
-    const totalJjm = penugasanArr.reduce((acc, p) => {
-      const n = parseFloat(p.jjm ?? "0");
-      return acc + (isNaN(n) ? 0 : n);
-    }, 0);
+    const totalJjm = hitungTotalJjm(penugasanArr);
 
     if (penugasanArr.length === 0) {
       rows.push({ gtk, penugasan: null, totalJjm });
@@ -103,6 +113,45 @@ export function buildLaporanDinasRows(
         rows.push({ gtk, penugasan: p, totalJjm });
       }
     }
+  }
+
+  return rows;
+}
+
+// Bandingkan dua penugasan, yang "lebih baru" menang: tahun_ajaran lebih
+// besar duluan (format "2025/2026" bisa dibandingkan sebagai teks apa
+// adanya karena tahunnya selalu 4 digit), kalau sama/tidak ada baru pakai
+// created_at -- dipakai supaya laporan ringkas ambil penugasan terbaru
+// per GTK, bukan sekadar yang pertama ditemukan.
+function penugasanLebihBaru(a: GtkPenugasanMengajar, b: GtkPenugasanMengajar): number {
+  const tahunA = a.tahun_ajaran ?? "";
+  const tahunB = b.tahun_ajaran ?? "";
+  if (tahunA !== tahunB) return tahunA > tahunB ? -1 : 1;
+  const createdA = a.created_at ?? "";
+  const createdB = b.created_at ?? "";
+  return createdA > createdB ? -1 : createdA < createdB ? 1 : 0;
+}
+
+/** Sama seperti buildLaporanDinasRows, tapi 1 baris per GTK -- kalau GTK
+ *  itu punya beberapa penugasan mengajar (tahun ajaran berbeda-beda),
+ *  cuma penugasan TERBARU yang dipakai, sisanya diabaikan (tapi Total
+ *  JJM tetap dihitung dari semua penugasan, bukan cuma yang terbaru). */
+export function buildLaporanDinasRowsRingkas(
+  gtkList: Gtk[],
+  penugasanList: GtkPenugasanMengajar[]
+): LaporanDinasRow[] {
+  const penugasanByGtkId = groupPenugasanByGtkId(penugasanList);
+  const rows: LaporanDinasRow[] = [];
+
+  const sortedGtk = [...gtkList].sort((a, b) =>
+    (a.nama || "").localeCompare(b.nama || "", "id", { sensitivity: "base" })
+  );
+
+  for (const gtk of sortedGtk) {
+    const penugasanArr = gtk.id ? penugasanByGtkId.get(gtk.id) ?? [] : [];
+    const totalJjm = hitungTotalJjm(penugasanArr);
+    const terbaru = [...penugasanArr].sort(penugasanLebihBaru)[0] ?? null;
+    rows.push({ gtk, penugasan: terbaru, totalJjm });
   }
 
   return rows;

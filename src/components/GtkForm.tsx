@@ -212,6 +212,7 @@ export default function GtkForm({
               <TextField label="Nomor Ijazah Terakhir" name="nomor_ijazah_terakhir" register={register} />
               <TextField label="Tanggal Lulus Pendidikan Terakhir" name="tanggal_lulus_pendidikan_terakhir" register={register} placeholder="Contoh: Juli 2015" />
               <TextField label="Mapel Sertifikasi (PPG)" name="mapel_sertifikasi_ppg" register={register} />
+              <TextField label="Kompetensi" name="kompetensi" register={register} />
               <TextField label="Akun SIM PKB" name="akun_sim_pkb" register={register} />
               <TextField label="Akun Belajar.id" name="akun_belajar" register={register} />
             </div>
