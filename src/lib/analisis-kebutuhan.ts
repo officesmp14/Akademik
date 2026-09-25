@@ -92,19 +92,73 @@ export type AnalisisKebutuhanGuru = {
   guru_pppk: number;
   guru_honor: number;
   abk: number | null;
+  /** ABK yang diisi manual; kosong = pakai hitungan otomatis. */
+  abk_manual?: number | null;
   rombel_7: number;
   rombel_8: number;
   rombel_9: number;
   jjm: number | null;
   waka_perpus_lab: number;
+  /** Turunan dari pelajaran.jumlah_rombel -- tidak disimpan di tabel analisis. */
+  jumlah_rombel?: number | null;
 };
+
+// Nama baris di tabel pelajaran untuk tiap mapel Analisis Kebutuhan. Kalau
+// satu mapel menggabung beberapa baris pelajaran (Seni Budaya + Prakarya),
+// JJM dijumlah dan rombel diambil dari baris pertama.
+export const PELAJARAN_UNTUK_MAPEL: Record<MapelKebutuhanGuru, string[]> = {
+  PKn: ["PKn"],
+  "Bahasa Indonesia": ["Bahasa Indonesia"],
+  Matematika: ["Matematika"],
+  "Ilmu Pengetahuan Alam (IPA)": ["Ilmu Pengetahuan Alam"],
+  "Ilmu Pengetahuan Sosial (IPS)": ["Ilmu Pengetahuan Sosial"],
+  "Bahasa Inggris": ["Bahasa Inggris"],
+  "Seni Budaya/Prakarya": ["Seni Budaya", "Prakarya"],
+  PJOK: ["PJOK"],
+  "Bimbingan dan Konseling (BK)": ["Bimbingan Konseling"],
+  Informatika: ["Informatika"],
+  "Pendidikan Agama Islam": ["Agama Islam"],
+  "Pendidikan Agama Katolik": ["Agama Katolik"],
+  "Pendidikan Agama Kristen": ["Agama Protestan"],
+  "Pendidikan Agama Budha": ["Agama Budha"],
+  "Pendidikan Agama Hindu": ["Agama Hindu"],
+};
+
+export type PelajaranRef = {
+  mapel: string;
+  jjm: number | null;
+  jml_rombel7: number | null;
+  jml_rombel8: number | null;
+  jml_rombel9: number | null;
+  jumlah_rombel: number | null;
+};
+
+/** Rombel VII/VIII/IX, jumlah rombel, dan JJM satu mapel Analisis Kebutuhan
+ *  dari tabel pelajaran -- null kalau baris pelajarannya tidak ditemukan. */
+export function turunanDariPelajaran(
+  mapel: MapelKebutuhanGuru,
+  pelajaran: PelajaranRef[]
+): Pick<AnalisisKebutuhanGuru, "rombel_7" | "rombel_8" | "rombel_9" | "jjm" | "jumlah_rombel"> | null {
+  const cocok = PELAJARAN_UNTUK_MAPEL[mapel]
+    .map((nama) => pelajaran.find((p) => p.mapel === nama))
+    .filter((p): p is PelajaranRef => Boolean(p));
+  if (cocok.length === 0) return null;
+  const first = cocok[0];
+  return {
+    rombel_7: first.jml_rombel7 ?? 0,
+    rombel_8: first.jml_rombel8 ?? 0,
+    rombel_9: first.jml_rombel9 ?? 0,
+    jumlah_rombel: first.jumlah_rombel ?? 0,
+    jjm: cocok.reduce((acc, p) => acc + (p.jjm ?? 0), 0),
+  };
+}
 
 export function hitungJumlahGuru(row: AnalisisKebutuhanGuru): number {
   return row.guru_pns + row.guru_pppk + row.guru_honor;
 }
 
 export function hitungJumlahRombel(row: AnalisisKebutuhanGuru): number {
-  return row.rombel_7 + row.rombel_8 + row.rombel_9;
+  return row.jumlah_rombel ?? row.rombel_7 + row.rombel_8 + row.rombel_9;
 }
 
 export function hitungJmlJjm(row: AnalisisKebutuhanGuru): number {
@@ -121,9 +175,23 @@ export function hitungJamPerGuru(row: AnalisisKebutuhanGuru): number | null {
   return Math.round((hitungTotalJam(row) / jumlah) * 100) / 100;
 }
 
-export function hitungKurangLebihGuru(row: AnalisisKebutuhanGuru): number | null {
-  if (row.abk === null) return null;
-  return hitungJumlahGuru(row) - row.abk;
+/** Kebutuhan PNS = Total Jam / 24 (2 desimal untuk tampilan). */
+export function hitungKebutuhanPns(row: AnalisisKebutuhanGuru): number {
+  return Math.round((hitungTotalJam(row) / 24) * 100) / 100;
+}
+
+/** ABK otomatis = Kebutuhan PNS dibulatkan ke bawah (dari nilai tak dibulatkan). */
+export function hitungAbkOtomatis(row: AnalisisKebutuhanGuru): number {
+  return Math.floor(hitungTotalJam(row) / 24 + 1e-9);
+}
+
+/** ABK yang berlaku: angka manual kalau diisi, kalau tidak hitungan otomatis. */
+export function hitungAbk(row: AnalisisKebutuhanGuru): number {
+  return row.abk_manual ?? hitungAbkOtomatis(row);
+}
+
+export function hitungKurangLebihGuru(row: AnalisisKebutuhanGuru): number {
+  return hitungJumlahGuru(row) - hitungAbk(row);
 }
 
 export function hitungGolongan(abk: number | null): { pertama: number; muda: number; madya: number; utama: number } {
@@ -140,4 +208,25 @@ export function hitungGolongan(abk: number | null): { pertama: number; muda: num
  *  sesuai rumus di Excel Dinas Pendidikan. */
 export function hitungKebutuhanKebersihan(jumlahMurid: number): number {
   return Math.round(jumlahMurid / 200);
+}
+
+/** Tugas tambahan (Waka/Perpus/Lab) per mapel: tiap GTK yang jam_tugas_tambahan-nya
+ *  >= 12 dihitung 12 jam (lebih dari 12 dipotong jadi 12; di bawah 12 diabaikan).
+ *  Satu GTK maksimal 12 walau punya beberapa penugasan di tahun ajaran itu. */
+export function hitungWakaPerpusLabPerMapel(
+  gtkList: { id: string; kompetensi: string | null }[],
+  penugasanList: { gtk_id: string; jam_tugas_tambahan: string | null }[]
+): Record<string, number> {
+  const hasil: Record<string, number> = {};
+  const gtkSudah = new Set<string>();
+  const mapelByGtk = new Map(gtkList.map((g) => [g.id, cocokkanMapel(g.kompetensi)]));
+  for (const p of penugasanList) {
+    const mapel = mapelByGtk.get(p.gtk_id);
+    if (!mapel || gtkSudah.has(p.gtk_id)) continue;
+    const jam = parseFloat(p.jam_tugas_tambahan ?? "");
+    if (isNaN(jam) || jam < 12) continue;
+    gtkSudah.add(p.gtk_id);
+    hasil[mapel] = (hasil[mapel] ?? 0) + 12;
+  }
+  return hasil;
 }

@@ -27,6 +27,7 @@ export default async function DashboardLayout({
         isKetuaEkskul: currentUser.isKetuaEkskul,
         isPanitiaPtsPas: currentUser.isPanitiaPtsPas,
         isPanitiaHibot: currentUser.isPanitiaHibot,
+        isStafLihatSiswa: currentUser.isStafLihatSiswa,
       }}
     >
       <DashboardShell>{children}</DashboardShell>

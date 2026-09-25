@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { createClient } from "@/lib/supabase/client";
+import { useRole } from "@/lib/role-context";
 import { compareKelas } from "@/lib/rekap-siswa";
 import { ChevronLeft, Loader2, Printer, Download } from "lucide-react";
 
@@ -69,6 +70,9 @@ function exportXlsx(groups: KelasGroup[], filename: string) {
 }
 
 export default function DataSiswaMbgPage() {
+  // Staf (jenis_ptk_pdd tertentu) untuk sementara tidak boleh mengunduh data
+  const { role, isStafLihatSiswa } = useRole();
+  const sembunyikanUnduh = isStafLihatSiswa && role !== "admin" && role !== "kepala_sekolah";
   const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState<KelasGroup[]>([]);
   const [total, setTotal] = useState(0);
@@ -128,21 +132,25 @@ export default function DataSiswaMbgPage() {
         </a>
 
         <div className="flex flex-wrap gap-2">
-          <button
-            onClick={handleDownloadSingle}
-            disabled={!activeGroup}
-            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
-          >
-            <Download className="h-4 w-4" />
-            Download Kelas Ini
-          </button>
-          <button
-            onClick={handleDownloadAll}
-            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-          >
-            <Download className="h-4 w-4" />
-            Download Semua Kelas
-          </button>
+          {!sembunyikanUnduh && (
+            <button
+              onClick={handleDownloadSingle}
+              disabled={!activeGroup}
+              className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+            >
+              <Download className="h-4 w-4" />
+              Download Kelas Ini
+            </button>
+          )}
+          {!sembunyikanUnduh && (
+            <button
+              onClick={handleDownloadAll}
+              className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              <Download className="h-4 w-4" />
+              Download Semua Kelas
+            </button>
+          )}
           <button
             onClick={handlePrintSingle}
             disabled={!activeGroup}

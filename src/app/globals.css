@@ -91,3 +91,12 @@ body {
   margin: 0 0 0.5rem;
 }
 
+
+/* Scrollbar disembunyikan tapi area tetap bisa di-scroll (menu & konten dashboard) */
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}

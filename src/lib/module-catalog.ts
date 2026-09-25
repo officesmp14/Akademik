@@ -28,6 +28,7 @@ export type ModuleKey =
   | "mutasi_masuk_siswa"
   | "registrasi_peserta_didik"
   | "data_periodik"
+  | "prestasi_siswa"
   | "presensi_rekap";
 
 export const MODULES: { key: ModuleKey; label: string }[] = [
@@ -60,6 +61,7 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "mutasi_masuk_siswa", label: "Data Mutasi Masuk" },
   { key: "registrasi_peserta_didik", label: "Registrasi Peserta Didik" },
   { key: "data_periodik", label: "Data Periodik" },
+  { key: "prestasi_siswa", label: "Prestasi Siswa" },
   { key: "presensi_rekap", label: "Rekap Presensi" },
 ];
 

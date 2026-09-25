@@ -14,6 +14,7 @@ type RoleContextValue = {
   isKetuaEkskul: boolean;
   isPanitiaPtsPas: boolean;
   isPanitiaHibot: boolean;
+  isStafLihatSiswa: boolean;
 };
 
 const RoleContext = createContext<RoleContextValue>({
@@ -27,6 +28,7 @@ const RoleContext = createContext<RoleContextValue>({
   isKetuaEkskul: false,
   isPanitiaPtsPas: false,
   isPanitiaHibot: false,
+  isStafLihatSiswa: false,
 });
 
 export function RoleProvider({

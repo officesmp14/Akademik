@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isStafLihatSiswa } from "@/lib/staf-pdd";
 
 export type UserRole = "admin" | "guru" | "kepala_sekolah" | "staf_tu";
 
@@ -21,6 +22,8 @@ export type CurrentUser = {
   isKetuaEkskul: boolean;
   isPanitiaPtsPas: boolean;
   isPanitiaHibot: boolean;
+  /** Staf (jenis_ptk_pdd tertentu) yang boleh melihat (baca saja) menu Data Siswa. */
+  isStafLihatSiswa: boolean;
 };
 
 /** Ambil user yang sedang login beserta role, gtk_id, nama, hak akses, & rombel wali kelasnya (server-side). */
@@ -51,6 +54,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   let isKetuaEkskul = false;
   let isPanitiaPtsPas = false;
   let isPanitiaHibot = false;
+  let stafLihatSiswa = false;
   if (roleRow?.gtk_id) {
     const [
       { data: waliRow },
@@ -58,6 +62,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
       { count: ekskulCount },
       { count: panitiaCount },
       { count: hibotCount },
+      { data: gtkPddRow },
     ] = await Promise.all([
       supabase.from("wali_kelas").select("rombel").eq("gtk_id", roleRow.gtk_id).maybeSingle(),
       supabase
@@ -76,7 +81,9 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
         .from("panitia_hibot")
         .select("id", { count: "exact", head: true })
         .or(`ketua_gtk_id.eq.${roleRow.gtk_id},sekretaris_gtk_id.eq.${roleRow.gtk_id}`),
+      supabase.from("datagtk").select("jenis_ptk_pdd").eq("id", roleRow.gtk_id).maybeSingle(),
     ]);
+    stafLihatSiswa = isStafLihatSiswa(gtkPddRow?.jenis_ptk_pdd);
     waliKelasRombel = waliRow?.rombel ?? null;
     hasMengajarKelas = (mengajarCount ?? 0) > 0;
     isKetuaEkskul = (ekskulCount ?? 0) > 0;
@@ -96,6 +103,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     isKetuaEkskul,
     isPanitiaPtsPas,
     isPanitiaHibot,
+    isStafLihatSiswa: stafLihatSiswa,
   };
 }
 

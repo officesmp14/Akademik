@@ -1,3 +1,4 @@
+import { isStafLihatSiswa, isPathLihatSiswaStaf } from "@/lib/staf-pdd";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -10,6 +11,7 @@ const PATH_MODULE_MAP: { prefix: string; modules: string[] }[] = [
   { prefix: "/gtk", modules: ["gtk"] },
   { prefix: "/registrasi-peserta-didik", modules: ["registrasi_peserta_didik"] },
   { prefix: "/data-periodik", modules: ["data_periodik"] },
+  { prefix: "/prestasi-siswa", modules: ["prestasi_siswa"] },
   { prefix: "/laporan/rekap-siswa", modules: ["laporan_rekap_siswa"] },
   { prefix: "/laporan/cek-kursi", modules: ["laporan_cek_kursi"] },
   { prefix: "/laporan/cek-nis", modules: ["laporan_cek_nis"] },
@@ -129,6 +131,31 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
+  // Guru boleh melihat (baca saja) Siswa Mutasi Masuk, Riwayat Mutasi Keluar,
+  // Status Update GTK, dan Analisis Kebutuhan
+  // tanpa hak akses modul -- halamannya sendiri menyembunyikan tombol
+  // ubah/hapus untuk yang tidak punya izin.
+  if (
+    role === "guru" &&
+    (path.startsWith("/siswa/mutasi-masuk") ||
+      path.startsWith("/laporan/riwayat-mutasi") ||
+      path.startsWith("/laporan/status-update-gtk") ||
+      path.startsWith("/laporan/analisis-kebutuhan"))
+  ) {
+    return supabaseResponse;
+  }
+
+  // Staf (datagtk.jenis_ptk_pdd: Pengadministrasi Perkantoran / Penata
+  // Layanan Operasional / Penelaah Teknis Kebijakan) boleh MELIHAT menu Data
+  // Siswa (baca saja) -- halamannya menyembunyikan tombol ubah/hapus untuk
+  // yang tidak punya izin edit, dan RLS tetap penjaga akhir.
+  if (gtkId && isPathLihatSiswaStaf(path)) {
+    const { data: gtkPdd } = await supabase.from("datagtk").select("jenis_ptk_pdd").eq("id", gtkId).maybeSingle();
+    if (isStafLihatSiswa(gtkPdd?.jenis_ptk_pdd)) {
+      return supabaseResponse;
+    }
+  }
+
   // /kelas-saya, /rapor-sts, /rekap-sts, dan /tanda-terima-sts HANYA untuk
   // yang benar-benar ditugaskan jadi wali kelas
   if (
@@ -156,6 +183,7 @@ export async function updateSession(request: NextRequest) {
   if (
     path.startsWith("/registrasi-peserta-didik") ||
     path.startsWith("/data-periodik") ||
+    path.startsWith("/prestasi-siswa") ||
     path.startsWith("/nilai-leger") ||
     path.startsWith("/nilai-ujian-sekolah") ||
     path.startsWith("/nilai-rekap") ||

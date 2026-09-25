@@ -8,7 +8,6 @@ import { ChevronLeft, Loader2, RotateCcw, Search, UserCheck } from "lucide-react
 type RowGtk = {
   id: string;
   nama: string | null;
-  nip: string | null;
   jenis_ptk: string | null;
   status_aktif: string | null;
   created_at: string | null;
@@ -17,6 +16,12 @@ type RowGtk = {
 };
 
 type StatusUpdate = "sendiri" | "lain" | "belum";
+
+// Akun admin sekolah disamarkan di tampilan
+function tampilkanDiupdateOleh(nama: string | null): string {
+  if (!nama) return "-";
+  return nama.trim().toLowerCase() === "admin@smp14tarakan.com" ? "Mang Julax" : nama;
+}
 
 function normalisasiNama(nama: string | null): string {
   return (nama ?? "").trim().toLowerCase();
@@ -63,10 +68,22 @@ export default function LaporanStatusUpdateGtkPage() {
     setError(null);
     const supabase = createClient();
 
-    const { data, error } = await supabase
-      .from("datagtk")
-      .select("id, nama, nip, jenis_ptk, status_aktif, created_at, updated_at, updated_by_nama")
+    // Guru hanya boleh baca datagtk miliknya sendiri (RLS), jadi pakai view
+    // publik (supabase/gtk-view-guru-laporan.sql); kalau view belum dibuat,
+    // jatuh balik ke tabel asli (cukup untuk admin/kepsek).
+    const kolom = "id, nama, jenis_ptk, status_aktif, created_at, updated_at, updated_by_nama";
+    let { data, error } = await supabase
+      .from("gtk_status_update_publik")
+      .select(kolom)
+      .eq("status_aktif", "Y")
       .order("nama", { ascending: true });
+    if (error) {
+      ({ data, error } = await supabase
+        .from("datagtk")
+        .select(kolom)
+        .eq("status_aktif", "Y")
+        .order("nama", { ascending: true }));
+    }
 
     if (error) {
       setError(error.message);
@@ -110,7 +127,7 @@ export default function LaporanStatusUpdateGtkPage() {
   const filtered = data.filter((row) => {
     if (search.trim()) {
       const q = search.trim().toLowerCase();
-      const cocok = (row.nama ?? "").toLowerCase().includes(q) || (row.nip ?? "").toLowerCase().includes(q);
+      const cocok = (row.nama ?? "").toLowerCase().includes(q);
       if (!cocok) return false;
     }
     if (filterStatus === "semua") return true;
@@ -158,7 +175,7 @@ export default function LaporanStatusUpdateGtkPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nama atau NIP..."
+            placeholder="Cari nama..."
             className="w-full rounded-lg border border-slate-300 dark:border-slate-600 pl-9 pr-3 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -189,7 +206,6 @@ export default function LaporanStatusUpdateGtkPage() {
               <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/40 text-left text-slate-500 dark:text-slate-400">
                 <th className="px-4 py-3 font-medium w-12">No</th>
                 <th className="px-4 py-3 font-medium">Nama</th>
-                <th className="px-4 py-3 font-medium">NIP</th>
                 <th className="px-4 py-3 font-medium">Jenis PTK</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Diupdate Oleh</th>
@@ -199,13 +215,13 @@ export default function LaporanStatusUpdateGtkPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={6} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={6} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     Tidak ada data GTK yang cocok.
                   </td>
                 </tr>
@@ -221,7 +237,6 @@ export default function LaporanStatusUpdateGtkPage() {
                       <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
                         {row.nama || "-"}
                       </td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.nip || "-"}</td>
                       <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.jenis_ptk || "-"}</td>
                       <td className="px-4 py-3">
                         <span
@@ -231,7 +246,7 @@ export default function LaporanStatusUpdateGtkPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-slate-600 dark:text-slate-300">
-                        {row.updated_by_nama || "-"}
+                        {tampilkanDiupdateOleh(row.updated_by_nama)}
                       </td>
                       <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">
                         {status === "belum" || !row.updated_at

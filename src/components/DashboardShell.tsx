@@ -8,11 +8,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
+    <div className="h-screen overflow-hidden print:h-auto print:overflow-visible bg-slate-50 dark:bg-slate-900 flex">
       <SidebarNav collapsed={collapsed} />
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col overflow-hidden print:overflow-visible">
         <TopBar collapsed={collapsed} onToggleSidebar={() => setCollapsed((v) => !v)} />
-        <main className="flex-1 min-w-0">{children}</main>
+        <main className="flex-1 min-w-0 min-h-0 overflow-y-auto scrollbar-hidden print:overflow-visible">{children}</main>
       </div>
     </div>
   );

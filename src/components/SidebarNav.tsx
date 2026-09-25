@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator, Award, PieChart } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -24,7 +24,7 @@ const LAPORAN_MODULES = [
 
 export default function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
   const pathname = usePathname();
-  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas, isKetuaEkskul, isPanitiaPtsPas, isPanitiaHibot } = useRole();
+  const { role, moduleAccess, waliKelasRombel, hasMengajarKelas, isKetuaEkskul, isPanitiaPtsPas, isPanitiaHibot, isStafLihatSiswa } = useRole();
 
   const isActiveHome = pathname === "/home";
   const isActiveSiswa = pathname.startsWith("/siswa") && !pathname.startsWith("/siswa/mutasi-masuk");
@@ -74,8 +74,13 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveDataSiswaPanitia = pathname.startsWith("/data-siswa-panitia");
   const isActiveKartuPelajar = pathname.startsWith("/kartu-pelajar");
   const isActiveGanakHibot = pathname.startsWith("/laporan/ganak-hibot");
-  const isActiveRegistrasi = pathname.startsWith("/registrasi-peserta-didik");
-  const isActiveDataPeriodik = pathname.startsWith("/data-periodik");
+  const isActiveRegistrasi =
+    pathname.startsWith("/registrasi-peserta-didik") && !pathname.startsWith("/registrasi-peserta-didik/kelengkapan");
+  const isActiveKelengkapanRegistrasi = pathname.startsWith("/registrasi-peserta-didik/kelengkapan");
+  const isActiveDataPeriodik =
+    pathname.startsWith("/data-periodik") && !pathname.startsWith("/data-periodik/progres");
+  const isActiveProgresDataPeriodik = pathname.startsWith("/data-periodik/progres");
+  const isActivePrestasiSiswa = pathname.startsWith("/prestasi-siswa");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
   const isActiveRiwayatMutasi = pathname.startsWith("/laporan/riwayat-mutasi");
   const isActiveMutasiMasuk = pathname.startsWith("/siswa/mutasi-masuk");
@@ -143,26 +148,39 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const hasExtraDataPeriodikAccess = moduleAccess.some(
     (a) => a.module === "data_periodik" && a.can_view
   );
+  const hasExtraPrestasiSiswaAccess = moduleAccess.some(
+    (a) => a.module === "prestasi_siswa" && a.can_view
+  );
   const hasExtraPresensiRekapAccess = moduleAccess.some(
     (a) => a.module === "presensi_rekap" && a.can_view
   );
 
-  const showSiswaMenu = isFullAccessRole || hasExtraSiswaAccess;
+  // Staf tertentu (jenis_ptk_pdd) boleh melihat menu Data Siswa (baca saja)
+  const showSiswaMenu = isFullAccessRole || hasExtraSiswaAccess || isStafLihatSiswa;
   const showGtkMenu = isFullAccessRole || hasExtraGtkAccess;
   const showLaporanDinasGtkLink = isFullAccessRole || hasExtraLaporanDinasGtkAccess;
-  const showStatusUpdateGtkLink = isFullAccessRole || hasExtraStatusUpdateGtkAccess;
-  const showAnalisisKebutuhanLink = isFullAccessRole || hasExtraAnalisisKebutuhanAccess;
-  const showDataGtkSection =
-    showGtkMenu || showLaporanDinasGtkLink || showStatusUpdateGtkLink || showAnalisisKebutuhanLink;
-  const showLaporanMenu = isFullAccessRole || hasExtraLaporanAccess || isPanitiaHibot;
-  const showMutasiMasukMenu = isFullAccessRole || hasExtraMutasiMasukAccess;
-  const showRegistrasiMenu = isFullAccessRole || hasExtraRegistrasiAccess || Boolean(waliKelasRombel);
-  const showDataPeriodikMenu = isFullAccessRole || hasExtraDataPeriodikAccess || Boolean(waliKelasRombel);
+  // Guru & staf tertentu boleh melihat (baca saja) Status Update GTK & Analisis Kebutuhan
+  const showStatusUpdateGtkLink = isFullAccessRole || hasExtraStatusUpdateGtkAccess || role === "guru" || isStafLihatSiswa;
+  const showAnalisisKebutuhanLink = isFullAccessRole || hasExtraAnalisisKebutuhanAccess || role === "guru" || isStafLihatSiswa;
+  // Link Beban Kerja terbuka untuk semua user, jadi grup Data GTK selalu tampil
+  const showDataGtkSection = true;
+  const showLaporanMenu = isFullAccessRole || hasExtraLaporanAccess || isPanitiaHibot || isStafLihatSiswa;
+  const isGuru = role === "guru";
+  const hasExtraRiwayatMutasiAccess = moduleAccess.some(
+    (a) => a.module === "laporan_riwayat_mutasi" && a.can_view
+  );
+  // Guru boleh melihat Mutasi Masuk & Riwayat Mutasi (baca saja)
+  const showMutasiMasukMenu = isFullAccessRole || hasExtraMutasiMasukAccess || isGuru || isStafLihatSiswa;
+  const showRiwayatMutasiMenu =
+    isFullAccessRole || hasExtraRiwayatMutasiAccess || isGuru || isStafLihatSiswa || Boolean(waliKelasRombel);
+  const showRegistrasiMenu = isFullAccessRole || hasExtraRegistrasiAccess || isStafLihatSiswa || Boolean(waliKelasRombel);
+  const showDataPeriodikMenu = isFullAccessRole || hasExtraDataPeriodikAccess || isStafLihatSiswa || Boolean(waliKelasRombel);
+  const showPrestasiSiswaMenu = isFullAccessRole || hasExtraPrestasiSiswaAccess || isStafLihatSiswa || Boolean(waliKelasRombel);
   const showRekapPresensiMenu =
     hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole || hasExtraPresensiRekapAccess;
 
   const showDataSiswaSection =
-    showSiswaMenu || showMutasiMasukMenu || showRegistrasiMenu || showDataPeriodikMenu || Boolean(waliKelasRombel);
+    showSiswaMenu || showMutasiMasukMenu || showRegistrasiMenu || showDataPeriodikMenu || showPrestasiSiswaMenu || showRiwayatMutasiMenu || Boolean(waliKelasRombel);
   const showPresensiSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole || showRekapPresensiMenu;
   const showNilaiUjianSection = hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole;
   const isWaliKelasIX = Boolean(waliKelasRombel?.startsWith("IX."));
@@ -208,7 +226,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
 
   return (
     <aside
-      className={`shrink-0 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex flex-col transition-all duration-200 ${
+      className={`shrink-0 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex flex-col h-full overflow-hidden transition-all duration-200 ${
         collapsed ? "w-16" : "w-64"
       }`}
     >
@@ -227,18 +245,11 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
         )}
       </div>
 
-      <nav className={`flex-1 py-4 space-y-1 ${collapsed ? "px-2" : "px-3"}`}>
+      <nav className={`flex-1 min-h-0 overflow-y-auto scrollbar-hidden py-4 space-y-1 ${collapsed ? "px-2" : "px-3"}`}>
         <Link href="/home" title="Home" className={linkClass(isActiveHome)}>
           <Home className="h-4 w-4 shrink-0" />
           {!collapsed && "Home"}
         </Link>
-
-        {showProfilSaya && (
-          <Link href="/profil-saya" title="Profil Saya" className={linkClass(isActiveProfil)}>
-            <UserCog className="h-4 w-4 shrink-0" />
-            {!collapsed && "Profil Saya"}
-          </Link>
-        )}
 
         {showDataSiswaSection && (
           <>
@@ -275,10 +286,46 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               </Link>
             )}
 
+            {showRegistrasiMenu && (
+              <Link
+                href="/registrasi-peserta-didik/kelengkapan"
+                title="Progres Hobi&Cita"
+                className={linkClass(isActiveKelengkapanRegistrasi)}
+              >
+                <PieChart className="h-4 w-4 shrink-0" />
+                {!collapsed && "Progres Hobi&Cita"}
+              </Link>
+            )}
+
             {showDataPeriodikMenu && (
               <Link href="/data-periodik" title="Data Periodik" className={linkClass(isActiveDataPeriodik)}>
                 <Ruler className="h-4 w-4 shrink-0" />
                 {!collapsed && "Data Periodik"}
+              </Link>
+            )}
+
+            {showDataPeriodikMenu && (
+              <Link
+                href="/data-periodik/progres"
+                title="Progres Data Periodik"
+                className={linkClass(isActiveProgresDataPeriodik)}
+              >
+                <PieChart className="h-4 w-4 shrink-0" />
+                {!collapsed && "Progres Data Periodik"}
+              </Link>
+            )}
+
+            {showPrestasiSiswaMenu && (
+              <Link href="/prestasi-siswa" title="Prestasi Siswa" className={linkClass(isActivePrestasiSiswa)}>
+                <Award className="h-4 w-4 shrink-0" />
+                {!collapsed && "Prestasi Siswa"}
+              </Link>
+            )}
+
+            {(isFullAccessRole || isStafLihatSiswa || Boolean(waliKelasRombel)) && (
+              <Link href="/kartu-pelajar" title="Kartu Pelajar" className={linkClass(isActiveKartuPelajar)}>
+                <IdCard className="h-4 w-4 shrink-0" />
+                {!collapsed && "Kartu Pelajar"}
               </Link>
             )}
 
@@ -289,7 +336,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               </Link>
             )}
 
-            {waliKelasRombel && (
+            {showRiwayatMutasiMenu && (
               <Link
                 href="/laporan/riwayat-mutasi"
                 title="Riwayat Mutasi Keluar"
@@ -302,55 +349,56 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           </>
         )}
 
-        {showPresensiSection && (
+        {showDataGtkSection && (
           <>
-            {sectionLabel("Presensi")}
-            {hasMengajarKelas && (
-              <Link href="/presensi" title="Presensi" className={linkClass(isActivePresensi)}>
-                <ClipboardCheck className="h-4 w-4 shrink-0" />
-                {!collapsed && "Presensi"}
+            {sectionLabel("Data GTK")}
+            {showProfilSaya && (
+              <Link href="/profil-saya" title="Profil Saya" className={linkClass(isActiveProfil)}>
+                <UserCog className="h-4 w-4 shrink-0" />
+                {!collapsed && "Profil Saya"}
               </Link>
             )}
-
-            {hasMengajarKelas && (
+            {showGtkMenu && (
+              <Link href="/gtk" title="Data GTK" className={linkClass(isActiveGtk)}>
+                <Users2 className="h-4 w-4 shrink-0" />
+                {!collapsed && "Data GTK"}
+              </Link>
+            )}
+            {showLaporanDinasGtkLink && (
               <Link
-                href="/presensi/rekap-mapel"
-                title="Rekap Presensi Mapel Saya"
-                className={linkClass(isActiveRekapPresensiMapel)}
+                href="/laporan/dinas-gtk"
+                title="Laporan Dinas Pdd"
+                className={linkClass(isActiveLaporanDinasGtk)}
               >
-                <ClipboardCheck className="h-4 w-4 shrink-0" />
-                {!collapsed && "Rekap Presensi Mapel Saya"}
+                <Landmark className="h-4 w-4 shrink-0" />
+                {!collapsed && "Laporan Dinas Pdd"}
               </Link>
             )}
-
-            {waliKelasRombel && (
+            {showStatusUpdateGtkLink && (
               <Link
-                href="/presensi/rekap-harian"
-                title="Rekap Presensi Harian"
-                className={linkClass(isActiveRekapHarian)}
+                href="/laporan/status-update-gtk"
+                title="Status Update GTK"
+                className={linkClass(isActiveStatusUpdateGtk)}
               >
-                <ClipboardCheck className="h-4 w-4 shrink-0" />
-                {!collapsed && "Rekap Presensi Harian"}
+                <UserCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Status Update GTK"}
               </Link>
             )}
-
-            {showRekapPresensiMenu && (
-              <Link href="/presensi/rekap" title="Rekap Presensi" className={linkClass(isActiveRekapPresensi)}>
-                <ClipboardCheck className="h-4 w-4 shrink-0" />
-                {!collapsed && "Rekap Presensi"}
-              </Link>
-            )}
-
-            {waliKelasRombel && (
+            {showAnalisisKebutuhanLink && (
               <Link
-                href="/laporan/verifikasi-presensi"
-                title="Verifikasi Presensi"
-                className={linkClass(isActiveVerifikasiPresensi)}
+                href="/laporan/analisis-kebutuhan"
+                title="Analisis Kebutuhan"
+                className={linkClass(isActiveAnalisisKebutuhan)}
               >
-                <FileText className="h-4 w-4 shrink-0" />
-                {!collapsed && "Verifikasi Presensi"}
+                <Calculator className="h-4 w-4 shrink-0" />
+                {!collapsed && "Analisis Kebutuhan"}
               </Link>
             )}
+
+            <Link href="/link-beban-kerja" title="Link Beban Kerja" className={linkClass(isActiveLinkBebanKerja)}>
+              <Link2 className="h-4 w-4 shrink-0" />
+              {!collapsed && "Link Beban Kerja"}
+            </Link>
           </>
         )}
 
@@ -493,48 +541,6 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           </>
         )}
 
-        {showDataGtkSection && (
-          <>
-            {sectionLabel("Data GTK")}
-            {showGtkMenu && (
-              <Link href="/gtk" title="Data GTK" className={linkClass(isActiveGtk)}>
-                <Users2 className="h-4 w-4 shrink-0" />
-                {!collapsed && "Data GTK"}
-              </Link>
-            )}
-            {showLaporanDinasGtkLink && (
-              <Link
-                href="/laporan/dinas-gtk"
-                title="Laporan Dinas Pdd"
-                className={linkClass(isActiveLaporanDinasGtk)}
-              >
-                <Landmark className="h-4 w-4 shrink-0" />
-                {!collapsed && "Laporan Dinas Pdd"}
-              </Link>
-            )}
-            {showStatusUpdateGtkLink && (
-              <Link
-                href="/laporan/status-update-gtk"
-                title="Status Update GTK"
-                className={linkClass(isActiveStatusUpdateGtk)}
-              >
-                <UserCheck className="h-4 w-4 shrink-0" />
-                {!collapsed && "Status Update GTK"}
-              </Link>
-            )}
-            {showAnalisisKebutuhanLink && (
-              <Link
-                href="/laporan/analisis-kebutuhan"
-                title="Analisis Kebutuhan"
-                className={linkClass(isActiveAnalisisKebutuhan)}
-              >
-                <Calculator className="h-4 w-4 shrink-0" />
-                {!collapsed && "Analisis Kebutuhan"}
-              </Link>
-            )}
-          </>
-        )}
-
         {sectionLabel("Lainnya")}
         {showLaporanMenu && (
           <a href="/laporan" title="Laporan (punya sub-halaman)" className={linkClass(isActiveLaporan)}>
@@ -556,11 +562,6 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
         <Link href="/jadwal-supervisi" title="Jadwal Supervisi" className={linkClass(isActiveJadwalSupervisi)}>
           <CalendarCheck2 className="h-4 w-4 shrink-0" />
           {!collapsed && "Jadwal Supervisi"}
-        </Link>
-
-        <Link href="/link-beban-kerja" title="Link Beban Kerja" className={linkClass(isActiveLinkBebanKerja)}>
-          <Link2 className="h-4 w-4 shrink-0" />
-          {!collapsed && "Link Beban Kerja"}
         </Link>
 
         {(isFullAccessRole || Boolean(waliKelasRombel) || isKetuaEkskul) && (
@@ -585,13 +586,6 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
           </Link>
         )}
 
-        {(isFullAccessRole || Boolean(waliKelasRombel)) && (
-          <Link href="/kartu-pelajar" title="Kartu Pelajar" className={linkClass(isActiveKartuPelajar)}>
-            <IdCard className="h-4 w-4 shrink-0" />
-            {!collapsed && "Kartu Pelajar"}
-          </Link>
-        )}
-
         {(isFullAccessRole || isPanitiaHibot || hasExtraGanakHibotAccess) && (
           <Link href="/laporan/ganak-hibot" title="Ganak Hibot" className={linkClass(isActiveGanakHibot)}>
             <Users className="h-4 w-4 shrink-0" />
@@ -611,7 +605,59 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               {!collapsed && "Hak Akses"}
             </a>
 
-            {sectionLabel("Kelas & Pengajaran")}
+          </>
+        )}
+
+        {(isAdmin || showPresensiSection) && (
+          <>
+            {sectionLabel("Kurikulum")}
+            {hasMengajarKelas && (
+              <Link href="/presensi" title="Presensi" className={linkClass(isActivePresensi)}>
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Presensi"}
+              </Link>
+            )}
+
+            {hasMengajarKelas && (
+              <Link
+                href="/presensi/rekap-mapel"
+                title="Rekap Presensi Mapel Saya"
+                className={linkClass(isActiveRekapPresensiMapel)}
+              >
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Rekap Presensi Mapel Saya"}
+              </Link>
+            )}
+
+            {waliKelasRombel && (
+              <Link
+                href="/presensi/rekap-harian"
+                title="Rekap Presensi Harian"
+                className={linkClass(isActiveRekapHarian)}
+              >
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Rekap Presensi Harian"}
+              </Link>
+            )}
+
+            {waliKelasRombel && (
+              <Link
+                href="/laporan/verifikasi-presensi"
+                title="Verifikasi Presensi"
+                className={linkClass(isActiveVerifikasiPresensi)}
+              >
+                <FileText className="h-4 w-4 shrink-0" />
+                {!collapsed && "Verifikasi Presensi"}
+              </Link>
+            )}
+            {showRekapPresensiMenu && (
+              <Link href="/presensi/rekap" title="Rekap Presensi" className={linkClass(isActiveRekapPresensi)}>
+                <ClipboardCheck className="h-4 w-4 shrink-0" />
+                {!collapsed && "Rekap Presensi"}
+              </Link>
+            )}
+            {isAdmin && (
+              <>
             <a href="/admin/wali-kelas" title="Wali Kelas" className={linkClass(isActiveAdminWaliKelas)}>
               <School className="h-4 w-4 shrink-0" />
               {!collapsed && "Wali Kelas"}
@@ -632,7 +678,13 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               <BookOpenCheck className="h-4 w-4 shrink-0" />
               {!collapsed && "Penugasan Mengajar Kelas"}
             </a>
+              </>
+            )}
+          </>
+        )}
 
+        {isAdmin && (
+          <>
             {sectionLabel("Pengaturan Sekolah")}
             <a
               href="/admin/profil-sekolah"

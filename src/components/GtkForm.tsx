@@ -66,7 +66,7 @@ export default function GtkForm({
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const { register, handleSubmit, watch } = useForm<Gtk>({
+  const { register, handleSubmit, watch, setValue } = useForm<Gtk>({
     defaultValues: initialData ?? {},
   });
   const statusAktif = watch("status_aktif");
@@ -83,6 +83,21 @@ export default function GtkForm({
     }
     fetchJenisPtkPddOptions();
   }, []);
+
+  // Opsi dimuat async SESUDAH form terisi, jadi <select> tidak otomatis
+  // memilih nilai tersimpan -- set ulang begitu opsinya siap.
+  useEffect(() => {
+    const current = initialData?.jenis_ptk_pdd;
+    if (current && jenisPtkPddOptions.length > 0) setValue("jenis_ptk_pdd", current);
+  }, [jenisPtkPddOptions, initialData?.jenis_ptk_pdd, setValue]);
+
+  // Nilai tersimpan yang tidak ada di referensi tetap ditampilkan (tidak hilang saat disimpan)
+  const jenisPtkPddOptionsTampil =
+    initialData?.jenis_ptk_pdd &&
+    jenisPtkPddOptions.length > 0 &&
+    !jenisPtkPddOptions.includes(initialData.jenis_ptk_pdd)
+      ? [...jenisPtkPddOptions, initialData.jenis_ptk_pdd]
+      : jenisPtkPddOptions;
 
   async function onSubmit(values: Gtk) {
     if (values.status_aktif === "N" && (!values.tanggal_tidak_aktif || !values.alasan_tidak_aktif?.trim())) {
@@ -222,7 +237,7 @@ export default function GtkForm({
               <TextField label="NIP" name="nip" register={register} />
               <SelectField label="Status Kepegawaian" name="status_kepegawaian" register={register} options={STATUS_KEPEGAWAIAN_OPTIONS} />
               <SelectField label="Jenis PTK" name="jenis_ptk" register={register} options={JENIS_PTK_OPTIONS} />
-              <SelectField label="Jenis PTK Dinas Pendidikan" name="jenis_ptk_pdd" register={register} options={jenisPtkPddOptions} />
+              <SelectField label="Jenis PTK Dinas Pendidikan" name="jenis_ptk_pdd" register={register} options={jenisPtkPddOptionsTampil} />
               <SelectField label="Status Aktif" name="status_aktif" register={register} options={STATUS_AKTIF_OPTIONS} />
 
               {statusAktif === "N" && (
