@@ -13,6 +13,7 @@ export type ModuleKey =
   | "laporan_kelas_ix"
   | "laporan_verifikasi_presensi"
   | "laporan_ganak_hibot"
+  | "laporan_voting_osis"
   | "laporan_status_update_gtk"
   | "analisis_kebutuhan"
   | "nilai_leger"
@@ -29,6 +30,7 @@ export type ModuleKey =
   | "registrasi_peserta_didik"
   | "data_periodik"
   | "prestasi_siswa"
+  | "data_pip"
   | "presensi_rekap";
 
 export const MODULES: { key: ModuleKey; label: string }[] = [
@@ -46,6 +48,7 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "laporan_kelas_ix", label: "Laporan - Cek Data Ijazah Kelas IX" },
   { key: "laporan_verifikasi_presensi", label: "Laporan - Verifikasi Presensi" },
   { key: "laporan_ganak_hibot", label: "Laporan - Ganak Hibot" },
+  { key: "laporan_voting_osis", label: "Laporan - Data Voting Osis" },
   { key: "laporan_status_update_gtk", label: "Laporan - Status Update Data GTK" },
   { key: "analisis_kebutuhan", label: "Laporan - Analisis Kebutuhan" },
   { key: "nilai_leger", label: "Nilai Leger" },
@@ -62,6 +65,7 @@ export const MODULES: { key: ModuleKey; label: string }[] = [
   { key: "registrasi_peserta_didik", label: "Registrasi Peserta Didik" },
   { key: "data_periodik", label: "Data Periodik" },
   { key: "prestasi_siswa", label: "Prestasi Siswa" },
+  { key: "data_pip", label: "SIPINTAR - Data PIP" },
   { key: "presensi_rekap", label: "Rekap Presensi" },
 ];
 

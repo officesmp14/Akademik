@@ -4,9 +4,12 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Siswa, STATUS_SISWA_OPTIONS } from "@/types/siswa";
-import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, UserPlus, X } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, UserPlus, X, Download } from "lucide-react";
 import { useModulePermission } from "@/lib/role-context";
+import * as XLSX from "xlsx";
 import { getPageNumbers } from "@/lib/pagination";
+import { compareKelas } from "@/lib/rekap-siswa";
+import { getTahunAjaranSaatIni } from "@/types/nilai";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
@@ -115,6 +118,99 @@ export default function SiswaListPage() {
     }
   }
 
+  const [exporting, setExporting] = useState(false);
+
+  // Export CSV: SEMUA siswa sesuai pencarian & filter yang sedang aktif (bukan
+  // cuma halaman ini), kolom tahun_ajaran, NISN, Nama, Kelas -- urut Kelas lalu
+  // Nama (A-Z). tahun_ajaran = tahun ajaran berjalan. NISN diawali tanda petik
+  // tunggal (') supaya Excel tidak membuang angka 0 di depan.
+  async function ambilSiswaUntukExport() {
+    const supabase = createClient();
+    const semua: { nisn: string | null; nama: string | null; rombel: string | null }[] = [];
+    const BATCH = 1000;
+    for (let from = 0; ; from += BATCH) {
+      let query = supabase
+        .from("siswa01")
+        .select("nisn, nama, rombel")
+        .order("nama", { ascending: true })
+        .range(from, from + BATCH - 1);
+      if (search.trim()) {
+        query = query.or(`nama.ilike.%${search}%,nisn.ilike.%${search}%,nipd.ilike.%${search}%`);
+      }
+      if (filterRombel) query = query.eq("rombel", filterRombel);
+      if (filterJalur) query = query.eq("jalur", filterJalur);
+      if (filterStatus) query = query.eq("status_siswa", filterStatus);
+      const { data, error } = await query;
+      if (error) {
+        window.alert("Gagal mengambil data: " + error.message);
+        return null;
+      }
+      semua.push(...(data ?? []));
+      if (!data || data.length < BATCH) break;
+    }
+
+    semua.sort(
+      (a, b) =>
+        compareKelas(a.rombel ?? "", b.rombel ?? "") ||
+        (a.nama ?? "").localeCompare(b.nama ?? "", "id", { sensitivity: "base" })
+    );
+
+    return semua;
+  }
+
+  async function handleExportCsv() {
+    setExporting(true);
+    const semua = await ambilSiswaUntukExport();
+    if (!semua) {
+      setExporting(false);
+      return;
+    }
+    const tahunAjaran = getTahunAjaranSaatIni();
+    const esc = (v: string | null) => `"${(v ?? "").replace(/"/g, '""')}"`;
+    const baris = [
+      "tahun_ajaran,NISN,Nama,Kelas",
+      ...semua.map((r) => [esc(tahunAjaran), esc(r.nisn ? "'" + r.nisn : r.nisn), esc(r.nama), esc(r.rombel)].join(",")),
+    ];
+    // BOM supaya Excel membaca UTF-8 dengan benar
+    const blob = new Blob(["\uFEFF" + baris.join("\r\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `data-siswa-${tahunAjaran.replace("/", "-")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setExporting(false);
+  }
+
+  // Export Excel (.xlsx): NISN disimpan sebagai TEKS asli, jadi angka 0 di depan
+  // tetap ada dan tidak perlu diklik satu-satu seperti pada CSV.
+  async function handleExportXlsx() {
+    setExporting(true);
+    const semua = await ambilSiswaUntukExport();
+    if (!semua) {
+      setExporting(false);
+      return;
+    }
+    const tahunAjaran = getTahunAjaranSaatIni();
+    const ws = XLSX.utils.aoa_to_sheet([
+      ["tahun_ajaran", "NISN", "Nama", "Kelas"],
+      ...semua.map((r) => [tahunAjaran, r.nisn ?? "", r.nama ?? "", r.rombel ?? ""]),
+    ]);
+    // Paksa kolom NISN (B) bertipe teks
+    for (let r = 1; r <= semua.length; r++) {
+      const cell = ws["B" + (r + 1)];
+      if (cell) {
+        cell.t = "s";
+        cell.z = "@";
+      }
+    }
+    ws["!cols"] = [{ wch: 14 }, { wch: 14 }, { wch: 35 }, { wch: 10 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Siswa");
+    XLSX.writeFile(wb, "data-siswa-" + tahunAjaran.replace("/", "-") + ".xlsx");
+    setExporting(false);
+  }
+
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const hasActiveFilter = filterRombel || filterJalur || filterStatus;
 
@@ -134,8 +230,25 @@ export default function SiswaListPage() {
             {total} siswa terdaftar
           </p>
         </div>
-        {!isReadOnly && (
-          <div className="flex gap-3 self-start">
+        <div className="flex flex-wrap gap-3 self-start">
+          <button
+            onClick={handleExportCsv}
+            disabled={exporting}
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+          >
+            {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            Export CSV
+          </button>
+          <button
+            onClick={handleExportXlsx}
+            disabled={exporting}
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            Export Excel
+          </button>
+          {!isReadOnly && (
+            <>
             <Link
               href="/siswa/import"
               className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
@@ -157,8 +270,9 @@ export default function SiswaListPage() {
               <Plus className="h-4 w-4" />
               Tambah Siswa
             </Link>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">

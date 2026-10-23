@@ -84,6 +84,12 @@ export const REFERENSI_TABLES: ReferensiConfig[] = [
     label: "Pelajaran",
     description: "Daftar mata pelajaran, singkatan, JJM, dan jumlah rombel",
   },
+  {
+    slug: "kecamatan",
+    table: "ref_kecamatan",
+    label: "Kecamatan",
+    description: "Kecamatan & kelurahan Kota Tarakan beserta kode Kemendagri",
+  },
 ];
 
 export function getReferensiConfig(slug: string): ReferensiConfig | undefined {

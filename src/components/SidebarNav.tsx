@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator, Award, PieChart } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator, Award, PieChart, Wallet } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -18,6 +18,7 @@ const LAPORAN_MODULES = [
   "laporan_kelas_ix",
   "laporan_verifikasi_presensi",
   "laporan_ganak_hibot",
+  "laporan_voting_osis",
   "laporan_status_update_gtk",
   "analisis_kebutuhan",
 ];
@@ -81,6 +82,10 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
     pathname.startsWith("/data-periodik") && !pathname.startsWith("/data-periodik/progres");
   const isActiveProgresDataPeriodik = pathname.startsWith("/data-periodik/progres");
   const isActivePrestasiSiswa = pathname.startsWith("/prestasi-siswa");
+  const isActiveDataPip =
+    pathname.startsWith("/data-pip") && !pathname.startsWith("/data-pip/seleksi") && !pathname.startsWith("/data-pip/bbp");
+  const isActiveLapBbp = pathname.startsWith("/data-pip/bbp");
+  const isActivePipSeleksi = pathname.startsWith("/data-pip/seleksi");
   const isActiveLaporanKelasIx = pathname.startsWith("/laporan/kelas-ix");
   const isActiveRiwayatMutasi = pathname.startsWith("/laporan/riwayat-mutasi");
   const isActiveMutasiMasuk = pathname.startsWith("/siswa/mutasi-masuk");
@@ -151,6 +156,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const hasExtraPrestasiSiswaAccess = moduleAccess.some(
     (a) => a.module === "prestasi_siswa" && a.can_view
   );
+  const hasExtraDataPipAccess = moduleAccess.some((a) => a.module === "data_pip" && a.can_view);
   const hasExtraPresensiRekapAccess = moduleAccess.some(
     (a) => a.module === "presensi_rekap" && a.can_view
   );
@@ -175,6 +181,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
     isFullAccessRole || hasExtraRiwayatMutasiAccess || isGuru || isStafLihatSiswa || Boolean(waliKelasRombel);
   const showRegistrasiMenu = isFullAccessRole || hasExtraRegistrasiAccess || isStafLihatSiswa || Boolean(waliKelasRombel);
   const showDataPeriodikMenu = isFullAccessRole || hasExtraDataPeriodikAccess || isStafLihatSiswa || Boolean(waliKelasRombel);
+  const showDataPipMenu = isFullAccessRole || hasExtraDataPipAccess;
   const showPrestasiSiswaMenu = isFullAccessRole || hasExtraPrestasiSiswaAccess || isStafLihatSiswa || Boolean(waliKelasRombel);
   const showRekapPresensiMenu =
     hasMengajarKelas || Boolean(waliKelasRombel) || isFullAccessRole || hasExtraPresensiRekapAccess;
@@ -538,6 +545,24 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
                 {!collapsed && "Pengaturan"}
               </Link>
             )}
+          </>
+        )}
+
+        {showDataPipMenu && (
+          <>
+            {sectionLabel("SIPINTAR")}
+            <Link href="/data-pip" title="Data PIP" className={linkClass(isActiveDataPip)}>
+              <Wallet className="h-4 w-4 shrink-0" />
+              {!collapsed && "Data PIP"}
+            </Link>
+            <Link href="/data-pip/seleksi" title="PIP Seleksi" className={linkClass(isActivePipSeleksi)}>
+              <ListChecks className="h-4 w-4 shrink-0" />
+              {!collapsed && "PIP Seleksi"}
+            </Link>
+            <Link href="/data-pip/bbp" title="Lap. BBP" className={linkClass(isActiveLapBbp)}>
+              <FileText className="h-4 w-4 shrink-0" />
+              {!collapsed && "Lap. BBP"}
+            </Link>
           </>
         )}
 

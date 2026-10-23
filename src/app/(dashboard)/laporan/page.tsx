@@ -1,4 +1,4 @@
-import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText, Users, UserCheck, Calculator } from "lucide-react";
+import { FileBarChart, Armchair, IdCard, UtensilsCrossed, Landmark, HeartPulse, PieChart, GitCompareArrows, LogOut, ListChecks, FileText, Users, UserCheck, Calculator, Vote } from "lucide-react";
 
 const LAPORAN_LIST = [
   {
@@ -84,6 +84,12 @@ const LAPORAN_LIST = [
     title: "Ganak Hibot",
     description:
       "Daftar siswa (NISN, nama, jenis kelamin, agama, kelas, alamat, nama ayah) per kelas.",
+  },
+  {
+    href: "/laporan/voting-osis",
+    icon: Vote,
+    title: "Data Voting Osis",
+    description: "Daftar siswa aktif (kategori, nama, NISN, kelas, PIN) untuk pemungutan suara OSIS — PIN diisi NISN.",
   },
   {
     href: "/laporan/status-update-gtk",

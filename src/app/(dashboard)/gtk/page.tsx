@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Gtk, JENIS_PTK_OPTIONS, STATUS_KEPEGAWAIAN_OPTIONS, STATUS_AKTIF_OPTIONS } from "@/types/gtk";
-import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, X, KeyRound, Copy, Check } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, X, KeyRound, Copy, Check, Download } from "lucide-react";
+import * as XLSX from "xlsx";
 import { useModulePermission, useRole } from "@/lib/role-context";
 import { getPageNumbers } from "@/lib/pagination";
 
@@ -114,6 +115,62 @@ export default function GtkListPage() {
     setCopied(false);
   }
 
+  const [exporting, setExporting] = useState(false);
+
+  // Export Excel: SEMUA GTK sesuai pencarian & filter yang sedang aktif (bukan
+  // cuma halaman ini). Kolom: No, Nama (gelar depan + nama + gelar belakang),
+  // NIP, Jenis PTK, Mapel -- Mapel = kompetensi untuk Guru/Kepala Sekolah,
+  // dan jenis PTK Dinas Pendidikan untuk Tenaga Kependidikan.
+  async function handleExport() {
+    setExporting(true);
+    const supabase = createClient();
+    const semua: Gtk[] = [];
+    const BATCH = 1000;
+    for (let from = 0; ; from += BATCH) {
+      let query = supabase
+        .from("datagtk")
+        .select("id, nama, gelar_depan, gelar_belakang, nip, jenis_ptk, jenis_ptk_pdd, kompetensi")
+        .order("nama", { ascending: true })
+        .range(from, from + BATCH - 1);
+      if (search.trim()) {
+        query = query.or(`nama.ilike.%${search}%,nip.ilike.%${search}%,nuptk.ilike.%${search}%`);
+      }
+      if (filterJenisPtk) query = query.eq("jenis_ptk", filterJenisPtk);
+      if (filterStatusKepegawaian) query = query.eq("status_kepegawaian", filterStatusKepegawaian);
+      if (filterStatusAktif) query = query.eq("status_aktif", filterStatusAktif);
+      const { data, error } = await query;
+      if (error) {
+        setExporting(false);
+        window.alert("Gagal mengambil data: " + error.message);
+        return;
+      }
+      semua.push(...((data ?? []) as Gtk[]));
+      if (!data || data.length < BATCH) break;
+    }
+
+    const baris = semua.map((g, idx) => {
+      const namaLengkap =
+        [g.gelar_depan, g.nama].filter(Boolean).join(" ") + (g.gelar_belakang ? ", " + g.gelar_belakang : "");
+      const mapel = g.jenis_ptk === "Tenaga Kependidikan" ? g.jenis_ptk_pdd : g.kompetensi;
+      return [idx + 1, namaLengkap, g.nip ?? "", g.jenis_ptk ?? "", mapel ?? ""];
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet([["No", "Nama", "NIP", "Jenis PTK", "Mapel"], ...baris]);
+    // NIP disimpan sebagai teks supaya angka panjang / 0 di depan tidak rusak
+    for (let r = 1; r <= baris.length; r++) {
+      const cell = ws["C" + (r + 1)];
+      if (cell) {
+        cell.t = "s";
+        cell.z = "@";
+      }
+    }
+    ws["!cols"] = [{ wch: 5 }, { wch: 40 }, { wch: 22 }, { wch: 22 }, { wch: 34 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "GTK");
+    XLSX.writeFile(wb, "data-gtk.xlsx");
+    setExporting(false);
+  }
+
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const hasActiveFilter = filterJenisPtk || filterStatusKepegawaian || filterStatusAktif !== "Y";
 
@@ -133,8 +190,17 @@ export default function GtkListPage() {
             {total} guru & tenaga kependidikan terdaftar
           </p>
         </div>
-        {!isReadOnly && (
-        <div className="flex gap-3 self-start">
+        <div className="flex flex-wrap gap-3 self-start">
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+          >
+            {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            Export
+          </button>
+          {!isReadOnly && (
+          <>
           <Link
             href="/gtk/import"
             className="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
@@ -156,8 +222,9 @@ export default function GtkListPage() {
             <Plus className="h-4 w-4" />
             Tambah GTK
           </Link>
+          </>
+          )}
         </div>
-        )}
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
