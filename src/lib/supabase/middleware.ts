@@ -231,7 +231,7 @@ export async function updateSession(request: NextRequest) {
 
   // /kartu-pelajar HANYA untuk wali kelas (cetak kartu kelasnya sendiri) --
   // admin/kepala_sekolah sudah lolos di blok isFullAccessRole di atas.
-  if (path.startsWith("/kartu-pelajar")) {
+  if (path.startsWith("/kartu-pelajar") || path.startsWith("/cover-rapor")) {
     const { data: waliRow } = gtkId
       ? await supabase.from("wali_kelas").select("id").eq("gtk_id", gtkId).maybeSingle()
       : { data: null };

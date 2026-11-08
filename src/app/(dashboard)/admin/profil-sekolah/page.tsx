@@ -78,6 +78,7 @@ const EMPTY: ProfilSekolah = {
   akreditasi: "",
   logo_sekolah_url: null,
   logo_dinas_url: null,
+  logo_tutwuri_url: null,
   nama_kepala_sekolah: "",
   nip_kepala_sekolah: "",
   ttd_kepala_sekolah_url: null,
@@ -89,6 +90,7 @@ const EMPTY: ProfilSekolah = {
 type UploadKind =
   | "logo_sekolah"
   | "logo_dinas"
+  | "logo_tutwuri"
   | "ttd_kepala_sekolah"
   | "cap_sekolah"
   | "template_kartu_pelajar_depan"
@@ -96,6 +98,7 @@ type UploadKind =
 type UploadField =
   | "logo_sekolah_url"
   | "logo_dinas_url"
+  | "logo_tutwuri_url"
   | "ttd_kepala_sekolah_url"
   | "cap_sekolah_url"
   | "template_kartu_pelajar_depan_url"
@@ -111,6 +114,7 @@ export default function ProfilSekolahPage() {
 
   const inputSekolahRef = useRef<HTMLInputElement>(null);
   const inputDinasRef = useRef<HTMLInputElement>(null);
+  const inputTutwuriRef = useRef<HTMLInputElement>(null);
   const inputTtdRef = useRef<HTMLInputElement>(null);
   const inputCapRef = useRef<HTMLInputElement>(null);
   const inputTemplateDepanRef = useRef<HTMLInputElement>(null);
@@ -244,7 +248,7 @@ export default function ProfilSekolahPage() {
         <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
           Gambar otomatis diperkecil ke maks 512×512px sebelum diupload (ukuran asli maks 5 MB)
         </p>
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid sm:grid-cols-3 gap-6">
           {/* Logo Sekolah */}
           <div>
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Logo Sekolah</p>
@@ -311,6 +315,41 @@ export default function ProfilSekolahPage() {
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) handleLogoUpload("logo_dinas_url", "logo_dinas", file);
+              }}
+            />
+          </div>
+
+          {/* Logo Tut Wuri Handayani */}
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Logo Tut Wuri Handayani</p>
+            <div
+              onClick={() => inputTutwuriRef.current?.click()}
+              className="h-32 w-32 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors relative overflow-hidden"
+            >
+              {uploading === "logo_tutwuri" ? (
+                <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+              ) : form.logo_tutwuri_url ? (
+                <Image
+                  src={form.logo_tutwuri_url}
+                  alt="Logo Tut Wuri Handayani"
+                  fill
+                  className="object-contain p-2"
+                />
+              ) : (
+                <div className="flex flex-col items-center text-slate-400 dark:text-slate-500">
+                  <ImageOff className="h-5 w-5 mb-1" />
+                  <span className="text-xs">Upload</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={inputTutwuriRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleLogoUpload("logo_tutwuri_url", "logo_tutwuri", file);
               }}
             />
           </div>

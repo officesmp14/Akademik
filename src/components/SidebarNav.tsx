@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator, Award, PieChart, Wallet } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator, Award, PieChart, Wallet, BookMarked } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -74,6 +74,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveEkstrakurikulerSiswa = pathname.startsWith("/ekstrakurikuler-siswa");
   const isActiveDataSiswaPanitia = pathname.startsWith("/data-siswa-panitia");
   const isActiveKartuPelajar = pathname.startsWith("/kartu-pelajar");
+  const isActiveCoverRapor = pathname.startsWith("/cover-rapor");
   const isActiveGanakHibot = pathname.startsWith("/laporan/ganak-hibot");
   const isActiveRegistrasi =
     pathname.startsWith("/registrasi-peserta-didik") && !pathname.startsWith("/registrasi-peserta-didik/kelengkapan");
@@ -333,6 +334,13 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               <Link href="/kartu-pelajar" title="Kartu Pelajar" className={linkClass(isActiveKartuPelajar)}>
                 <IdCard className="h-4 w-4 shrink-0" />
                 {!collapsed && "Kartu Pelajar"}
+              </Link>
+            )}
+
+            {(isFullAccessRole || Boolean(waliKelasRombel)) && (
+              <Link href="/cover-rapor" title="Cover Rapor" className={linkClass(isActiveCoverRapor)}>
+                <BookMarked className="h-4 w-4 shrink-0" />
+                {!collapsed && "Cover Rapor"}
               </Link>
             )}
 

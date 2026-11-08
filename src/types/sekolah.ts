@@ -15,6 +15,7 @@ export interface ProfilSekolah {
   akreditasi: string | null;
   logo_sekolah_url: string | null;
   logo_dinas_url: string | null;
+  logo_tutwuri_url: string | null;
   nama_kepala_sekolah: string | null;
   nip_kepala_sekolah: string | null;
   ttd_kepala_sekolah_url: string | null;
