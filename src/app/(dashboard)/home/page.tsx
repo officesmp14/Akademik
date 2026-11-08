@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { buildRekapPerJenjang, buildRekapTotal, RekapRow, SiswaRingkas } from "@/lib/rekap-siswa";
 import { JENJANG_PENDIDIKAN_OPTIONS } from "@/types/gtk";
-import { Loader2, Users, Users2 } from "lucide-react";
+import { buildCekKursi, KAPASITAS_KELAS } from "@/lib/cek-kursi";
+import { Armchair, Loader2, Users, Users2 } from "lucide-react";
 
 type GtkRingkas = {
   jk: string | null;
@@ -139,6 +140,14 @@ export default function HomePage() {
   const rekapPerJenjang = buildRekapPerJenjang(siswa);
   const rekapTotalSiswa = buildRekapTotal(siswa);
 
+  // Rangkuman Cek Kursi (sama dengan /laporan/cek-kursi): slot kosong & kelebihan siswa per kelas
+  const cekKursi = buildCekKursi(siswa.map((s) => s.rombel));
+  const kelasAdaSlot = cekKursi.filter((r) => r.status === "kurang");
+  const kelasPenuh = cekKursi.filter((r) => r.status === "penuh");
+  const kelasLebih = cekKursi.filter((r) => r.status === "lebih");
+  const totalSlotKosong = kelasAdaSlot.reduce((acc, r) => acc + (KAPASITAS_KELAS - r.jumlahSiswa), 0);
+  const totalKelebihan = kelasLebih.reduce((acc, r) => acc + (r.jumlahSiswa - KAPASITAS_KELAS), 0);
+
   const gtkAktif = gtk.filter((g) => g.status_aktif === "Y");
   const totalGtk = gtk.length;
   const totalGtkAktif = gtkAktif.length;
@@ -216,6 +225,61 @@ export default function HomePage() {
               <SiswaTableLP rows={rekapPerJenjang} total={rekapTotalSiswa} />
             </div>
             <SiswaTableAgama rows={rekapPerJenjang} total={rekapTotalSiswa} />
+
+            {/* Rangkuman Cek Kursi */}
+            <div className="mt-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-9 w-9 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
+                    <Armchair className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Cek Kursi</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
+                      Kapasitas {KAPASITAS_KELAS} siswa per kelas, {cekKursi.length} kelas
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href="/laporan/cek-kursi"
+                  className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline shrink-0"
+                >
+                  Lihat detail
+                </a>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-emerald-50 dark:bg-emerald-500/10 px-4 py-3">
+                  <p className="text-2xl font-semibold text-emerald-700 dark:text-emerald-400">{totalSlotKosong}</p>
+                  <p className="text-xs text-emerald-700/80 dark:text-emerald-400/80">
+                    kursi masih kosong ({kelasAdaSlot.length} kelas)
+                  </p>
+                </div>
+                <div className="rounded-lg bg-red-50 dark:bg-red-500/10 px-4 py-3">
+                  <p className="text-2xl font-semibold text-red-700 dark:text-red-400">{totalKelebihan}</p>
+                  <p className="text-xs text-red-700/80 dark:text-red-400/80">
+                    siswa melebihi kapasitas ({kelasLebih.length} kelas)
+                  </p>
+                </div>
+              </div>
+              {kelasAdaSlot.length > 0 && (
+                <div className="mt-3">
+                  <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">Kelas yang masih kosong:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {kelasAdaSlot.map((r) => (
+                      <span
+                        key={r.kelas}
+                        className="rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 text-xs font-medium"
+                      >
+                        {r.kelas} ({KAPASITAS_KELAS - r.jumlahSiswa} kursi)
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">
+                {kelasPenuh.length} kelas tepat penuh.
+              </p>
+            </div>
           </div>
 
           {/* Kolom kanan: Jumlah Data GTK */}
