@@ -50,6 +50,13 @@ export default function LoginPage() {
         return;
       }
 
+      // Catat login untuk menu Akses Pengguna (gagal mencatat tidak boleh menghalangi login)
+      try {
+        await supabase.from("akses_log").insert({ jenis: "login", path: "/login", menu: "Login" });
+      } catch {
+        // abaikan
+      }
+
       router.push("/home");
       router.refresh();
     } catch {

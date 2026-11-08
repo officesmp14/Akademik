@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/lib/role-context";
-import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator, Award, PieChart, Wallet, BookMarked } from "lucide-react";
+import { GraduationCap, Users, Users2, FileBarChart, UserCog, ShieldUser, KeySquare, School, NotebookPen, Settings2, BookOpenCheck, Building2, CalendarDays, FileText, CalendarClock, Tags, ClipboardList, Ruler, ArrowRightLeft, FileEdit, ListChecks, Home, ChevronRight, ClipboardCheck, CalendarCheck2, LogOut, UserPlus, Link2, Trophy, IdCard, Printer, FileCheck, Mail, Landmark, UserCheck, Calculator, Award, PieChart, Wallet, BookMarked, Activity } from "lucide-react";
 
 const LAPORAN_MODULES = [
   "laporan_rekap_siswa",
@@ -36,6 +36,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
   const isActiveLaporan = pathname.startsWith("/laporan");
   const isActiveProfil = pathname.startsWith("/profil-saya");
   const isActiveAdminUsers = pathname.startsWith("/admin/users");
+  const isActiveAksesPengguna = pathname.startsWith("/admin/akses-pengguna");
   const isActiveAdminAccess = pathname.startsWith("/admin/access");
   const isActiveKelasSaya = pathname.startsWith("/kelas-saya");
   const isActiveRaporSts = pathname.startsWith("/rapor-sts");
@@ -632,6 +633,10 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
             <a href="/admin/users" title="Kelola User" className={linkClass(isActiveAdminUsers)}>
               <ShieldUser className="h-4 w-4 shrink-0" />
               {!collapsed && "Kelola User"}
+            </a>
+            <a href="/admin/akses-pengguna" title="Akses Pengguna" className={linkClass(isActiveAksesPengguna)}>
+              <Activity className="h-4 w-4 shrink-0" />
+              {!collapsed && "Akses Pengguna"}
             </a>
             <a href="/admin/access" title="Hak Akses" className={linkClass(isActiveAdminAccess)}>
               <KeySquare className="h-4 w-4 shrink-0" />

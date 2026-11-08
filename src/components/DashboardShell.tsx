@@ -3,12 +3,14 @@
 import { useState } from "react";
 import SidebarNav from "@/components/SidebarNav";
 import TopBar from "@/components/TopBar";
+import AksesTracker from "@/components/AksesTracker";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="h-screen overflow-hidden print:h-auto print:overflow-visible bg-slate-50 dark:bg-slate-900 flex">
+      <AksesTracker />
       <SidebarNav collapsed={collapsed} />
       <div className="flex-1 min-w-0 flex flex-col overflow-hidden print:overflow-visible">
         <TopBar collapsed={collapsed} onToggleSidebar={() => setCollapsed((v) => !v)} />
