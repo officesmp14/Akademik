@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Gtk, JENIS_PTK_OPTIONS, STATUS_KEPEGAWAIAN_OPTIONS, STATUS_AKTIF_OPTIONS } from "@/types/gtk";
-import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, X, KeyRound, Copy, Check, Download } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, X, KeyRound, Copy, Check, Download, Eye } from "lucide-react";
 import * as XLSX from "xlsx";
 import { useModulePermission, useRole } from "@/lib/role-context";
 import { getPageNumbers } from "@/lib/pagination";
@@ -13,9 +13,11 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
 export default function GtkListPage() {
   const { canEdit, canDelete } = useModulePermission("gtk");
-  const { role } = useRole();
+  const { role, isStafLihatSiswa } = useRole();
   const isAdmin = role === "admin";
   const isReadOnly = !canEdit;
+  // Staf (jenis_ptk_pdd tertentu) bisa membuka detail GTK (baca saja) lewat ikon mata
+  const tampilAksi = canEdit || canDelete || isStafLihatSiswa;
   const [data, setData] = useState<Gtk[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -32,7 +34,9 @@ export default function GtkListPage() {
 
   const [filterJenisPtk, setFilterJenisPtk] = useState("");
   const [filterStatusKepegawaian, setFilterStatusKepegawaian] = useState("");
-  const [filterStatusAktif, setFilterStatusAktif] = useState("Y");
+  // Staf melihat SEMUA GTK (aktif & tidak aktif) secara bawaan; pengguna lain hanya yang aktif
+  const defaultStatusAktif = isStafLihatSiswa && !canEdit ? "" : "Y";
+  const [filterStatusAktif, setFilterStatusAktif] = useState(defaultStatusAktif);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -172,12 +176,12 @@ export default function GtkListPage() {
   }
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const hasActiveFilter = filterJenisPtk || filterStatusKepegawaian || filterStatusAktif !== "Y";
+  const hasActiveFilter = filterJenisPtk || filterStatusKepegawaian || filterStatusAktif !== defaultStatusAktif;
 
   function resetFilters() {
     setFilterJenisPtk("");
     setFilterStatusKepegawaian("");
-    setFilterStatusAktif("Y");
+    setFilterStatusAktif(defaultStatusAktif);
     setPage(0);
   }
 
@@ -328,7 +332,7 @@ export default function GtkListPage() {
                 <th className="px-4 py-3 font-medium">Status Kepegawaian</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">HP</th>
-                {(canEdit || canDelete) && (
+                {tampilAksi && (
                   <th className="px-4 py-3 font-medium text-right">Aksi</th>
                 )}
               </tr>
@@ -336,13 +340,13 @@ export default function GtkListPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={tampilAksi ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : data.length === 0 ? (
                 <tr>
-                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={tampilAksi ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     Belum ada data GTK yang cocok.
                   </td>
                 </tr>
@@ -373,9 +377,18 @@ export default function GtkListPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{g.hp || "-"}</td>
-                    {(canEdit || canDelete) && (
+                    {tampilAksi && (
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
+                        {!canEdit && isStafLihatSiswa && (
+                        <Link
+                          href={`/gtk/${g.id}`}
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                          title="Lihat detail"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Link>
+                        )}
                         {canEdit && (
                         <Link
                           href={`/gtk/${g.id}`}

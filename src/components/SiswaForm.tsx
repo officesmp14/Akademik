@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
-import { useModulePermission } from "@/lib/role-context";
+import { useModulePermission, useRole } from "@/lib/role-context";
 import FotoCropModal from "@/components/FotoCropModal";
 import FotoCameraModal from "@/components/FotoCameraModal";
 import {
@@ -102,6 +102,10 @@ export default function SiswaForm({
   // kesiswaan) -- wali kelas yang masuk ke halaman ini lewat bypass
   // middleware (khusus kelasnya sendiri) tidak otomatis dapat izin ini.
   const { canEdit: canEditLinkDokumen } = useModulePermission("siswa");
+  // Staf yang cuma boleh melihat (bukan admin/kepsek, tanpa hak edit modul siswa, bukan wali kelas): form baca saja
+  const { role, isStafLihatSiswa, waliKelasRombel } = useRole();
+  const readOnly =
+    isEdit && isStafLihatSiswa && !canEditLinkDokumen && role !== "admin" && role !== "kepala_sekolah" && !waliKelasRombel;
   const [activeTab, setActiveTab] = useState<TabKey>("pribadi");
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -329,7 +333,7 @@ export default function SiswaForm({
       <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
         {isEdit ? (
           <>
-            Edit Data Siswa{" "}
+            {readOnly ? "Detail Data Siswa" : "Edit Data Siswa"}{" "}
             {initialData?.nama && <span className="text-blue-600">({initialData.nama})</span>}
           </>
         ) : (
@@ -361,6 +365,7 @@ export default function SiswaForm({
           })}
         </div>
 
+        <fieldset disabled={readOnly} className="min-w-0 border-0 p-0 m-0">
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
           {/* TAB 1: Data Pribadi */}
           {isEdit && (
@@ -593,6 +598,7 @@ export default function SiswaForm({
             <TextField label="Rekening Atas Nama" name="rekening_atas_nama" register={register} />
           </div>
         </div>
+        </fieldset>
 
         {errorMsg && (
           <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2 mt-4">
@@ -606,8 +612,9 @@ export default function SiswaForm({
             onClick={() => router.back()}
             className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
-            Batal
+            {readOnly ? "Kembali" : "Batal"}
           </button>
+          {!readOnly && (
           <button
             type="submit"
             disabled={saving}
@@ -616,6 +623,7 @@ export default function SiswaForm({
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
             Simpan Data
           </button>
+          )}
         </div>
       </form>
 

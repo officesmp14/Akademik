@@ -45,6 +45,7 @@ export default function AksesPenggunaPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [filterLogin, setFilterLogin] = useState<"" | "sudah" | "belum">("");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
 
@@ -97,9 +98,15 @@ export default function AksesPenggunaPage() {
   }
 
   const q = search.trim().toLowerCase();
-  const filtered = data.filter(
-    (r) => !q || (r.nama ?? "").toLowerCase().includes(q) || (r.email ?? "").toLowerCase().includes(q)
-  );
+  // "Pernah login" = ada catatan login di aplikasi ATAU tercatat login di sistem auth (login sebelum pencatatan dimulai)
+  const pernahLogin = (r: Ringkasan) => r.jumlah_login > 0 || Boolean(r.last_sign_in_auth);
+  const filtered = data.filter((r) => {
+    if (q && !(r.nama ?? "").toLowerCase().includes(q) && !(r.email ?? "").toLowerCase().includes(q)) return false;
+    if (filterLogin === "sudah") return pernahLogin(r);
+    if (filterLogin === "belum") return !pernahLogin(r);
+    return true;
+  });
+  const jumlahBelumLogin = data.filter((r) => !pernahLogin(r)).length;
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const tampil = filtered.slice(page * pageSize, page * pageSize + pageSize);
   const totalLogin = data.reduce((a, r) => a + r.jumlah_login, 0);
@@ -145,6 +152,18 @@ export default function AksesPenggunaPage() {
               {n} / halaman
             </option>
           ))}
+        </select>
+        <select
+          value={filterLogin}
+          onChange={(e) => {
+            setFilterLogin(e.target.value as "" | "sudah" | "belum");
+            setPage(0);
+          }}
+          className={filterClass}
+        >
+          <option value="">Semua (login)</option>
+          <option value="sudah">Sudah pernah login ({data.length - jumlahBelumLogin})</option>
+          <option value="belum">Belum pernah login ({jumlahBelumLogin})</option>
         </select>
         <div className="relative">
           <Search className="h-4 w-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />

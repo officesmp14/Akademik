@@ -308,8 +308,9 @@ function CoverSiswa({ s, profil, tanggalRapor }: { s: SiswaCover; profil: Profil
 }
 
 export default function CoverRaporPage() {
-  const { role, waliKelasRombel } = useRole();
-  const isFullAccessRole = role === "admin" || role === "kepala_sekolah";
+  const { role, waliKelasRombel, isStafLihatSiswa } = useRole();
+  // Staf (jenis_ptk_pdd tertentu) boleh mencetak cover rapor semua kelas
+  const isFullAccessRole = role === "admin" || role === "kepala_sekolah" || isStafLihatSiswa;
   const lockedToOwnClass = !isFullAccessRole && Boolean(waliKelasRombel);
 
   const [profil, setProfil] = useState<ProfilSekolah | null>(null);

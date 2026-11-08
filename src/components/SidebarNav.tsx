@@ -165,7 +165,8 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
 
   // Staf tertentu (jenis_ptk_pdd) boleh melihat menu Data Siswa (baca saja)
   const showSiswaMenu = isFullAccessRole || hasExtraSiswaAccess || isStafLihatSiswa;
-  const showGtkMenu = isFullAccessRole || hasExtraGtkAccess;
+  // Staf tertentu boleh melihat Data GTK (baca saja)
+  const showGtkMenu = isFullAccessRole || hasExtraGtkAccess || isStafLihatSiswa;
   const showLaporanDinasGtkLink = isFullAccessRole || hasExtraLaporanDinasGtkAccess;
   // Guru & staf tertentu boleh melihat (baca saja) Status Update GTK & Analisis Kebutuhan
   const showStatusUpdateGtkLink = isFullAccessRole || hasExtraStatusUpdateGtkAccess || role === "guru" || isStafLihatSiswa;
@@ -338,7 +339,7 @@ export default function SidebarNav({ collapsed = false }: { collapsed?: boolean 
               </Link>
             )}
 
-            {(isFullAccessRole || Boolean(waliKelasRombel)) && (
+            {(isFullAccessRole || isStafLihatSiswa || Boolean(waliKelasRombel)) && (
               <Link href="/cover-rapor" title="Cover Rapor" className={linkClass(isActiveCoverRapor)}>
                 <BookMarked className="h-4 w-4 shrink-0" />
                 {!collapsed && "Cover Rapor"}

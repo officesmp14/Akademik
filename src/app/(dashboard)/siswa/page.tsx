@@ -4,8 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Siswa, STATUS_SISWA_OPTIONS } from "@/types/siswa";
-import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, UserPlus, X, Download } from "lucide-react";
-import { useModulePermission } from "@/lib/role-context";
+import { Plus, Search, Pencil, Trash2, Loader2, FileSpreadsheet, UserPlus, X, Download, Eye } from "lucide-react";
+import { useModulePermission, useRole } from "@/lib/role-context";
 import * as XLSX from "xlsx";
 import { getPageNumbers } from "@/lib/pagination";
 import { compareKelas } from "@/lib/rekap-siswa";
@@ -16,6 +16,9 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 export default function SiswaListPage() {
   const { canEdit, canDelete } = useModulePermission("siswa");
   const isReadOnly = !canEdit;
+  // Staf (jenis_ptk_pdd tertentu) bisa membuka detail siswa (baca saja) lewat ikon mata
+  const { isStafLihatSiswa } = useRole();
+  const tampilAksi = canEdit || canDelete || isStafLihatSiswa;
   const [data, setData] = useState<Siswa[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -376,7 +379,7 @@ export default function SiswaListPage() {
                 <th className="px-4 py-3 font-medium">Rombel</th>
                 <th className="px-4 py-3 font-medium">Jalur</th>
                 <th className="px-4 py-3 font-medium">Status</th>
-                {(canEdit || canDelete) && (
+                {tampilAksi && (
                   <th className="px-4 py-3 font-medium text-right">Aksi</th>
                 )}
               </tr>
@@ -384,13 +387,13 @@ export default function SiswaListPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={tampilAksi ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : data.length === 0 ? (
                 <tr>
-                  <td colSpan={canEdit || canDelete ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={tampilAksi ? 9 : 8} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                     Belum ada data siswa yang cocok.
                   </td>
                 </tr>
@@ -412,9 +415,18 @@ export default function SiswaListPage() {
                         {s.status_siswa || "-"}
                       </span>
                     </td>
-                    {(canEdit || canDelete) && (
+                    {tampilAksi && (
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
+                        {!canEdit && isStafLihatSiswa && (
+                        <Link
+                          href={`/siswa/${s.id}`}
+                          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                          title="Lihat detail"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Link>
+                        )}
                         {canEdit && (
                         <Link
                           href={`/siswa/${s.id}`}
